@@ -12,6 +12,7 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_image.h>
+//#include "common.h"
 
 #if 01
 
@@ -201,34 +202,36 @@ void Button_draw(const Button* pos, ALLEGRO_FONT* font)
 
 
 
-/* --- Game State (필요하면 확장) --- */
+/* --- FIRST Game UI State  --- */
 typedef enum {
-    STATE_MENU = 0, // 첫 시작 화면
-    STATE_MODE = 1, // 난이도 화면
-    STATE_CHOICE = 2,// 직업 선택
-    STATE_RUNNING = 3   // 게임 시작 누를 때 실행
+    STATE_MENU = 10, // 첫 시작 화면
+    STATE_MODE = 11, // 난이도 화면
+    STATE_CHOICE = 12,// 직업 선택
+    STATE_RUNNING = 13   // 게임 시작 누를 때 실행
 } GameState;
 
 /* --- 게임 난이도에 따른 구조체 선언 ---*/
 
-typedef struct {
-    int Easy;   //쉬운 모드
-    int Normal; // 중간 모드
-    int Hard;   // 어려운 모드
-}MODE;
+typedef enum {
+    DIFF_EASY = 1,   // 하 (×1)
+    DIFF_NORMAL = 2, // 중 (×2)
+    DIFF_HARD = 3 // 상 (×3)
+}DIFFICULTY;
+DIFFICULTY game_difficulty;
 
 // 난이도에 따른 초기값 구현
 // 
-MODE m = { 1,2,3 };
 
 
 /* --- 직업에 대한 구조체 선언 --- */
 typedef enum {
-    JOB_DANSO,
-    JOB_ZARUBAN
+    JOB_None = 0,
+    JOB_DANSO = 8,
+    JOB_ZARUBAN = 9
 }JOB;
 
-JOB job = JOB_DANSO;
+JOB job = JOB_None;
+
 
 /* --- display menu ---  */
 void show_back_only(void)
@@ -263,14 +266,33 @@ ALLEGRO_BITMAP* prologue_List[PRO] = { 0 };
 // 프롤로그 상태 구조체 선언
 typedef struct {
     int curr;   // 현재 위치
-    int start;
-    int end;
-    bool blink;
+    int start;  // 시작 위치
+    int end;    // 끝 위치
+    bool blink; // 빈 화면의 유무
 }PROLOGUE_STATE;
 
 
 // 프롤로그 상태 초기값
 PROLOGUE_STATE ps = { 0,0,0,false };
+
+// 직업에 따라 달라지는 프롤로그 설정 함수
+static void set_pro_job(void)
+{
+    switch (job)
+    {
+    case JOB_DANSO:
+        ps.start = 0;
+        ps.end = 6;
+        break;
+    case JOB_ZARUBAN:
+        ps.start = 7;
+        ps.end = 13;
+    }
+
+    ps.curr = ps.start;
+    ps.blink = false;
+
+}
 
 // 프롤로그 화면 함수
 void prologue_display(ALLEGRO_BITMAP* bitmap)
@@ -335,15 +357,12 @@ void next_slide()
 {
     // 공백일 때
     if (ps.blink)
-    {
-        ps.blink = false;
         return;
-    }
 
     // 슬라이드의 수만큼 슬라이드 인덱스 추가
     if (ps.curr < ps.end)
         ps.curr++;
-
+    // 마지막 화면을 지날 시에 블랙 화면으로 고정
     else {
         ps.blink = true;
     }
@@ -422,8 +441,6 @@ int main(void)
             {
                 next_slide();
                 redraw = true;
-
-
             }
             break;
 
@@ -473,78 +490,30 @@ int main(void)
                 // 난이도 : 쉬운 모드
                 else if (b == &pos5)
                 {
-                    if (job == JOB_DANSO)
-                    {
-                        ps.curr = 0;
-                        ps.end = 6;
-                    }
+                    set_pro_job();
 
-                    else if (job == JOB_ZARUBAN)
-                    {
-                        ps.curr = 7;
-                        ps.end = 13;
-                    }
-                    ps.curr = ps.start;
-                    ps.blink = false;
-
-                    m.Easy;
-                    printf("Very Easy~~~~~~~~~~~~ : %d\n", m.Easy);    // 테스트
+                    game_difficulty = DIFF_HARD;
+                    printf("Very Easy~~~~~~~~~~~~ : %d\n", DIFF_EASY);    // 테스트
                     state = STATE_RUNNING;
-
 
                 }
                 // 난이도 : 중간 모드
 
                 else if (b == &pos6)
                 {
-                    if (job == JOB_DANSO)
-                    {
-                        ps.curr = 0;
-                        ps.end = 6;
-                    }
+                    set_pro_job();
 
-                    else if (job == JOB_ZARUBAN)
-                    {
-                        ps.curr = 7;
-                        ps.end = 13;
-
-                    }
-                    else
-                    {
-                        state = STATE_CHOICE;
-                        break;
-                    }
-
-                    ps.curr = ps.start;
-                    ps.blink = false;
-
-                    m.Normal;
-                    printf("Normal~~~~~~~~~~~~ : %d\n", m.Normal);    //
+                    game_difficulty = DIFF_NORMAL;
+                    printf("Normal~~~~~~~~~~~~ : %d\n", DIFF_NORMAL);    //
                     state = STATE_RUNNING;
 
                 }
                 // 난이도 : 어려운 모드
                 else if (b == &pos7)
                 {
-                    if (job == JOB_DANSO)
-                    {
-                        ps.curr = 0;
-                        ps.end = 6;
-                    }
-                    else if (job == JOB_ZARUBAN)
-                    {
-                        ps.curr = 7;
-                        ps.end = 13;
-                    }
-                    else
-                    {
-                        state = STATE_CHOICE;
-                        break;
-                    }
-                    ps.curr = ps.start;
-                    ps.blink = false;
-
-                    printf("Hard~~~~~~~~~~~~ : %d\n", m.Hard);      // 테스트    
+                    set_pro_job();
+                    game_difficulty = DIFF_HARD;
+                    printf("Hard~~~~~~~~~~~~ : %d\n", DIFF_HARD);      // 테스트    
                     state = STATE_RUNNING;
 
 
@@ -629,12 +598,9 @@ int main(void)
                 }
                 break;
             }
-
             default:
                 break;
             }
-
-
             disp_post_draw();
             redraw = false;
         }
@@ -649,5 +615,4 @@ int main(void)
 
     return 0;
 }
-
 #endif
