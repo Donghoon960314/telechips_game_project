@@ -44,7 +44,7 @@ bool check_monster_die(void) // 몬스터 5마리가 전부 죽었는지 체크하는 함수
         if (enemies[i].used == false) check_num += 1;
     if (check_num == 5)
     {
-        return true;
+        //return true;
     }
 
 }
