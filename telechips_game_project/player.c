@@ -277,6 +277,24 @@ void player_draw()
     float final_scale_x = w * depth_scale;
     float final_scale_y = h * depth_scale;
 
+
+    //==========================================
+    //             히트박스 표시
+    //==========================================   
+    int scaled_w = PLAYER_W * depth_scale;
+    int scaled_h = PLAYER_H * depth_scale;
+    int hitbox_h = scaled_h / 3;
+    int hitbox_y = player.y + scaled_h - hitbox_h;
+
+    al_draw_rectangle(
+        player.x, hitbox_y,
+        player.x + scaled_w, hitbox_y + hitbox_h,
+        al_map_rgb(255, 0, 0), 2
+    );
+    //==========================================
+    //             히트박스 표시
+    //========================================== 
+
     // 좌/우 방향 반전
     if (player.last_dir == DIR_LEFT) {
         al_draw_scaled_bitmap(
