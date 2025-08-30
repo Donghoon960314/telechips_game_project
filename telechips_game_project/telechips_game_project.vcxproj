@@ -141,7 +141,7 @@
     <ClCompile Include="keyboard.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="player.c" />
-    <ClCompile Include="Rank.c" />
+    <ClCompile Include="Rank._list.c" />
     <ClCompile Include="Ranking_input.c" />
     <ClCompile Include="shots.c" />
     <ClCompile Include="sprites.c" />

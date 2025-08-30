@@ -18,7 +18,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Rank.c">
+    <ClCompile Include="Rank._list.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="main.c">
@@ -95,12 +95,14 @@
     <Image Include="player.png">
       <Filter>리소스 파일</Filter>
     </Image>
+
     <Image Include="monster01.png">
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="monster02.png">
       <Filter>리소스 파일</Filter>
     </Image>
+
     <Image Include="player1.png">
       <Filter>리소스 파일</Filter>
     </Image>
@@ -110,21 +112,23 @@
     <Image Include="spritesheet.png">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="stage1.PNG">
-      <Filter>리소스 파일</Filter>
-    </Image>
     <Image Include="stage1_new.png">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="stage2.PNG">
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="stage2_new.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="stage1.PNG">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="stage2.PNG">
+
+      <Filter>리소스 파일</Filter>
+    </Image>
     <Image Include="stage3.PNG">
       <Filter>리소스 파일</Filter>
     </Image>
+    
     <Image Include="boss01.png">
       <Filter>리소스 파일</Filter>
     </Image>

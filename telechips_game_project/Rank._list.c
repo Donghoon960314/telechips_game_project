@@ -10,27 +10,26 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-#define _CRT_SECURE_NO_WARNINGS
 
-typedef struct RANK_ENTRY {
+typedef struct RANK {
     char name[32];
     int minutes;
     int seconds;
-} RANK_ENTRY;
+} _RANK;
 
-// 시간 기준 오름차순 정렬
-int cmp_rank(const void* a, const void* b) {
-    const RANK_ENTRY* x = (const RANK_ENTRY*)a;
-    const RANK_ENTRY* y = (const RANK_ENTRY*)b;
+//분 단위로는 오름차순->분이 같을때 초단위로 오름차순
+
+int cmp_rank(const void* a, const void* b) 
+{
+    const _RANK* x = (const _RANK*)a; //Rank구조체 가르키는 포인터 x와 y
+    const _RANK* y = (const _RANK*)b;
 
     if (x->minutes != y->minutes) return (x->minutes - y->minutes);
     return (x->seconds - y->seconds);
 }
 
-void table(void)
+void print_ranking_table(const char* player_name, int player_min, int player_sec)
 {
-    must_init(al_init(), "allegro");
-    must_init(al_install_keyboard(), "keyboard");
     al_init_font_addon();
     al_init_ttf_addon();
 
@@ -39,31 +38,31 @@ void table(void)
 
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
     must_init(queue, "queue");
-
-    disp_init();
     must_init(al_init_image_addon(), "image addon");
 
-    ALLEGRO_FONT* big_font = al_load_ttf_font("BebasNeue-Regular.ttf", 80, 0);
-    must_init(big_font, "scoreboard font");
+    ALLEGRO_FONT* name_font = al_load_ttf_font("BebasNeue-Regular.ttf", 50, 0);
+    ALLEGRO_FONT* title_font = al_load_ttf_font("BebasNeue-Regular.ttf",80, 0);
+
+    must_init(name_font, "score_font");
+    al_register_event_source(queue, al_get_timer_event_source(timer));
 
     al_register_event_source(queue, al_get_keyboard_event_source());
     al_register_event_source(queue, al_get_display_event_source(disp));
-    al_register_event_source(queue, al_get_timer_event_source(timer));
 
-    // === rank.txt 읽기 ===
+    //rank.txt 읽어옴
     FILE* f = fopen("rank.txt", "r");
-    RANK_ENTRY entries[128];
+    _RANK entries[128];
     int count = 0;
-    if (f) {
-        while (fscanf(f, "%31s %d %d", entries[count].name,
-            &entries[count].minutes, &entries[count].seconds) == 3) {
+    if (f) 
+    {
+        while (fscanf(f, "%31s %d %d", entries[count].name, &entries[count].minutes, &entries[count].seconds) == 3) 
+        {
             count++;
             if (count >= 128) break;
         }
         fclose(f);
     }
-
-    qsort(entries, count, sizeof(RANK_ENTRY), cmp_rank);
+    qsort(entries, count, sizeof(_RANK), cmp_rank);
 
     bool done = false;
     ALLEGRO_EVENT event;
@@ -72,7 +71,8 @@ void table(void)
 
     while (!done)
     {
-        while (al_get_next_event(queue, &event)) {
+        while (al_get_next_event(queue, &event)) 
+        {
             if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
                 done = true;
             if (event.type == ALLEGRO_EVENT_KEY_DOWN &&
@@ -84,29 +84,41 @@ void table(void)
         al_clear_to_color(al_map_rgb(0, 0, 0));
 
         // 제목
-        al_draw_text(big_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20,
-            ALLEGRO_ALIGN_CENTER, "SCOREBOARD - TOP 10");
+        al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "SCOREBOARD - TOP 10");
 
         // 상위 10개 출력
-        for (int i = 0; i < count && i < 10; i++) {
+        for (int i = 0; i < count && i < 10; i++) 
+        {
             char buf[128];
-            sprintf(buf, "%2d. %-10s  %02d:%02d",
-                i + 1, entries[i].name,
-                entries[i].minutes, entries[i].seconds);
+            //sprint로 버퍼에 우선 저장 나중에 al_draw로 출력할거임
+            sprintf(buf, "%2d. %-10s  %02d:%02d", i + 1, entries[i].name, entries[i].minutes, entries[i].seconds); 
 
-            al_draw_text(big_font, al_map_rgb(200, 200, 0),
-                DISP_W / 2, 80 + i * 40,
-                ALLEGRO_ALIGN_CENTER, buf);
+            //sprintf s %2 -> 정수출력 최소 10칸 확보
+            // -10s은 최소 10칸에서 -는 왼쪽정렬
+            //02d는 항상 두개의숫자로 빈칸을 0으로 채움
+
+            int y = 120 + i * 80;
+            //이름이랑 기록 비교해서 마냥 입력한 값이랑 같으면 하이라이트 줌 
+            if (strcmp(entries[i].name, player_name) == 0 && entries[i].minutes == player_min && entries[i].seconds == player_sec)
+            {
+                al_draw_filled_rectangle(DISP_W / 2 - 300, y - 10, DISP_W / 2 + 300, y + 60, al_map_rgb(50, 50, 150)); // 파란 박스
+            }
+            // 텍스트 출력
+            al_draw_text(name_font, al_map_rgb(200, 200, 0), DISP_W / 2, y, ALLEGRO_ALIGN_CENTER, buf);
         }
 
         disp_post_draw();
-    }
+           
+            //al_draw_text(name_font, al_map_rgb(200, 200, 0),DISP_W / 2, 120 + i * 80, ALLEGRO_ALIGN_CENTER, buf);
+       
 
-    al_destroy_font(big_font);
-    disp_deinit();
+        //disp_post_draw();
+    }
+    al_destroy_font(name_font);
+    al_destroy_font(title_font);
     al_destroy_event_queue(queue);
-    al_destroy_timer(timer);
 }
+
 
 #if 0
 #include <stdio.h>

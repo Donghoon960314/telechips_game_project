@@ -6,6 +6,10 @@ int time_left;
 // general
 long frames;
 long score;
+extern stage_num_for;
+extern stage_num;
+extern delay;
+extern bool restarted;
 
 typedef enum {
     DIFF_EASY = 1, // ÇÏ (¡¿1)

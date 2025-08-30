@@ -63,8 +63,15 @@ void enemies_init()
 void enemies_update()
 {
     int new_quota = 5; // 이번 프레임에 새로 출현할 수 있는 몬스터 최대 수
+  
+
+//    int start_x = BUFFER_W; // 몬스터가 등장할 x좌표 시작점(화면 오른쪽 밖)
+   //int start_x = BUFFER_W + 40; // 몬스터가 등장할 x좌표 시작점(화면 오른쪽 밖
+    //int gap = 40; // 몬스터 간격
+
     int start_x = BUFFER_W + 40; // 몬스터가 등장할 x좌표 시작점(화면 오른쪽 밖)
     int gap = 80; // 몬스터 간격
+
 
 
     for (int i = 0; i < ENEMIES_N; i++)
@@ -77,8 +84,13 @@ void enemies_update()
                 // x좌표 배치 : 출현 quota 개수에 따라 오른쪽에서 간격을 두고 배치
                 enemies[i].x = start_x - (new_quota - 1) * gap;
 
+
+                // y좌표 배치 : 110 이상, 화면 높이의 75% 지점 이하에서 랜덤
+                //enemies[i].y = between(400, 500);
+
                 // y좌표 배치 : 범위 내 랜덤*******************************************
                 enemies[i].y = between(0.4 * BUFFER_H, 0.78 * (BUFFER_H - ENEMY_H[0]));
+
 
                 // 타입은 일반 몬스터 중에서만 선택
                 enemies[i].type = between(ENEMY_TYPE_1, ENEMY_TYPE_2 + 1);
@@ -130,7 +142,7 @@ void enemies_update()
                 if (--enemies[i].state_timer <= 0) {
                     if (enemies[i].state == BOSS_IDLE) {
                         enemies[i].state = BOSS_CHASE;
-                        enemies[i].state_timer = 30; // 추적
+                        enemies[i].state_timer = 500; // 추적
                     }
                     else {
                         enemies[i].state = BOSS_IDLE;
@@ -247,7 +259,11 @@ void enemies_update()
             for (int i = 0; i < ENEMIES_N; i++) {
                 if (!enemies[i].used) {
                     enemies[i].x = BUFFER_W / 2 - ENEMY_W[BOSS_TYPE_1] / 2;
+
+                    //enemies[i].y = 500; // 화면 위쪽 중앙
+
                     enemies[i].y = BUFFER_H * 0.6; // 화면 위쪽 중앙
+
                     enemies[i].type = BOSS_TYPE_1;
                     enemies[i].used = true;
 
