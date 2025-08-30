@@ -8,13 +8,13 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-int stage_num_for = 0;  
-int stage_num = 1;
-int delay = 0;
+int stage_num_for = 0;  //bitmap에 저장된 stage font위한 파라미터용
+int stage_num = 1; //실제 스테이지 변수
+int delay = 0; //스테이지 변경 시 딜레이를 위한 초기화
 
-bool monster_all_die = false;
+bool monster_all_die = false; //몬스터가 모두 죽었는지 확인하는 변수
 
-typedef struct IMAGES
+typedef struct IMAGES //스테이지별 이미지가 담긴 이미지 구조체
 {
     ALLEGRO_BITMAP* stage[3];
 
@@ -42,7 +42,7 @@ void stage_image_pop_deinit() //나중에 저장된 비트맵을 없애줌
 bool boss_check_live(void)
 {
     for (int i = 0; i < ENEMIES_N; i++) {
-        if (enemies[i].used && enemies[i].type == BOSS_TYPE_1) {
+        if (enemies[i].used && enemies[i].type == BOSS_TYPE_1) { //추후에 보스 타입 추가 되면 여기 수정해야함
             return true;
         }
     }
@@ -59,13 +59,14 @@ bool check_monster_die(void) // 몬스터 5마리가 전부 죽었는지 체크�
         if (enemies[i].used == false) check_num += 1;
     if (check_num == 5)
     {
-        if (stage_num == 1)
+        if (stage_num == 1) {
+            shots_init();
             return true;
+        } //1단계일때는 stage_reset()에 무조건 true넘겨줘서 보스몹 출현없이 
         else {
+            shots_init();
             return (boss_spawned && !boss_check_live());
         }
-
-        
 
     }
     return false;
@@ -169,6 +170,7 @@ int stage_reset(void)
             printf("start stage %d\n", stage_num_for);
 
             enemies_init();
+            shots_init();
             stage_num += 1;
         }
     }

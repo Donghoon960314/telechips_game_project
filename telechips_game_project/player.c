@@ -14,6 +14,16 @@ JOB_TYPE job_type = JOB_TYPE_2;
 
 void player_init()
 {
+
+    //player.x = (BUFFER_W / 2) - (PLAYER_W / 2);
+    //player.y = (BUFFER_H / 2) - (PLAYER_H / 2);
+    //player.normal_shot_timer = 0;
+    //player.strong_shot_timer = 0;
+
+    //player.hp = 60;
+
+    //player.hp = 70;
+
     player.x = (BUFFER_W / 7) - (PLAYER_W / 7);
     player.y = (BUFFER_H / 1.7) - (PLAYER_H / 1.7);
     player.invincible_timer = 120; // 무적 시간
