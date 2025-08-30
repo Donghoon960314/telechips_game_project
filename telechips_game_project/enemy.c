@@ -216,8 +216,8 @@ void enemies_update()
                 // 보스: 상하좌우 4방향 발사
                 shots_add(false, true, cx, cy, DIR_LEFT, 10, ATTACK_BOSS);
                 shots_add(false, true, cx, cy, DIR_RIGHT, 10, ATTACK_BOSS);
-                shots_add(false, true, cx, cy, DIR_UP, 10, ATTACK_BOSS);
-                shots_add(false, true, cx, cy, DIR_DOWN, 10, ATTACK_BOSS);
+                //shots_add(false, true, cx, cy, DIR_UP, 10, ATTACK_BOSS);
+                //shots_add(false, true, cx, cy, DIR_DOWN, 10, ATTACK_BOSS);
 
                 enemies[i].shot_timer = (int)(60 * fire_mult[game_difficulty - 1]);
             }
@@ -359,6 +359,11 @@ void enemies_draw()
                     0
                 );
             }
+            al_draw_rectangle(
+                enemies[i].x, enemies[i].y,
+                enemies[i].x + draw_w, enemies[i].y + draw_h,
+                al_map_rgb(255, 0, 0), 1
+            );
         }
     }
 }

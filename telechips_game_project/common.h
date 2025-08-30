@@ -58,6 +58,9 @@ void keyboard_update(ALLEGRO_EVENT* event);
 //======================================================
 #define PLAYER_W 80
 #define PLAYER_H 80
+/*
+#define PLAYER_W 50
+#define PLAYER_H 100
 
 #define PLAYER_SHOT_W 90
 #define PLAYER_SHOT_H 60
@@ -76,6 +79,39 @@ extern const int ENEMY_H[];
 
 #define ENEMY_SHOT_W 4
 #define ENEMY_SHOT_H 4
+*/
+extern const int PLAYER_SHOT_W[2];
+extern const int PLAYER_SHOT_H[2];
+extern int PLAYER_SHOT_WIDTH;
+extern int PLAYER_SHOT_HEIGHT;
+
+#define PLAYER_SHOT_1_W PLAYER_SHOT_W[0];
+#define PLAYER_SHOT_1_H PLAYER_SHOT_H[0];
+#define PLAYER_SHOT_2_W PLAYER_SHOT_W[1];
+#define PLAYER_SHOT_2_H PLAYER_SHOT_H[1];
+
+
+extern const int ENEMY_W[];
+extern const int ENEMY_H[];
+
+#define ENEMY_1_W ENEMY_W[0]
+#define ENEMY_1_H ENEMY_H[0]
+#define ENEMY_2_W ENEMY_W[1]
+#define ENEMY_2_H ENEMY_H[1]
+#define BOSS_1_W ENEMY_W[2]
+#define BOSS_1_H ENEMY_H[2]
+#define BOSS_2_W ENEMY_W[3]
+#define BOSS_2_H ENEMY_H[3]
+
+extern const int ENEMY_SHOT_W[];
+extern const int ENEMY_SHOT_H[];
+extern int ENEMY_SHOT_WIDTH;
+extern int ENEMY_SHOT_HEIGHT;
+
+#define ENEMY_SHOT_1_W ENEMY_SHOT_W[0]
+#define ENEMY_SHOT_1_H ENEMY_SHOT_H[0]
+#define ENEMY_SHOT_2_W ENEMY_SHOT_W[1]
+#define ENEMY_SHOT_2_H ENEMY_SHOT_H[1]
 
 typedef struct SPRITES
 {
@@ -89,7 +125,7 @@ typedef struct SPRITES
     ALLEGRO_BITMAP* player_shot[2][2]; // [0: 직업1, 1: 직업2][0: 일반, 1: 스킬1]
 
     ALLEGRO_BITMAP* enemy[4];
-    ALLEGRO_BITMAP* enemy_shot[2];
+    ALLEGRO_BITMAP* enemy_shot[3];
 } SPRITES;
 SPRITES sprites;
 
