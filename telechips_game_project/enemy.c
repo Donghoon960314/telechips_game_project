@@ -344,6 +344,7 @@ void enemies_draw()
     for (int i = 0; i < ENEMIES_N; i++) {
         if (!enemies[i].used) continue;
 
+        /*
         // 적 HP 표시
         char hp_text[16];
         sprintf(hp_text, "%d", enemies[i].hp);
@@ -355,6 +356,40 @@ void enemies_draw()
             ALLEGRO_ALIGN_CENTER,
             hp_text
         );
+        */
+
+        int bar_width = 80;   // 체력바 너비
+        int bar_height = 8;   // 체력바 높이
+        int bar_x = enemies[i].x + 40;           // 적의 x 좌표
+        int bar_y = enemies[i].y - 15;      // 적의 y 좌표 위쪽
+
+        int max_hp = 0;
+
+        switch (enemies[i].type)  //체력 비율 맞출라면 필요함
+        {
+        case ENEMY_TYPE_1: max_hp = 2 * hp_mult[game_difficulty - 1]; break;
+        case ENEMY_TYPE_2: max_hp = 4 * hp_mult[game_difficulty - 1]; break;
+        case BOSS_TYPE_1:  max_hp = 20 * hp_mult[game_difficulty - 1]; break;
+        case BOSS_TYPE_2:  max_hp = 20 * hp_mult[game_difficulty - 1]; break;
+        }
+
+        float hp_ratio = (float)enemies[i].hp / (float)max_hp;
+        if (hp_ratio < 0) hp_ratio = 0;
+\
+        // 배경 (회색)
+        al_draw_filled_rectangle(bar_x, bar_y,
+            bar_x + bar_width, bar_y + bar_height,
+            al_map_rgb(80, 80, 80));
+
+        // 현재 체력 (빨강)
+        al_draw_filled_rectangle(bar_x, bar_y,
+            bar_x + (bar_width * hp_ratio), bar_y + bar_height,
+            al_map_rgb(255, 0, 0));
+
+        // 테두리 (흰색)
+        al_draw_rectangle(bar_x, bar_y,
+            bar_x + bar_width, bar_y + bar_height,
+            al_map_rgb(255, 255, 255), 1);
 
         if (enemies[i].blink > 2) continue;
 

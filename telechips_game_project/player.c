@@ -215,6 +215,7 @@ void player_draw()
     if (player.hp <= 0)
         return;
 
+    /*
     // 플레이어 HP 표시
     char hp_text[16];
     sprintf(hp_text, "%d", player.hp);
@@ -226,6 +227,31 @@ void player_draw()
         ALLEGRO_ALIGN_CENTER,
         hp_text
     );
+    */
+    //여기 나중에 실행되는거 보고 위치 옮겨서 맞춰야 할 듯
+    int bar_width = 100;   // 전체 체력바 너비
+    int bar_height = 10;   // 체력바 높이
+    int bar_x = player.x + 40;  // 체력바 위치 X
+    int bar_y = player.y - 20; // 캐릭터 위쪽
+
+    // 현재 체력 비율
+    float hp_ratio = (float)player.hp / 50.0f; // 최대 HP=50 기준
+    if (hp_ratio < 0) hp_ratio = 0;
+
+    // 체력바 배경 (회색)
+    al_draw_filled_rectangle(bar_x, bar_y,
+        bar_x + bar_width, bar_y + bar_height,
+        al_map_rgb(80, 80, 80));
+
+    // 현재 체력 (초록색)
+    al_draw_filled_rectangle(bar_x, bar_y,
+        bar_x + (bar_width * hp_ratio), bar_y + bar_height,
+        al_map_rgb(0, 255, 0));
+
+    // 테두리 (흰색)
+    al_draw_rectangle(bar_x, bar_y,
+        bar_x + bar_width, bar_y + bar_height,
+        al_map_rgb(255, 255, 255), 2);
 
     // 무적 깜빡임 효과 처리
     if (player.invincible_timer > 0)
