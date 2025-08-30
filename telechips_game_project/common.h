@@ -105,6 +105,12 @@ void sprites_deinit();
 //======================================================
 ALLEGRO_SAMPLE* sample_normal_shot; // 일반 공격
 ALLEGRO_SAMPLE* sample_strong_shot; // 강한 공격
+ALLEGRO_SAMPLE* sample_ENEMY1; //몬스터1 공격
+ALLEGRO_SAMPLE* sample_BOSS1; 
+ALLEGRO_SAMPLE* sample_BOSS2; //단소살인마 공격
+
+ALLEGRO_AUDIO_STREAM* bgm_stream;
+
 
 void audio_init();
 void audio_deinit();
@@ -228,7 +234,9 @@ typedef enum {
     ATTACK_SKILL_1, // 플레이어 스킬1
 
     ATTACK_ENEMY, // 일반몹 공격
-    ATTACK_BOSS // 보스몹 공격
+    ATTACK_BOSS1, // 보스몹 공격
+    ATTACK_BOSS2
+
 } ATTACK_TYPE;
 
 typedef struct SHOT

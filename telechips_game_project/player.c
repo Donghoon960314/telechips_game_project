@@ -33,15 +33,15 @@ void player_init()
     // 직업 선택에 따라 능력치 다르게 설정
     if (player.job == JOB_TYPE_1) // JOB_TYPE_1 → 공격력 강함, 공격속도/이동속도 느림
     {
-        player.hp = 80; // 체력
+        player.hp = 50; // 체력
         player.speed = PLAYER_SPEED >> 1; // 이동 속도
 
         player.power_normal = 3; // 일반 공격 공격력
         player.power_skill_1 = 6; // 스킬 1 공격력
         //player.power_skill_2 = 6; // 스킬 2 공격력
 
-        player.normal_shot_cooldown = 60; // 일반 공격 쿨타임
-        player.skill_1_cooldown = 120; // 스킬 1 쿨타임
+        player.normal_shot_cooldown = 5; // 일반 공격 쿨타임
+        player.skill_1_cooldown = 5; // 스킬 1 쿨타임
         //player.skill_2_cooldown = 120; // 스킬 2 쿨타임
          
         player.normal_shot_timer = 0;

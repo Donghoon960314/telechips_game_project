@@ -15,3 +15,15 @@ mma 0 30
 qq 0 55
 qow 0 35
 sds 0 36
+asa 0 21
+zz 0 27
+dd 0 21
+saas 0 32
+asa 0 24
+asda 0 25
+asda' 0 24
+sdas 0 20
+asd 0 26
+as 0 29
+a 0 21
+sdf 0 28
