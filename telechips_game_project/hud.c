@@ -37,7 +37,7 @@ void hud_draw()
 
     // 공격 쿨타임 표시
     float normal_cd = player.normal_shot_timer / 60.0f;
-    float strong_cd = player.strong_shot_timer / 60.0f;
+    float strong_cd = player.skill_1_timer/ 60.0f;
 
     char normal_text[32];
     char strong_text[32];

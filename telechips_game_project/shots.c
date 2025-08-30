@@ -13,9 +13,11 @@ void shots_init() {
         shots[i].used = false;
 }
 
-bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int power) {
+bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int power, ATTACK_TYPE attack_type)
+{
     // 강한 공격(플레이어)
-    if (player && power >= 4) {
+    if (player && power >= 4)
+    {
         al_play_sample(
             sample_strong_shot,
             0.8,
@@ -25,7 +27,8 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
             NULL
         );
     }
-    else {
+    else
+    {
         // 일반 공격(플레이어/적)
         al_play_sample(
             sample_normal_shot,
@@ -37,20 +40,25 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
         );
     }
 
-    for (int i = 0; i < SHOTS_N; i++) {
+    for (int i = 0; i < SHOTS_N; i++)
+    {
         // 빈 슬롯 찾기
         if (shots[i].used) continue;
 
         // 누가 쏜 총알인지 저장
         shots[i].player = player;
+        shots[i].attack_type = attack_type; // 공격 타입 저장
+        shots[i].power = power;
 
         // 플레이어 총알이면 위치 설정
-        if (player) {
+        if (player)
+        {
             shots[i].x = x + (PLAYER_W / 2) - (PLAYER_SHOT_W / 2);
             shots[i].y = y + (PLAYER_H / 2) + (PLAYER_SHOT_H / 2);
 
             // 플레이어 방향 저장
-            switch (dir) {
+            switch (dir)
+            {
             case DIR_UP:    shots[i].dir = SHOT_UP; break;
             case DIR_DOWN:  shots[i].dir = SHOT_DOWN; break;
             case DIR_LEFT:  shots[i].dir = SHOT_LEFT; break;
@@ -68,26 +76,27 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
             {
                 // dir 기준으로 좌/우 직선 사격
                 int spd = 2;
-                switch (dir) {
+                switch (dir)
+                {
                 case DIR_LEFT:
                     shots[i].dx = -spd;
                     shots[i].dy = 0;
-                    shots[i].dir = SHOT_LEFT;
+                    shots[i].dir = (SHOT_DIR)SHOT_LEFT;
                     break;
                 case DIR_RIGHT:
                     shots[i].dx = spd;
                     shots[i].dy = 0;
-                    shots[i].dir = SHOT_RIGHT;
+                    shots[i].dir = (SHOT_DIR)SHOT_RIGHT;
                     break;
                 case DIR_UP:
                     shots[i].dx = 0;
                     shots[i].dy = -spd;
-                    shots[i].dir = SHOT_UP;
+                    shots[i].dir = (SHOT_DIR)SHOT_UP;
                     break;
                 case DIR_DOWN:
                     shots[i].dx = 0;
                     shots[i].dy = spd;
-                    shots[i].dir = SHOT_DOWN;
+                    shots[i].dir = (SHOT_DIR)SHOT_DOWN;
                     break;
                 }
             }
@@ -163,34 +172,80 @@ void shots_update() {
     }
 }
 
-int shots_collide(bool player, int x, int y, int w, int h) {
+int shots_collide(bool is_player, int x, int y, int w, int h) {
     for (int i = 0; i < SHOTS_N; i++) {
         // 총알 사용 여부 확인
         if (!shots[i].used) continue;
 
         // 자기 자신의 총알은 제외
-        if (shots[i].player == player) continue;
+        if (shots[i].player == is_player) continue;
 
         // 총알 크기 설정
         int sw, sh;
-        if (player) {
-            sw = ENEMY_SHOT_W;
-            sh = ENEMY_SHOT_H;
+        if(shots[i].player)
+        {
+            // 플레이어 총알 크기 = 스프라이트 크기 × 깊이 스케일
+            ALLEGRO_BITMAP* bmp = NULL;
+            JOB_TYPE job = player.job;
+            if (shots[i].attack_type == ATTACK_NORMAL) {
+                bmp = sprites.player_shot[job][0];
+            }
+            else if (shots[i].attack_type == ATTACK_SKILL_1) {
+                bmp = sprites.player_shot[job][1];
+            }
+
+            if (bmp) {
+                // 깊이 스케일 계산
+                float t = (float)(shots[i].y - 110) / (PLAYER_MAX_Y - 110);
+                if (t < 0) t = 0; if (t > 1) t = 1;
+                float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
+
+                sw = (int)(al_get_bitmap_width(bmp) * scale);
+                sh = (int)(al_get_bitmap_height(bmp) * scale);
+            }
+            else {
+                sw = PLAYER_SHOT_W;
+                sh = PLAYER_SHOT_H;
+            }
         }
         else {
-            sw = PLAYER_SHOT_W;
-            sh = PLAYER_SHOT_H;
+            // 적 총알 크기 = 스프라이트 크기 × 깊이 스케일
+            ALLEGRO_BITMAP* bmp = NULL;
+            if (shots[i].attack_type == ATTACK_BOSS) {
+                bmp = sprites.enemy_shot[1];
+            }
+            else {
+                bmp = sprites.enemy_shot[0];
+            }
+
+            if (bmp) {
+                float t = (float)(shots[i].y - 110) / (PLAYER_MAX_Y - 110);
+                if (t < 0) t = 0; if (t > 1) t = 1;
+                float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
+
+                sw = (int)(al_get_bitmap_width(bmp) * scale);
+                sh = (int)(al_get_bitmap_height(bmp) * scale);
+            }
+            else {
+                sw = ENEMY_SHOT_W;
+                sh = ENEMY_SHOT_H;
+            }
         }
 
+        int hitbox_h = sh / 1.5;                         
+        int hitbox_y = shots[i].y + sh - hitbox_h; 
+
         // 충돌 체크
-        if (collide(x, y, x + w, y + h, shots[i].x, shots[i].y, shots[i].x + sw, shots[i].y + sh))
+        if (collide(x, y, x + w, y + h,
+            shots[i].x, hitbox_y,
+            shots[i].x + sw, hitbox_y + hitbox_h))
         {
-            int damage = shots[i].power; // 공격력 저장
+            int damage = shots[i].power;
             shots[i].used = false;
-            return damage; // 맞으면 공격력 반환
+            return damage;
         }
     }
-    return 0; // 충돌 없으면 0 반환
+    return 0;
 }
 
 void shots_draw() {
@@ -202,30 +257,33 @@ void shots_draw() {
 
         // 플레이어 총알
         if (shots[i].player) {
-
-            ALLEGRO_BITMAP* bmp;
-
             float t = (float)(shots[i].y - 110) / (PLAYER_MAX_Y - 110);
             if (t < 0) t = 0;
             if (t > 1) t = 1;
             float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
-            if (shots[i].power >= 4) {
-                bmp = sprites.player_shot[1]; // 강공격(Z키)
+            
+            ALLEGRO_BITMAP* bmp = NULL;
+            JOB_TYPE job = player.job;  // 현재 플레이어 직업
+            if (shots[i].attack_type == ATTACK_NORMAL) 
+            {
+                bmp = sprites.player_shot[job][0]; // 직업별 일반공격
             }
-            else {
-                bmp = sprites.player_shot[0]; // 일반(X키)
+            else if (shots[i].attack_type == ATTACK_SKILL_1)
+            {
+                bmp = sprites.player_shot[job][1]; // 직업별 스킬1
             }
+
             float scale_x = scale;
             float scale_y = scale;
             float angle = 0.0f;
-            switch (shots[i].dir) {
+
+            switch (shots[i].dir)
+            {
             case DIR_UP:    angle = 0.0f;               break;
             case DIR_DOWN:  angle = ALLEGRO_PI;         break;
             case DIR_LEFT:  scale_x = -scale; angle = 0.0f;    break;
             //case DIR_RIGHT: angle = ALLEGRO_PI * 0.5f;  break;
             }
-
-            
 
             float cx = al_get_bitmap_width(bmp) / 2.0f;
             float cy = al_get_bitmap_height(bmp) / 2.0f;
@@ -244,6 +302,14 @@ void shots_draw() {
         else
         {
             ALLEGRO_BITMAP* bmp = sprites.enemy_shot;
+
+            // 적 타입마다 총알 구분
+            if (shots[i].power >= 10) {
+                bmp = sprites.enemy_shot[1]; // 보스 총알
+            }
+            else {
+                bmp = sprites.enemy_shot[0]; // 일반 몹 총알
+            }
 
             // 깜빡임용 틴트
             ALLEGRO_COLOR tint = frame_display
