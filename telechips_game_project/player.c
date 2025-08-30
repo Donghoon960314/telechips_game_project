@@ -16,7 +16,10 @@ void player_init()
     player.y = (BUFFER_H / 2) - (PLAYER_H / 2);
     player.normal_shot_timer = 0;
     player.strong_shot_timer = 0;
-    player.hp = 60;
+
+    //player.hp = 60;
+
+    player.hp = 40;
     player.invincible_timer = 120; // 무적 시간
     player.last_dir = DIR_RIGHT; // 초기 총알 방향
     player.attack_anim_timer = 0; // 공격 모션 타이머
@@ -165,36 +168,30 @@ void player_draw()
         bmp = sprites.player;
     }
 
-    // 원본 이미지 크기 계산
-    int src_w = al_get_bitmap_width(bmp);
-    int src_h = al_get_bitmap_height(bmp);
-
-    // 가로/세로 비율로 각각 스케일 계산
-    float base_scale_x = (float)PLAYER_W / src_w;
-    float base_scale_y = (float)PLAYER_H / src_h;
+    int w = PLAYER_W;
+    int h = PLAYER_H;
 
     // 깊이감 스케일 적용
-    float final_scale_x = base_scale_x * depth_scale;
-    float final_scale_y = base_scale_y * depth_scale;
+    float final_scale_x = w * depth_scale;
+    float final_scale_y = h * depth_scale;
 
     // 좌/우 방향 반전
     if (player.last_dir == DIR_LEFT) {
         al_draw_scaled_bitmap(
             bmp,
-            0, 0, src_w, src_h,
-            player.x + src_w * final_scale_x,
-            player.y,
-            -src_w * final_scale_x, src_h * final_scale_y,
+            0, 0, w, h,
+            player.x + final_scale_x, player.y,
+            -final_scale_x, final_scale_y,
             0
         );
     }
     else {
         al_draw_scaled_bitmap(
             bmp,
-            0, 0, src_w, src_h,
+            0, 0, w, h,
             player.x,
             player.y,
-            src_w * final_scale_x, src_h * final_scale_y,
+            final_scale_x, final_scale_y,
             0
         );
     }

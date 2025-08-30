@@ -80,12 +80,6 @@
     <Image Include="stage3_new_new.PNG">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="monster01.jpg">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="monster02.jpg">
-      <Filter>리소스 파일</Filter>
-    </Image>
     <Image Include="shot1.png">
       <Filter>리소스 파일</Filter>
     </Image>
@@ -101,6 +95,14 @@
     <Image Include="player.png">
       <Filter>리소스 파일</Filter>
     </Image>
+
+    <Image Include="monster01.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="monster02.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+
     <Image Include="player1.png">
       <Filter>리소스 파일</Filter>
     </Image>
@@ -120,9 +122,14 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="stage2.PNG">
+
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="stage3.PNG">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    
+    <Image Include="boss01.png">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

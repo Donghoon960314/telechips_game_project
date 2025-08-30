@@ -1,10 +1,14 @@
-a 0 20
-asda 0 23
-asd 0 26
-asda 0 22
-sdfs 0 22
-sdfsd 0 25
-good 0 22
-test 0 29
-park 1 10
-sdf 0 49
+kim 0 9
+asdsd 0 9
+wef 0 9
+asdq 0 9
+kim hyuck 0 16
+kim 0 13
+park 0 15
+jk 0 14
+ dfsd  0 33
+LEE 0 14
+DFASF 0 13
+ 0 39
+sadfsdaf 0 27
+dong 0 44

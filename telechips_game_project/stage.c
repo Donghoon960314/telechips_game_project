@@ -21,7 +21,7 @@ typedef struct IMAGES
 }IMAGES;
 IMAGES images;
 
-void stage_image_pop_init() //mainÇÔ¼ö ¹İº¹¹® µ¹±âÀü¿¡ bitamp¿¡ ÀúÀåµÎ´Â ÇÔ¼ö
+void stage_image_pop_init() //mainí•¨ìˆ˜ ë°˜ë³µë¬¸ ëŒê¸°ì „ì— bitampì— ì €ì¥ë‘ëŠ” í•¨ìˆ˜
 {
     //stage_font(0);
     //stage_num_for++;
@@ -31,14 +31,14 @@ void stage_image_pop_init() //mainÇÔ¼ö ¹İº¹¹® µ¹±âÀü¿¡ bitamp¿¡ ÀúÀåµÎ´Â ÇÔ¼ö
     images.stage[2] = al_load_bitmap("stage3.PNG");
 
 }
-void stage_image_pop_deinit() //³ªÁß¿¡ ÀúÀåµÈ ºñÆ®¸ÊÀ» ¾ø¾ÖÁÜ
+void stage_image_pop_deinit() //ë‚˜ì¤‘ì— ì €ì¥ëœ ë¹„íŠ¸ë§µì„ ì—†ì• ì¤Œ
 {
     al_destroy_bitmap(images.stage[0]);
     al_destroy_bitmap(images.stage[1]);
     al_destroy_bitmap(images.stage[2]);
 }
 
-//º¸½º°¡ Á×¾ú´ÂÁö Ã¼Å©ÇÏ´Â ÇÔ¼ö
+//ë³´ìŠ¤ê°€ ì£½ì—ˆëŠ”ì§€ ì²´í¬í•˜ëŠ” í•¨ìˆ˜
 bool boss_check_live(void)
 {
     for (int i = 0; i < ENEMIES_N; i++) {
@@ -49,9 +49,9 @@ bool boss_check_live(void)
     return false;
 }
 
-bool check_monster_die(void) // ¸ó½ºÅÍ 5¸¶¸®°¡ ÀüºÎ Á×¾ú´ÂÁö Ã¼Å©ÇÏ´Â ÇÔ¼ö
-//2´Ü°è 3´Ü°è stage¿¡¸¸ º¸½º¸ó½ºÅÍ¸¦ ÃâÇö½ÃÅ°±â À§ÇÑ ·ÎÁ÷
-//stage 1¿¡¼­´Â true¸¦ returnÇÏ°í stage2,3´Ü°è¿¡ ¸ó½ºÅÍ¿Í º¸½º°¡ ¸ğµÎ Á×¾ú´ÂÁö Ã¼Å©ÇÑ´Ù.
+bool check_monster_die(void) // ëª¬ìŠ¤í„° 5ë§ˆë¦¬ê°€ ì „ë¶€ ì£½ì—ˆëŠ”ì§€ ì²´í¬í•˜ëŠ” í•¨ìˆ˜
+//2ë‹¨ê³„ 3ë‹¨ê³„ stageì—ë§Œ ë³´ìŠ¤ëª¬ìŠ¤í„°ë¥¼ ì¶œí˜„ì‹œí‚¤ê¸° ìœ„í•œ ë¡œì§
+//stage 1ì—ì„œëŠ” trueë¥¼ returní•˜ê³  stage2,3ë‹¨ê³„ì— ëª¬ìŠ¤í„°ì™€ ë³´ìŠ¤ê°€ ëª¨ë‘ ì£½ì—ˆëŠ”ì§€ ì²´í¬í•œë‹¤.
 {
     int check_num = 0;
 
@@ -64,11 +64,14 @@ bool check_monster_die(void) // ¸ó½ºÅÍ 5¸¶¸®°¡ ÀüºÎ Á×¾ú´ÂÁö Ã¼Å©ÇÏ´Â ÇÔ¼ö
         else {
             return (boss_spawned && !boss_check_live());
         }
+
+        
+
     }
     return false;
 }
 
-void stage_font(int stage_num_for) //°¢ stage°¡ ½ÃÀÛµÇ±âÀü¿¡ stage ÆùÆ® ¶ç¿öÁÖ´Â ÇÔ¼ö
+void stage_font(int stage_num_for) //ê° stageê°€ ì‹œì‘ë˜ê¸°ì „ì— stage í°íŠ¸ ë„ì›Œì£¼ëŠ” í•¨ìˆ˜
 {
 
     if (stage_num_for < 3)
@@ -94,7 +97,7 @@ void stage_font(int stage_num_for) //°¢ stage°¡ ½ÃÀÛµÇ±âÀü¿¡ stage ÆùÆ® ¶ç¿öÁÖ´Â
     }
 }
 
-void stage_player_var(void) //½ºÅ×ÀÌÁö°¡ ¹Ù²ğ¶§¸¶´Ù º¯È­ÇÏ´Â º¯¼öµé ¸ğÀ½
+void stage_player_var(void) //ìŠ¤í…Œì´ì§€ê°€ ë°”ë€”ë•Œë§ˆë‹¤ ë³€í™”í•˜ëŠ” ë³€ìˆ˜ë“¤ ëª¨ìŒ
 {
     player.x = 10;
     player.y = 10;
@@ -108,27 +111,27 @@ int stage_reset(void)
 {
     
     if (restarted) {
-        restarted = false;   // ÇÑ ¹ø¸¸ Àû¿ë
+        restarted = false;   // í•œ ë²ˆë§Œ ì ìš©
         delay = 0;
         boss_spawn_timer = -1;
         boss_spawned = false;
 
-        // stage_num / stage_num_for¸¦ ÃÊ±âÈ­ÇÑ »óÅÂÀÌ¹Ç·Î
+        // stage_num / stage_num_forë¥¼ ì´ˆê¸°í™”í•œ ìƒíƒœì´ë¯€ë¡œ
         printf("Restart detected, back to Stage %d\n", stage_num);
 
         return stage_num_for;
     }
     
 
-    if (delay > 0) {       // ¸ó½ºÅÍÀÇ HP°¡ 0ÀÌµÇ¸é ¸ó½ºÅÍ°¡ ¾ÆÁ÷ ±×·ÁÁøÃ¤·Î ºü¸£°Ô ´ÙÀ½ ½ºÅ×ÀÌÁö·Î ³Ñ¾î°¡´ÂºÎºĞÀ»
-                           // ÀÚ¿¬½º·´°Ô ³Ñ¾î°¡±â À§ÇÑ ÄÚµåÀÓ.
+    if (delay > 0) {       // ëª¬ìŠ¤í„°ì˜ HPê°€ 0ì´ë˜ë©´ ëª¬ìŠ¤í„°ê°€ ì•„ì§ ê·¸ë ¤ì§„ì±„ë¡œ ë¹ ë¥´ê²Œ ë‹¤ìŒ ìŠ¤í…Œì´ì§€ë¡œ ë„˜ì–´ê°€ëŠ”ë¶€ë¶„ì„
+                           // ìì—°ìŠ¤ëŸ½ê²Œ ë„˜ì–´ê°€ê¸° ìœ„í•œ ì½”ë“œì„.
         delay--;
         if (delay == 0) {
             stage_font(stage_num_for);
 
-            // Àü¿ªº¯¼ö·Î delay¸¦ ¼³Á¤ÇÏ°í ÇØ´ç µô·¹ÀÌ µ¿¾È main¹®ÀÇ while ·çÇÁ¸¦ °è¼Ó µ¹¸é¼­ ¸ó½ºÅÍ°¡ ¾ø¾îÁö°í
-            //´ÙÀ½ ½ºÅ×ÀÌÁö·Î ³Ñ¾Æ°¡±â À§ÇÑ Àá±ñÀÇ ´ë±â½Ã°£À» ÁÖ±âÀ§ÇÑ ÄÚµå
-            //delay°¡ 0À¸·Î ¼¼ÆÃµÇ¸é ´ÙÀ½ stage·Î ³Ñ¾î°¨
+            // ì „ì—­ë³€ìˆ˜ë¡œ delayë¥¼ ì„¤ì •í•˜ê³  í•´ë‹¹ ë”œë ˆì´ ë™ì•ˆ mainë¬¸ì˜ while ë£¨í”„ë¥¼ ê³„ì† ëŒë©´ì„œ ëª¬ìŠ¤í„°ê°€ ì—†ì–´ì§€ê³ 
+            //ë‹¤ìŒ ìŠ¤í…Œì´ì§€ë¡œ ë„˜ì•„ê°€ê¸° ìœ„í•œ ì ê¹ì˜ ëŒ€ê¸°ì‹œê°„ì„ ì£¼ê¸°ìœ„í•œ ì½”ë“œ
+            //delayê°€ 0ìœ¼ë¡œ ì„¸íŒ…ë˜ë©´ ë‹¤ìŒ stageë¡œ ë„˜ì–´ê°
             boss_spawn_timer = -1;
             boss_spawned = false;
 
@@ -144,7 +147,7 @@ int stage_reset(void)
     }
     else if (check_monster_die() == true) { 
         delay = 60;
-        //¸ó½ºÅÍ°¡ ¸ğµÎ Á×À¸¸é ´ÙÀ½ stage·Î ³Ñ¾î°¡±â À§ÇØ delay = 60À¸·Î ¼¼ÆÃ
+        //ëª¬ìŠ¤í„°ê°€ ëª¨ë‘ ì£½ìœ¼ë©´ ë‹¤ìŒ stageë¡œ ë„˜ì–´ê°€ê¸° ìœ„í•´ delay = 60ìœ¼ë¡œ ì„¸íŒ…
     }
 
     return stage_num_for;
@@ -160,8 +163,8 @@ int stage_reset(void)
             boss_spawned = false;
 
             printf("monster all die\n");
-            stage_player_var();   // ¿©±â¼­ stage_num_for += 1
-            stage_font(stage_num_for);  // ÇöÀç stage ¹è³Ê Ãâ·Â
+            stage_player_var();   // ì—¬ê¸°ì„œ stage_num_for += 1
+            stage_font(stage_num_for);  // í˜„ì¬ stage ë°°ë„ˆ ì¶œë ¥
 
             printf("start stage %d\n", stage_num_for);
 
