@@ -38,7 +38,7 @@ void sprites_init()
 
 
     sprites.enemy_shot[0] = sprite_grab(13, 10, ENEMY_SHOT_W, ENEMY_SHOT_H); // 일반 몹
-    sprites.enemy_shot[0] = sprite_grab(13, 10, ENEMY_SHOT_W, ENEMY_SHOT_H); // 보스 몹
+    sprites.enemy_shot[1] = sprite_grab(13, 10, ENEMY_SHOT_W, ENEMY_SHOT_H); // 보스 몹
 
     // 배경 이미지
     subway_background = al_load_bitmap("subway_background.jpg"); 

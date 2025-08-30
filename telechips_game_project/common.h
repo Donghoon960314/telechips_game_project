@@ -56,8 +56,8 @@ void keyboard_update(ALLEGRO_EVENT* event);
 //======================================================
 //                      SPRITES
 //======================================================
-#define PLAYER_W 50
-#define PLAYER_H 100
+#define PLAYER_W 80
+#define PLAYER_H 80
 
 #define PLAYER_SHOT_W 90
 #define PLAYER_SHOT_H 60
@@ -88,7 +88,7 @@ typedef struct SPRITES
 
     ALLEGRO_BITMAP* player_shot[2][2]; // [0: 직업1, 1: 직업2][0: 일반, 1: 스킬1]
 
-    ALLEGRO_BITMAP* enemy[2];
+    ALLEGRO_BITMAP* enemy[4];
     ALLEGRO_BITMAP* enemy_shot[2];
 } SPRITES;
 SPRITES sprites;
