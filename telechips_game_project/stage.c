@@ -169,6 +169,7 @@ int stage_reset(void)
 
             printf("start stage %d\n", stage_num_for);
 
+            items_init();
             enemies_init();
             shots_init();
             stage_num += 1;

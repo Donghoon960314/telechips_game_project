@@ -255,15 +255,6 @@ void shots_draw() {
 
         int frame_display = (shots[i].frame / 2) % 2;
 
-        // ==============================
-        //        히트박스 계산용
-        // ==============================
-        int sw = 0, sh = 0;
-        int hitbox_h = 0, hitbox_y = 0;
-        // ==============================
-        //        히트박스 계산용
-        // ==============================
-
         // 플레이어 총알
         if (shots[i].player) {
             float t = (float)(shots[i].y - 110) / (PLAYER_MAX_Y - 110);
@@ -281,21 +272,6 @@ void shots_draw() {
             {
                 bmp = sprites.player_shot[job][1]; // 직업별 스킬1
             }
-
-            // ==============================
-            //        히트박스 계산용
-            // ==============================
-            if (bmp) {
-                sw = (int)(al_get_bitmap_width(bmp) * scale);
-                sh = (int)(al_get_bitmap_height(bmp) * scale);
-            }
-            else {
-                sw = PLAYER_SHOT_W;
-                sh = PLAYER_SHOT_H;
-            }
-            // ==============================
-            //        히트박스 계산용
-            // ==============================
 
             float scale_x = scale;
             float scale_y = scale;
@@ -354,15 +330,6 @@ void shots_draw() {
             if (t < 0) t = 0; else if (t > 1) t = 1;
             float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
 
-            // ==============================
-            //        히트박스 계산용
-            // ==============================
-            sw = (int)(al_get_bitmap_width(bmp) * scale);
-            sh = (int)(al_get_bitmap_height(bmp) * scale);
-            // ==============================
-            //        히트박스 계산용
-            // ==============================
-
             // 중심 좌표
             float cx = al_get_bitmap_width(bmp) / 2.0f;
             float cy = al_get_bitmap_height(bmp) / 2.0f;
@@ -379,24 +346,5 @@ void shots_draw() {
                 0 // 플래그
             );
         }
-
-        // ==============================
-        //         히트박스 표시
-        // ==============================
-        hitbox_h = sh / 1.5f;
-        hitbox_y = shots[i].y + sh - hitbox_h;
-
-        al_draw_rectangle(
-            shots[i].x,
-            hitbox_y,
-            shots[i].x + sw,
-            hitbox_y + hitbox_h,
-            al_map_rgb(255, 0, 0),
-            1
-        );
-        // ==============================
-        //         히트박스 표시
-        // ==============================
-
     }
 }

@@ -145,6 +145,7 @@ typedef struct PLAYER
 {
     int x, y; // 위치 좌표
     int hp; // HP
+    int max_hp; // 최대 HP
     int speed; // 이동 속도
     int power_normal; // 일반 공격 공격력
     int power_skill_1; // 스킬1 공격력
@@ -159,6 +160,9 @@ typedef struct PLAYER
 
     int invincible_timer; // 무적 상태 시간
     int attack_anim_timer; // 공격 모션 유지 시간
+
+    bool atk_speed_buff; // 공격속도 증가 활성화 여부
+    int atk_speed_buff_timer; // 남은 버프 시간
 
     DIRECTION last_dir; // 마지막 이동 방향
     JOB_TYPE job; // 직업
@@ -255,8 +259,25 @@ void shots_draw();
 //======================================================
 //                      ITEM
 //======================================================
+typedef enum {
+    ITEM_HEAL, // 체력 회복
+    ITEM_ATK_SPEED // 공격 속도 증가
+} ITEM_TYPE;
 
+typedef struct ITEM {
+    int x, y; // 아이템 위치
+    ITEM_TYPE type; // 아이템 종류
+    bool used; // 현재 화면에 존재하는지
+} ITEM;
 
+#define ITEMS_N 3
+ITEM items[ITEMS_N];
+
+int item_spawn_timer;
+
+void items_init();
+void items_update();
+void items_draw();
 
 //======================================================
 //                      HUD

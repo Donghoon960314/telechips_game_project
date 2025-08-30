@@ -308,21 +308,6 @@ void enemies_draw()
         float draw_w = w * scale;
         float draw_h = h * scale;
 
-        // ============================
-        //        히트박스 표시
-        // ============================
-        al_draw_rectangle(
-            enemies[i].x,
-            enemies[i].y,
-            enemies[i].x + draw_w,
-            enemies[i].y + draw_h,
-            al_map_rgb(255, 0, 0),
-            2
-        );
-        // ============================
-        //        히트박스 표시
-        // ============================
-
         //보스 출력
         if (enemies[i].type == BOSS_TYPE_1) {
             // 보스 및 플레이어 중심 좌표 계산

@@ -42,6 +42,7 @@ int main() {
     shots_init(); // 총알 초기화
     player_init(); // 플레이어 초기화
     enemies_init(); // 적 초기화
+    items_init(); // 아이템 초기화
     stage_image_pop_init();
 
     // 게임 상태 초기화
@@ -80,6 +81,7 @@ int main() {
             shots_update();     // 총알 업데이트
             player_update();      // 플레이어 업데이트
             enemies_update();    // 적 업데이트
+            items_update(); // 아이템 업데이트
             update_shake(); // 배경 흔들림 업데이트
             
             // 매 프레임마다 시간 감소
@@ -137,6 +139,7 @@ int main() {
                 shots_init();
                 player_init();
                 enemies_init();
+                items_init();
 
                 stage_font(stage_num_for);
 
@@ -174,6 +177,7 @@ int main() {
 
             enemies_draw(); // 적
             shots_draw();   // 총알
+            items_draw(); // 아이템
             player_draw(); // 플레이어
             hud_draw(); // HUD
             

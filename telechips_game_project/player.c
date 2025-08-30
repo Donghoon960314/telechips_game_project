@@ -10,7 +10,7 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-JOB_TYPE job_type = JOB_TYPE_1;
+JOB_TYPE job_type = JOB_TYPE_2;
 
 void player_init()
 {
@@ -34,6 +34,7 @@ void player_init()
     if (player.job == JOB_TYPE_1) // JOB_TYPE_1 → 공격력 강함, 공격속도/이동속도 느림
     {
         player.hp = 80; // 체력
+        player.max_hp = 80; // 최대 체력
         player.speed = PLAYER_SPEED >> 1; // 이동 속도
 
         player.power_normal = 3; // 일반 공격 공격력
@@ -52,6 +53,7 @@ void player_init()
     else if (player.job == JOB_TYPE_2) // JOB_TYPE_2 → 공격력 약함, 공격속도/이동속도 빠름
     {
         player.hp = 50;
+        player.max_hp = 50;
         player.speed = PLAYER_SPEED;
 
         player.power_normal = 1;

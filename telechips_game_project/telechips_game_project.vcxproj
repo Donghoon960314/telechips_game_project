@@ -138,6 +138,7 @@
     <ClCompile Include="enemy.c" />
     <ClCompile Include="general.c" />
     <ClCompile Include="hud.c" />
+    <ClCompile Include="items.c" />
     <ClCompile Include="keyboard.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="player.c" />
