@@ -192,7 +192,7 @@ typedef struct {
 // 프롤로그 상태 초기값
 PROLOGUE_STATE ps;
 
-static void set_pro_job(void);
+void set_pro_job(void);
 void prologue_display(ALLEGRO_BITMAP* bitmap);
 void load_slides(void);
 

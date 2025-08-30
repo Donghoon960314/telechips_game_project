@@ -352,18 +352,20 @@ int main() {
     }
 
     /* 함수 마무리 선언(타이머, 폰트, 디스플레이, 이벤트 큐)*/
-    al_destroy_timer(timer);
+    /*al_destroy_timer(timer);
     al_destroy_font(font);
-    
+    disp_deinit();
     al_destroy_bitmap(bitmap);
-    al_destroy_event_queue(queue);
+    al_destroy_event_queue(queue);*/
 
     sprites_deinit();
     hud_deinit();
     audio_deinit();
+    al_destroy_font(font);
     disp_deinit();
-    
-    
+    al_destroy_bitmap(bitmap);
+    al_destroy_timer(timer);
+    al_destroy_event_queue(queue);
     stage_image_pop_deinit();
 
     return 0;
