@@ -27,14 +27,14 @@ int main() {
     ALLEGRO_FONT* font = al_create_builtin_font();
     must_init(font, "builtin font");
 
+    ALLEGRO_BITMAP* bitmap = al_load_bitmap("start_display.png");
+    must_init(bitmap, "bitmap");
+
     disp_init(); // 화면 초기화
     audio_init(); // 오디오 초기화
 
     must_init(al_init_image_addon(), "image"); // 이미지 관련 추가 모듈 초기화
     sprites_init(); // 스프라이트(캐릭터, 아이템 등) 초기화
-
-    ALLEGRO_BITMAP* bitmap = al_load_bitmap("start_display.png");
-    must_init(bitmap, "bitmap");
 
     hud_init(); // 점수, 목숨 표시 등 HUD 초기화
     // 프롤로그 슬라이드 생성하기
