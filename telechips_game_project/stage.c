@@ -46,7 +46,6 @@ bool check_monster_die(void) // 몬스터 5마리가 전부 죽었는지 체크하는 함수
     {
         return true;
     }
-    return false;
 }
 
 void stage_font(int stage_num_for) //각 stage가 시작되기전에 stage 폰트 띄워주는 함수

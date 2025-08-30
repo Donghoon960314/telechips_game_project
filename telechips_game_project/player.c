@@ -10,7 +10,7 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-JOB_TYPE job_type = JOB_TYPE_1;
+JOB_TYPE job_type = JOB_TYPE_2;
 
 void player_init()
 {
@@ -33,7 +33,7 @@ void player_init()
         player.normal_shot_cooldown = 60; // 일반 공격 쿨타임
         player.skill_1_cooldown = 120; // 스킬 1 쿨타임
         //player.skill_2_cooldown = 120; // 스킬 2 쿨타임
-
+         
         player.normal_shot_timer = 0;
         player.skill_1_timer = 0;
         //player.skill_2_timer = 0;
@@ -225,11 +225,11 @@ void player_draw()
     }
 
     // 2.5D 구현
-    DEPTH_MIN_SCALE = 1.0f; 
-    DEPTH_MAX_SCALE = 2.5f;  
+    DEPTH_MIN_SCALE = 1.5f; 
+    DEPTH_MAX_SCALE = 3.0f;  
 
     // y = 110일 때 min_scale, y = PLAYER_MAX_Y일 때 max_scale
-    float t = (float)(player.y - 110) / (PLAYER_MAX_Y - 110);
+    float t = (float)(player.y - PLAYER_MIN_Y) / (PLAYER_MAX_Y - PLAYER_MIN_Y);
     if (t < 0) t = 0;
     if (t > 1) t = 1;
     float depth_scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);

@@ -11,8 +11,8 @@
 #include "common.h"
 
 
-const int ENEMY_W[] = { 9, 12, 20};
-const int ENEMY_H[] = { 14, 15, 15 };
+const int ENEMY_W[] = { 50, 50, 50 };
+const int ENEMY_H[] = { 50, 50, 50 };
 
 int hp_mult[] = { 1, 2, 3 };   // 하 = 1, 중 = 2, 상 = 3
 float speed_mult[] = { 1.0f, 1.25f, 1.5f }; // 속도 배율
@@ -74,11 +74,11 @@ void enemies_update()
         {
             if (spawn_enabled && new_quota > 0)
             {
-                // x좌표 배치 : 출현 quota 개수에 따라 오른쪽에서 간격을 두고 배치
+                // x좌표 배치
                 enemies[i].x = start_x - (new_quota - 1) * gap;
 
-                // y좌표 배치 : 110 이상, 화면 높이의 75% 지점 이하에서 랜덤
-                enemies[i].y = between(120, 0.75 * (BUFFER_H - ENEMY_H[0]));
+                // y좌표 배치
+                enemies[i].y = between(PLAYER_MIN_Y, PLAYER_MAX_Y - ENEMY_H[enemies[i].type]);
 
                 // 타입은 일반 몬스터 중에서만 선택
                 enemies[i].type = between(ENEMY_TYPE_1, ENEMY_TYPE_2 + 1);
@@ -114,7 +114,7 @@ void enemies_update()
                 enemies[i].y += enemies[i].vy;
 
                 // y축 경계에서 반전
-                if (enemies[i].y < 120 || enemies[i].y > 0.75 * (BUFFER_H - ENEMY_H[1]))
+                if (enemies[i].y < PLAYER_MIN_Y || enemies[i].y > PLAYER_MAX_Y - ENEMY_H[enemies[i].type])
                     enemies[i].vy *= -1;
 
                 // x축 경계에서 반전
@@ -153,8 +153,8 @@ void enemies_update()
 
                 if (enemies[i].x < 0) enemies[i].x = 0;
                 if (enemies[i].x > BUFFER_W - boss_w) enemies[i].x = BUFFER_W - boss_w;
-                if (enemies[i].y < 110) enemies[i].y = 110;
-                if (enemies[i].y > BUFFER_H - boss_h) enemies[i].y = BUFFER_H - boss_h;
+                if (enemies[i].y < PLAYER_MIN_Y) enemies[i].y = PLAYER_MIN_Y;
+                if (enemies[i].y > PLAYER_MAX_Y - boss_h) enemies[i].y = PLAYER_MAX_Y - boss_h;
             }
             break;
         }
@@ -169,7 +169,7 @@ void enemies_update()
         int h = ENEMY_H[enemies[i].type];
 
         // 깊이 스케일 계산 (2.5D 효과)
-        float t = (float)(enemies[i].y - 110) / (PLAYER_MAX_Y - 110);
+        float t = (float)(enemies[i].y - PLAYER_MIN_Y) / (PLAYER_MAX_Y - PLAYER_MIN_Y);
         if (t < 0) t = 0; if (t > 1) t = 1;
         float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
 
@@ -247,7 +247,7 @@ void enemies_update()
             for (int i = 0; i < ENEMIES_N; i++) {
                 if (!enemies[i].used) {
                     enemies[i].x = BUFFER_W / 2 - ENEMY_W[BOSS_TYPE_1] / 2;
-                    enemies[i].y = 120; // 화면 위쪽 중앙
+                    enemies[i].y = PLAYER_MIN_Y; // 화면 위쪽 중앙
                     enemies[i].type = BOSS_TYPE_1;
                     enemies[i].used = true;
 
@@ -283,7 +283,7 @@ void enemies_draw()
         if (enemies[i].blink > 2) continue;
 
         // 깊이 스케일 계산 (2.5D 효과)
-        float t = (float)(enemies[i].y - 110) / (PLAYER_MAX_Y - 110);
+        float t = (float)(enemies[i].y - PLAYER_MIN_Y) / (PLAYER_MAX_Y - PLAYER_MIN_Y);
         if (t < 0) t = 0; if (t > 1) t = 1;
         float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
 

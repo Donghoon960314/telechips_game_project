@@ -1,9 +1,13 @@
 #pragma once
-// main
+//======================================================
+//                       MAIN
+//======================================================
 int time_limit;
 int time_left;
 
-// general
+//======================================================
+//                      GENERAL
+//======================================================
 long frames;
 long score;
 
@@ -35,7 +39,9 @@ void disp_deinit();
 void disp_pre_draw();
 void disp_post_draw();
 
-// keyboard
+//======================================================
+//                     KEYBOARD
+//======================================================
 #define KEY_SEEN 1 // 현재 프레임에서 눌렸는지 확인, 다음 프레임에선 무조건 비트 해제 (0b00000001)
 #define KEY_DOWN 2 // 키를 계속 누르고 있는지, 누르고 있다면 다음 프레임까지 비트 유지 (0b00000010)
 
@@ -87,14 +93,18 @@ ALLEGRO_BITMAP* subway_floor;   // 지하철 바닥 이미지
 void sprites_init();
 void sprites_deinit();
 
-// audio
+//======================================================
+//                       AUDIO
+//======================================================
 ALLEGRO_SAMPLE* sample_normal_shot; // 일반 공격
 ALLEGRO_SAMPLE* sample_strong_shot; // 강한 공격
 
 void audio_init();
 void audio_deinit();
 
-//collide
+//======================================================
+//                      COLLIDE
+//======================================================
 int enemies_collide(bool player, int x, int y, int w, int h);
 
 //======================================================
@@ -106,7 +116,7 @@ float DEPTH_MAX_SCALE;
 #define PLAYER_SPEED 10
 #define PLAYER_MAX_X (BUFFER_W - PLAYER_W)
 #define PLAYER_MIN_Y (BUFFER_H * 0.34)
-#define PLAYER_MAX_Y (BUFFER_H - PLAYER_H) * 0.74
+#define PLAYER_MAX_Y ((BUFFER_H - PLAYER_H) * 0.74)
 
 // 플레이어 이동 방향
 typedef enum DIRECTION {
@@ -151,7 +161,9 @@ void player_init();
 void player_update();
 void player_draw();
 
-// enemy
+//======================================================
+//                      ENEMY
+//======================================================
 typedef enum ENEMY_TYPE
 {
     ENEMY_TYPE_1 = 0, // 일반 몹(1)
@@ -231,7 +243,9 @@ void shots_update();
 int shots_collide(bool player, int x, int y, int w, int h);
 void shots_draw();
 
-// hud
+//======================================================
+//                      HUD
+//======================================================
 ALLEGRO_FONT* font; // HUD용 폰트
 long score_display; // 화면에 표시할 점수
 
@@ -239,7 +253,9 @@ void hud_init();
 void hud_draw();
 void hud_deinit();
 
-// background
+//======================================================
+//                   BACKGROUND
+//======================================================
 void draw_background();
 void draw_floor();
 void draw_horizon_lines();

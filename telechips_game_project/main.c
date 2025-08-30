@@ -75,11 +75,13 @@ int main() {
             enemies_update();    // 적 업데이트
             
             // 매 프레임마다 시간 감소
-            if (frames % 60 == 0 && time_left > 0) {
+            if (frames % 60 == 0 && time_left > 0)
+            {
                 time_left--;
             }
             // 시간 지나면 게임 오버 
-            if (time_left <= 0) {
+            if (time_left <= 0)
+            {
                 player.hp = 0;
             }
 
