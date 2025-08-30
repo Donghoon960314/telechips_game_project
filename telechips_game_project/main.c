@@ -7,6 +7,8 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
 #include "common.h"
+bool restarted = false;
+
 
 int main() {
     must_init(al_init(), "allegro"); // Allegro 라이브러리 초기화
@@ -49,14 +51,19 @@ int main() {
     time_limit = 120; // 초기 시간
     time_left = time_limit; // 남은 시간
 
+    //랭킹 입력 하이라이트 부분에서 참조할 변수
+    char player_name[32];
+    int min, sec;
+
     bool done = false; // 게임 종료 여부
     bool redraw = true; // 화면 다시 그릴지 여부
+
     ALLEGRO_EVENT event;
 
     // 타이머 시작 -> 매 1/60초마다 ALLEGRO_EVENT_TIMER 이벤트 발생
     al_start_timer(timer);
 
-    stage_font(start_stage_image);
+    stage_font(0);
     while (1)
     {
         // 이벤트 대기
@@ -87,9 +94,12 @@ int main() {
 
             if (stage_reset() > 3)
             {
-                rank_name_open(al_get_timer_count(timer));
+                //rank_name_open(al_get_timer_count(timer));
+                //print_ranking_table(rank_name_open(al_get_timer_count(timer)));
+                rank_name_open(al_get_timer_count(timer), player_name, &min, &sec);
+                print_ranking_table(player_name, min, sec);
                 done = true;
-
+                    
             }
 
             if (frames > 120) {   // 첫 120프레임 동안만 소환 허용
@@ -111,13 +121,18 @@ int main() {
                 boss_spawned = false;
                 boss_spawn_timer = 0;
 
+                boss_spawn_timer = -1;   // 대기 타이머도 리셋
+                delay = 0;    // 스테이지 전환 대기 카운터 리셋
+
+                stage_num = 1;    // 논리 스테이지 1로
+                stage_num_for = 0;    // 배너/이미지 인덱스도 0(STAGE1)로
                 shots_init();
                 player_init();
                 enemies_init();
 
+                stage_font(stage_num_for);
+
                 // 다시 스테이지 1로 시작
-                start_stage_image = 0;
-                stage_font(start_stage_image);
             }
 
             redraw = true; // 화면 다시 그리기 플래그

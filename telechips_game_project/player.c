@@ -16,7 +16,7 @@ void player_init()
     player.y = (BUFFER_H / 2) - (PLAYER_H / 2);
     player.normal_shot_timer = 0;
     player.strong_shot_timer = 0;
-    player.hp = 20;
+    player.hp = 60;
     player.invincible_timer = 120; // 무적 시간
     player.last_dir = DIR_RIGHT; // 초기 총알 방향
     player.attack_anim_timer = 0; // 공격 모션 타이머
@@ -99,7 +99,7 @@ void player_update()
     }
     else if (key[ALLEGRO_KEY_X]) {
         if (shots_add(true, true, player.x, player.y, player.last_dir, 1)) {
-            player.normal_shot_timer = 30; // 일반 공격 쿨타임
+            player.normal_shot_timer = 5; // 일반 공격 쿨타임
             player.attack_anim_timer = 18; // 공격 모션 유지 시간
         }
     }
@@ -110,7 +110,7 @@ void player_update()
     }
     else if (key[ALLEGRO_KEY_Z]) {
         if (shots_add(true, true, player.x, player.y, player.last_dir, 4)) {
-            player.strong_shot_timer = 120; // 강공격 쿨타임
+            player.strong_shot_timer = 5; // 강공격 쿨타임
             player.attack_anim_timer = 18; // 공격 모션 유지 시간
         }
     }
