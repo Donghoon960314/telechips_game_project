@@ -19,7 +19,7 @@ void player_init()
 
     //player.hp = 60;
 
-    player.hp = 40;
+    player.hp = 70;
     player.invincible_timer = 120; // 무적 시간
     player.last_dir = DIR_RIGHT; // 초기 총알 방향
     player.attack_anim_timer = 0; // 공격 모션 타이머

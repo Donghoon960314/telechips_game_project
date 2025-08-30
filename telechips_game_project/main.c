@@ -126,6 +126,11 @@ int main() {
 
                 stage_num = 1;    // 논리 스테이지 1로
                 stage_num_for = 0;    // 배너/이미지 인덱스도 0(STAGE1)로
+
+                al_stop_timer(timer);               
+                al_set_timer_count(timer, 0);       
+                al_start_timer(timer);              
+
                 shots_init();
                 player_init();
                 enemies_init();
