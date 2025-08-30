@@ -31,8 +31,11 @@ void sprites_init()
     sprites.player_shot[JOB_TYPE_2][0] = al_load_bitmap("player2_shot1.png");
     sprites.player_shot[JOB_TYPE_2][1] = al_load_bitmap("player2_shot2.png");
 
-    sprites.enemy[0] = al_load_bitmap("monster01.jpg");
-    sprites.enemy[1] = al_load_bitmap("monster02.jpg");
+    sprites.enemy[0] = al_load_bitmap("monster01.png");
+    sprites.enemy[1] = al_load_bitmap("monster02.png");
+    sprites.enemy[2] = al_load_bitmap("boss01.png");
+    sprites.enemy[3] = al_load_bitmap("boss02.png");
+
 
     sprites.enemy_shot[0] = sprite_grab(13, 10, ENEMY_SHOT_W, ENEMY_SHOT_H); // ÀÏ¹Ý ¸÷
     sprites.enemy_shot[0] = sprite_grab(13, 10, ENEMY_SHOT_W, ENEMY_SHOT_H); // º¸½º ¸÷

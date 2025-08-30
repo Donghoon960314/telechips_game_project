@@ -141,7 +141,7 @@
     <ClCompile Include="keyboard.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="player.c" />
-    <ClCompile Include="Rank.c" />
+    <ClCompile Include="Rank._list.c" />
     <ClCompile Include="Ranking_input.c" />
     <ClCompile Include="shots.c" />
     <ClCompile Include="sprites.c" />
@@ -152,6 +152,9 @@
     <None Include="shot.flac" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="boss01.png" />
+    <Image Include="monster01.png" />
+    <Image Include="monster02.png" />
     <Image Include="player.png" />
     <Image Include="player1.png" />
     <Image Include="player2.png" />
@@ -168,8 +171,6 @@
     <Image Include="stage2_new_new.PNG" />
     <Image Include="stage3.PNG" />
     <Image Include="stage3_new_new.PNG" />
-    <Image Include="monster01.jpg" />
-    <Image Include="monster02.jpg" />
     <Image Include="shot1.png" />
     <Image Include="shot2.png" />
     <Image Include="subway_background.jpg" />

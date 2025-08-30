@@ -10,6 +10,10 @@ int time_left;
 //======================================================
 long frames;
 long score;
+extern stage_num_for;
+extern stage_num;
+extern delay;
+extern bool restarted;
 
 typedef enum {
     DIFF_EASY = 1, // 하 (×1)
@@ -27,9 +31,8 @@ bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int 
 #define BUFFER_W 1600
 #define BUFFER_H 900
 
-#define DISP_SCALE 1
-#define DISP_W (BUFFER_W * DISP_SCALE)
-#define DISP_H (BUFFER_H * DISP_SCALE)
+#define DISP_W BUFFER_W
+#define DISP_H BUFFER_H
 
 ALLEGRO_DISPLAY* disp;
 ALLEGRO_BITMAP* buffer;
@@ -56,8 +59,8 @@ void keyboard_update(ALLEGRO_EVENT* event);
 #define PLAYER_W 50
 #define PLAYER_H 100
 
-#define PLAYER_SHOT_W 8
-#define PLAYER_SHOT_H 15
+#define PLAYER_SHOT_W 90
+#define PLAYER_SHOT_H 60
 
 extern const int ENEMY_W[];
 extern const int ENEMY_H[];
@@ -66,6 +69,10 @@ extern const int ENEMY_H[];
 #define ENEMY_1_H ENEMY_H[0]
 #define ENEMY_2_W ENEMY_W[1]
 #define ENEMY_2_H ENEMY_H[1]
+#define BOSS_1_W ENEMY_W[2]
+#define BOSS_1_H ENEMY_H[2]
+#define BOSS_2_W ENEMY_W[3]
+#define BOSS_2_H ENEMY_H[3]
 
 #define ENEMY_SHOT_W 4
 #define ENEMY_SHOT_H 4
@@ -115,8 +122,8 @@ float DEPTH_MAX_SCALE;
 
 #define PLAYER_SPEED 10
 #define PLAYER_MAX_X (BUFFER_W - PLAYER_W)
-#define PLAYER_MIN_Y (BUFFER_H * 0.34)
-#define PLAYER_MAX_Y ((BUFFER_H - PLAYER_H) * 0.74)
+#define PLAYER_MIN_Y (BUFFER_H * 0.4)
+#define PLAYER_MAX_Y (BUFFER_H - PLAYER_H) * 0.78
 
 // 플레이어 이동 방향
 typedef enum DIRECTION {
@@ -169,6 +176,7 @@ typedef enum ENEMY_TYPE
     ENEMY_TYPE_1 = 0, // 일반 몹(1)
     ENEMY_TYPE_2, // 일반 몹(2)
     BOSS_TYPE_1, // 보스 몹(1)
+    BOSS_TYPE_2,
     ENEMY_TYPE_N // 몹 종류 개수
 } ENEMY_TYPE;
 

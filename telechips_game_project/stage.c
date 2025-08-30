@@ -8,8 +8,10 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-int stage_num_for = 1;
-int Monster_num = 2;
+int stage_num_for = 0;  
+int stage_num = 1;
+int delay = 0;
+
 bool monster_all_die = false;
 
 typedef struct IMAGES
@@ -19,24 +21,37 @@ typedef struct IMAGES
 }IMAGES;
 IMAGES images;
 
-void stage_image_pop_init() //mainÇÔ¼ö ¹İº¹¹® µ¹±âÀü¿¡ bitamp¿¡ ÀúÀåµÎ´Â ÇÔ¼ö
+void stage_image_pop_init() //mainí•¨ìˆ˜ ë°˜ë³µë¬¸ ëŒê¸°ì „ì— bitampì— ì €ì¥ë‘ëŠ” í•¨ìˆ˜
 {
     //stage_font(0);
     //stage_num_for++;
 
-    images.stage[0] = al_load_bitmap("stage2_new_new.PNG");
-    images.stage[1] = al_load_bitmap("stage1_new_new.PNG");
-    images.stage[2] = al_load_bitmap("stage3_new_new.PNG");
+    images.stage[0] = al_load_bitmap("stage1.PNG");
+    images.stage[1] = al_load_bitmap("stage2.PNG");
+    images.stage[2] = al_load_bitmap("stage3.PNG");
 
 }
-void stage_image_pop_deinit() //³ªÁß¿¡ ÀúÀåµÈ ºñÆ®¸ÊÀ» ¾ø¾ÖÁÜ
+void stage_image_pop_deinit() //ë‚˜ì¤‘ì— ì €ì¥ëœ ë¹„íŠ¸ë§µì„ ì—†ì• ì¤Œ
 {
     al_destroy_bitmap(images.stage[0]);
     al_destroy_bitmap(images.stage[1]);
     al_destroy_bitmap(images.stage[2]);
 }
 
-bool check_monster_die(void) // ¸ó½ºÅÍ 5¸¶¸®°¡ ÀüºÎ Á×¾ú´ÂÁö Ã¼Å©ÇÏ´Â ÇÔ¼ö
+//ë³´ìŠ¤ê°€ ì£½ì—ˆëŠ”ì§€ ì²´í¬í•˜ëŠ” í•¨ìˆ˜
+bool boss_check_live(void)
+{
+    for (int i = 0; i < ENEMIES_N; i++) {
+        if (enemies[i].used && enemies[i].type == BOSS_TYPE_1) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool check_monster_die(void) // ëª¬ìŠ¤í„° 5ë§ˆë¦¬ê°€ ì „ë¶€ ì£½ì—ˆëŠ”ì§€ ì²´í¬í•˜ëŠ” í•¨ìˆ˜
+//2ë‹¨ê³„ 3ë‹¨ê³„ stageì—ë§Œ ë³´ìŠ¤ëª¬ìŠ¤í„°ë¥¼ ì¶œí˜„ì‹œí‚¤ê¸° ìœ„í•œ ë¡œì§
+//stage 1ì—ì„œëŠ” trueë¥¼ returní•˜ê³  stage2,3ë‹¨ê³„ì— ëª¬ìŠ¤í„°ì™€ ë³´ìŠ¤ê°€ ëª¨ë‘ ì£½ì—ˆëŠ”ì§€ ì²´í¬í•œë‹¤.
 {
     int check_num = 0;
 
@@ -44,15 +59,23 @@ bool check_monster_die(void) // ¸ó½ºÅÍ 5¸¶¸®°¡ ÀüºÎ Á×¾ú´ÂÁö Ã¼Å©ÇÏ´Â ÇÔ¼ö
         if (enemies[i].used == false) check_num += 1;
     if (check_num == 5)
     {
-        return true;
+        if (stage_num == 1)
+            return true;
+        else {
+            return (boss_spawned && !boss_check_live());
+        }
+
+        
+
     }
+    return false;
 }
 
-void stage_font(int stage_num_for) //°¢ stage°¡ ½ÃÀÛµÇ±âÀü¿¡ stage ÆùÆ® ¶ç¿öÁÖ´Â ÇÔ¼ö
+void stage_font(int stage_num_for) //ê° stageê°€ ì‹œì‘ë˜ê¸°ì „ì— stage í°íŠ¸ ë„ì›Œì£¼ëŠ” í•¨ìˆ˜
 {
+
     if (stage_num_for < 3)
     {
-       
         ALLEGRO_BITMAP* bmp = images.stage[stage_num_for];
         int w = al_get_bitmap_width(bmp);
         int h = al_get_bitmap_height(bmp);
@@ -74,7 +97,7 @@ void stage_font(int stage_num_for) //°¢ stage°¡ ½ÃÀÛµÇ±âÀü¿¡ stage ÆùÆ® ¶ç¿öÁÖ´Â
     }
 }
 
-void stage_player_var(void) //½ºÅ×ÀÌÁö°¡ ¹Ù²ğ¶§¸¶´Ù º¯È­ÇÏ´Â º¯¼öµé ¸ğÀ½
+void stage_player_var(void) //ìŠ¤í…Œì´ì§€ê°€ ë°”ë€”ë•Œë§ˆë‹¤ ë³€í™”í•˜ëŠ” ë³€ìˆ˜ë“¤ ëª¨ìŒ
 {
     player.x = 10;
     player.y = 10;
@@ -83,16 +106,76 @@ void stage_player_var(void) //½ºÅ×ÀÌÁö°¡ ¹Ù²ğ¶§¸¶´Ù º¯È­ÇÏ´Â º¯¼öµé ¸ğÀ½
     spawn_enabled = true;
 }
 
-
+/*
 int stage_reset(void)
 {
-    if (check_monster_die() == true)
-    {
-        printf("monster all die\n");
-        stage_font(stage_num_for);
-        stage_player_var();
-        printf("start stage %d\n", stage_num_for);
-        enemies_init();
+    
+    if (restarted) {
+        restarted = false;   // í•œ ë²ˆë§Œ ì ìš©
+        delay = 0;
+        boss_spawn_timer = -1;
+        boss_spawned = false;
+
+        // stage_num / stage_num_forë¥¼ ì´ˆê¸°í™”í•œ ìƒíƒœì´ë¯€ë¡œ
+        printf("Restart detected, back to Stage %d\n", stage_num);
+
+        return stage_num_for;
     }
+    
+
+    if (delay > 0) {       // ëª¬ìŠ¤í„°ì˜ HPê°€ 0ì´ë˜ë©´ ëª¬ìŠ¤í„°ê°€ ì•„ì§ ê·¸ë ¤ì§„ì±„ë¡œ ë¹ ë¥´ê²Œ ë‹¤ìŒ ìŠ¤í…Œì´ì§€ë¡œ ë„˜ì–´ê°€ëŠ”ë¶€ë¶„ì„
+                           // ìì—°ìŠ¤ëŸ½ê²Œ ë„˜ì–´ê°€ê¸° ìœ„í•œ ì½”ë“œì„.
+        delay--;
+        if (delay == 0) {
+            stage_font(stage_num_for);
+
+            // ì „ì—­ë³€ìˆ˜ë¡œ delayë¥¼ ì„¤ì •í•˜ê³  í•´ë‹¹ ë”œë ˆì´ ë™ì•ˆ mainë¬¸ì˜ while ë£¨í”„ë¥¼ ê³„ì† ëŒë©´ì„œ ëª¬ìŠ¤í„°ê°€ ì—†ì–´ì§€ê³ 
+            //ë‹¤ìŒ ìŠ¤í…Œì´ì§€ë¡œ ë„˜ì•„ê°€ê¸° ìœ„í•œ ì ê¹ì˜ ëŒ€ê¸°ì‹œê°„ì„ ì£¼ê¸°ìœ„í•œ ì½”ë“œ
+            //delayê°€ 0ìœ¼ë¡œ ì„¸íŒ…ë˜ë©´ ë‹¤ìŒ stageë¡œ ë„˜ì–´ê°
+            boss_spawn_timer = -1;
+            boss_spawned = false;
+
+            printf("monster all die\n");
+            //stage_font(stage_num_for);
+            stage_player_var();
+
+            printf("start stage %d\n", stage_num_for);
+
+            enemies_init();
+            stage_num += 1;
+        }
+    }
+    else if (check_monster_die() == true) { 
+        delay = 60;
+        //ëª¬ìŠ¤í„°ê°€ ëª¨ë‘ ì£½ìœ¼ë©´ ë‹¤ìŒ stageë¡œ ë„˜ì–´ê°€ê¸° ìœ„í•´ delay = 60ìœ¼ë¡œ ì„¸íŒ…
+    }
+
     return stage_num_for;
+}
+*/
+int stage_reset(void)
+{
+    if (delay > 0) {
+        delay--;
+        if (delay == 0) {
+
+            boss_spawn_timer = -1;
+            boss_spawned = false;
+
+            printf("monster all die\n");
+            stage_player_var();   // ì—¬ê¸°ì„œ stage_num_for += 1
+            stage_font(stage_num_for);  // í˜„ì¬ stage ë°°ë„ˆ ì¶œë ¥
+
+            printf("start stage %d\n", stage_num_for);
+
+            enemies_init();
+            stage_num += 1;
+        }
+    }
+    else if (check_monster_die() == true) {
+        delay = 60;
+    }
+    printf("stage:num : %d\n", stage_num);
+    printf("stage_num_for : %d\n", stage_num_for);
+    return stage_num;
 }
