@@ -66,10 +66,12 @@ typedef struct SPRITES
 {
     ALLEGRO_BITMAP* _sheet;
 
-    ALLEGRO_BITMAP* player;
-    ALLEGRO_BITMAP* player_attack;
-    ALLEGRO_BITMAP* player_shot[2];
+    ALLEGRO_BITMAP* player1;
+    ALLEGRO_BITMAP* player1_attack;
+    ALLEGRO_BITMAP* player2;
+    ALLEGRO_BITMAP* player2_attack;
 
+    ALLEGRO_BITMAP* player_shot[2];
     ALLEGRO_BITMAP* enemy[2];
     ALLEGRO_BITMAP* enemy_shot;
 } SPRITES;
@@ -108,15 +110,33 @@ typedef enum DIRECTION {
     DIR_RIGHT
 } DIRECTION;
 
+typedef enum { 
+    JOB_TYPE_1, 
+    JOB_TYPE_2
+} JOB_TYPE;
+JOB_TYPE job_type;
+
+
 typedef struct PLAYER
 {
-    int x, y; // 플레이어 위치 좌표
-    int normal_shot_timer; // 일반공격 딜레이 카운터
-    int strong_shot_timer; // 강공격 딜레이 카운터
-    int hp; // 플레이어 HP
-    int invincible_timer; // 무적 상태 타이머
+    int x, y; // 위치 좌표
+    int hp; // HP
+    int power_normal; // 일반 공격 공격력
+    int power_skill_1; // 스킬1 공격력
+    //int power_skill_2; // 스킬2 공격력
+
+    int normal_shot_timer; // 일반 공격 타이머
+    int normal_shot_cooldown; // 일반 공격 쿨타임 기준값
+    int skill_1_timer; // 스킬 1 타이머
+    int skill_1_cooldown; // 스킬 1 쿨타임 기준값
+    //int skill_2_timer; // 스킬 2 쿨타임
+    //int skill_2_cooldown; // 스킬 2 쿨타임 기준값
+
+    int invincible_timer; // 무적 상태 시간
+    int attack_anim_timer; // 공격 모션 유지 시간
+
     DIRECTION last_dir; // 마지막 이동 방향
-    int attack_anim_timer; // 공격 모션 유지 타이머
+    JOB_TYPE job; // 직업
 } PLAYER;
 PLAYER player;
 
@@ -134,8 +154,8 @@ typedef enum ENEMY_TYPE
 } ENEMY_TYPE;
 
 typedef enum {
-    BOSS_IDLE,     // 멈춰있는 상태
-    BOSS_CHASE     // 플레이어를 추적하는 상태
+    BOSS_IDLE, // 멈춰있는 상태
+    BOSS_CHASE // 플레이어를 추적하는 상태
 } BOSS_STATE;
 
 typedef struct ENEMY

@@ -10,16 +10,50 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
+JOB_TYPE job_type = JOB_TYPE_1;
+
 void player_init()
 {
-    player.x = (BUFFER_W / 2) - (PLAYER_W / 2);
-    player.y = (BUFFER_H / 2) - (PLAYER_H / 2);
-    player.normal_shot_timer = 0;
-    player.strong_shot_timer = 0;
-    player.hp = 20;
+    player.x = (BUFFER_W / 7) - (PLAYER_W / 7);
+    player.y = (BUFFER_H / 1.7) - (PLAYER_H / 1.7);
     player.invincible_timer = 120; // 무적 시간
     player.last_dir = DIR_RIGHT; // 초기 총알 방향
-    player.attack_anim_timer = 0; // 공격 모션 타이머
+
+    player.job = job_type;
+    // 직업 선택에 따라 능력치 다르게 설정
+    if (player.job == JOB_TYPE_1) // JOB_TYPE_1 → 공격력 강함, 공격속도/이동속도 느림
+    {
+        player.hp = 80; // 체력
+
+        player.power_normal = 3; // 일반 공격 공격력
+        player.power_skill_1 = 6; // 스킬 1 공격력
+        //player.power_skill_2 = 6; // 스킬 2 공격력
+
+        player.normal_shot_cooldown = 30; // 일반 공격 쿨타임
+        player.skill_1_cooldown = 120; // 스킬 1 쿨타임
+        //player.skill_2_cooldown = 120; // 스킬 2 쿨타임
+
+        player.normal_shot_timer = 0;
+        player.skill_1_timer = 0;
+        //player.skill_2_timer = 0;
+        player.attack_anim_timer = 0;
+    }
+    else if (player.job == JOB_TYPE_2) // JOB_TYPE_2 → 공격력 약함, 공격속도/이동속도 빠름
+    {
+        player.hp = 50;
+        player.power_normal = 1;
+        player.power_skill_1 = 3;
+        //player.power_skill_2 = 3; // 스킬 2 공격력
+
+        player.normal_shot_cooldown = 15; // 일반 공격 쿨타임
+        player.skill_1_cooldown = 60; // 스킬 1 쿨타임
+        //player.skill_2_cooldown = 120; // 스킬 2 쿨타임
+
+        player.normal_shot_timer = 0;
+        player.skill_1_timer = 0;
+        //player.skill_2_timer = 0;
+        player.attack_anim_timer = 0;
+    }
 }
 
 void player_update()
@@ -29,18 +63,22 @@ void player_update()
         return;
 
     // 키 입력에 따라 이동 처리 및 플레이어 이동 방향 저장
-    if (key[ALLEGRO_KEY_LEFT]) {
+    if (key[ALLEGRO_KEY_LEFT])
+    {
         player.x -= PLAYER_SPEED;
         player.last_dir = DIR_LEFT;
     }
-    if (key[ALLEGRO_KEY_RIGHT]) {
+    if (key[ALLEGRO_KEY_RIGHT])
+    {
         player.x += PLAYER_SPEED;
         player.last_dir = DIR_RIGHT;
     }
-    if (key[ALLEGRO_KEY_UP]) {
+    if (key[ALLEGRO_KEY_UP]) 
+    {
         player.y -= PLAYER_SPEED;
     }
-    if (key[ALLEGRO_KEY_DOWN]) {
+    if (key[ALLEGRO_KEY_DOWN]) 
+    {
         player.y += PLAYER_SPEED;
     }
 
@@ -61,61 +99,96 @@ void player_update()
     if (t > 1) t = 1;
     float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
 
-    // 실제 충돌 크기
+    // 실제 히트 박스 크기
     int scaled_w = PLAYER_W * scale;
     int scaled_h = PLAYER_H * scale;
 
     // 무적 상태 처리
-    if (player.invincible_timer > 0) {
+    if (player.invincible_timer > 0) // 무적 상태
+    {
         player.invincible_timer--;
     }
-    // 무적 상태가 아닌 경우
-    else {
+    else // 무적 상태 X
+    {
         // 플레이어 <-> 몹 충돌
         int enemy_index = enemies_collide(true, player.x, player.y, scaled_w, scaled_h);
-        if (enemy_index != -1) {
-            if (enemies[enemy_index].type == BOSS_TYPE_1)
-                player.hp -= 20; // 보스 충돌 → 20 깎음
-            else
-                player.hp -= 10; // 일반 몬스터 충돌 → 10 깎음
+        if (enemy_index != -1)
+        {
+            if (enemies[enemy_index].type == BOSS_TYPE_1) // 보스 충돌 → 20 깎음
+            {
+                player.hp -= 20;
+            }
+            else // 일반 몬스터 충돌 → 10 깎음
+            {
+                player.hp -= 10;
+            }
 
-            if (player.hp < 0) player.hp = 0;
-            player.invincible_timer = 120; // 2초 무적
+            if (player.hp < 0) // 체력 0 미만이면 0으로 처리
+            {
+                player.hp = 0;
+            }
+            player.invincible_timer = 120; // 충돌하면 2초 무적
         }
+
         // 플레이어 <-> 몹 총알 충돌
         int damage = shots_collide(true, player.x, player.y, scaled_w, scaled_h);
         if (damage > 0)
         {
             player.hp -= damage; // HP 감소
-            if (player.hp < 0) player.hp = 0;
-            player.invincible_timer = 120; // 2초 무적
+
+            if (player.hp < 0)
+            {
+                player.hp = 0;
+            }
+            player.invincible_timer = 120; // 총알 맞으면 2초 무적
         }
     }
 
-    // 총알 발사 처리
     // 일반 공격 (X키)
-    if (player.normal_shot_timer > 0) {
+    if (player.normal_shot_timer > 0)
+    {
         player.normal_shot_timer--;
     }
-    else if (key[ALLEGRO_KEY_X]) {
-        if (shots_add(true, true, player.x, player.y, player.last_dir, 1)) {
-            player.normal_shot_timer = 30; // 일반 공격 쿨타임
+    else if (key[ALLEGRO_KEY_X])
+    {
+        if (player.job == JOB_TYPE_1)
+        {
+            shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal);
+            player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
             player.attack_anim_timer = 18; // 공격 모션 유지 시간
+        }
+        else if (player.job == JOB_TYPE_2)
+        {
+            shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal);
+            player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
+            player.attack_anim_timer = 9; // 공격 모션 유지 시간
+
         }
     }
 
-    // 강한 공격 (Z키)
-    if (player.strong_shot_timer > 0) {
-        player.strong_shot_timer--;
+    // 스킬 1 (Z키)
+    if (player.skill_1_timer > 0)
+    {
+        player.skill_1_timer--;
     }
-    else if (key[ALLEGRO_KEY_Z]) {
-        if (shots_add(true, true, player.x, player.y, player.last_dir, 4)) {
-            player.strong_shot_timer = 120; // 강공격 쿨타임
-            player.attack_anim_timer = 18; // 공격 모션 유지 시간
+    else if (key[ALLEGRO_KEY_Z]) 
+    {
+        if (player.job == JOB_TYPE_1)
+            {
+                shots_add(true, true, player.x, player.y, player.last_dir, player.power_skill_1);
+                player.skill_1_timer = player.skill_1_cooldown;
+                player.attack_anim_timer = 18;
+            }
+        else if (player.job == JOB_TYPE_2)
+        {
+            shots_add(true, true, player.x, player.y, player.last_dir, player.power_skill_1);
+            player.skill_1_timer = player.skill_1_cooldown;
+            player.attack_anim_timer = 9;
         }
     }
-
-    if (player.attack_anim_timer > 0) {
+     // 공격 모션 유지 시간
+    if (player.attack_anim_timer > 0)
+    {
         player.attack_anim_timer--;
     }
 }
@@ -154,15 +227,35 @@ void player_draw()
     if (t > 1) t = 1;
     float depth_scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
     
-    // 평상시/공격 이미지 변경
-    ALLEGRO_BITMAP* bmp;
-    if (player.attack_anim_timer > 0) 
+    // 공격 모션 적용
+    ALLEGRO_BITMAP* bmp = NULL; // 초기화
+    if (player.job == JOB_TYPE_1)
     {
-        bmp = sprites.player_attack;
+        if (player.attack_anim_timer > 0)
+        {
+            bmp = sprites.player1_attack;
+        }
+        else
+        {
+            bmp = sprites.player1;
+        }
     }
-    else
+  
+    else if (player.job == JOB_TYPE_2)
     {
-        bmp = sprites.player;
+        if (player.attack_anim_timer > 0)
+        {
+            bmp = sprites.player1_attack;
+        }
+        else
+        {
+            bmp = sprites.player1;
+        }
+    }
+
+    if (bmp == NULL)
+    {
+        bmp = sprites.player1;
     }
 
     // 원본 이미지 크기 계산

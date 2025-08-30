@@ -20,8 +20,11 @@ void sprites_init()
     sprites._sheet = al_load_bitmap("spritesheet.png");
     must_init(sprites._sheet, "spritesheet");
 
-    sprites.player = al_load_bitmap("player.png");
-    sprites.player_attack = al_load_bitmap("player_attack.png");
+    sprites.player1 = al_load_bitmap("player.png");
+    sprites.player1_attack = al_load_bitmap("player_attack.png");
+
+    sprites.player2 = al_load_bitmap("player.png");
+    sprites.player2_attack = al_load_bitmap("player_attack.png");
 
     sprites.player_shot[0] = al_load_bitmap("shot1.png");
     sprites.player_shot[1] = al_load_bitmap("shot2.png");
@@ -38,8 +41,11 @@ void sprites_init()
 
 void sprites_deinit()
 {
-    al_destroy_bitmap(sprites.player);
-    al_destroy_bitmap(sprites.player_attack);
+    al_destroy_bitmap(sprites.player1);
+    al_destroy_bitmap(sprites.player1_attack);
+
+    al_destroy_bitmap(sprites.player2);
+    al_destroy_bitmap(sprites.player2_attack);
 
     al_destroy_bitmap(sprites.player_shot[0]);
     al_destroy_bitmap(sprites.player_shot[1]);
