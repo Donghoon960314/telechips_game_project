@@ -10,7 +10,7 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-JOB_TYPE job_type = JOB_TYPE_2;
+JOB_TYPE job_type = JOB_TYPE_1;
 
 void player_init()
 {
