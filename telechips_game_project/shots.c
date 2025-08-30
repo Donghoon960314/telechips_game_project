@@ -27,10 +27,10 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
         al_play_sample(sample_ENEMY1, 0.6, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         break;
     case ATTACK_BOSS1:
-        al_play_sample(sample_BOSS1, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        al_play_sample(sample_BOSS1, 0.5, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         break;
     case ATTACK_BOSS2:
-        al_play_sample(sample_BOSS2, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        al_play_sample(sample_BOSS2, 0.5, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         break;
     }
     /*
