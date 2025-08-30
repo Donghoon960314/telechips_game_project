@@ -1,28 +1,31 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <allegro5/allegro5.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
+#include <allegro5/allegro_image.h>
+#include <stdbool.h>
+#include <string.h>
+#include "common.h"
 /*
 - 게임 시작 화면 버튼 3개
 - 난이도에 따른 버튼 3개 구현 +
 - 배경 화면 넣기
 -
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
-#include <allegro5/allegro5.h>
-#include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_image.h>
-//#include "common.h"
 
-#if 01
+
+//#if 01
 
 /* --- general --- */
 
-long frames;
-long score;
+//long frames;
+//long score;
 
 // 알레그로 초기화 함수 작업 -> 해당 작업 변수가 없을 시 경고문
-static void must_init(bool test, const char* description)
+/*static void must_init(bool test, const char* description)
 {
     if (test) return;
     printf("couldn't initialize %s\n", description);
@@ -49,7 +52,7 @@ static bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx
 }
 
 /* --- display --- */
-
+/*
 #define BUFFER_W 1600
 #define BUFFER_H 900
 
@@ -92,51 +95,22 @@ void disp_post_draw(void)
         0, 0, DISP_W, DISP_H, 0);
     al_flip_display();
 }
-
+*/
 /*---  --- */
 
-/* --- Button --- */
-typedef struct {
-    float x;    // 왼쪽 X
-    float y;    // 위쪽 Y
-    float w;    // 폭
-    float h;    // 높이
 
-    char label1[20];
-    char label2[20]; // (unused)
-    bool hover;
-    bool active;    // 메인 화면 활성화 여부
-} Button;
-
-/* 버튼 4개 초기화
----  init  ---
-pos1 : START
-pos2 : BACK
-pos3 : GUIDE
-pos4 : RANKING
---- mode ---
-pos5 : easy
-pos6 : Normal
-pos7 : Hard
-
---- job ---
-pos8 : Danso
-pos9 : Zaruban
-*/
-
-Button pos1 = { BUFFER_W / 2, (BUFFER_H / 2) - 60 , 240, 100, "START", "", false, true };
-Button pos2 = { BUFFER_W / 2, (BUFFER_H / 2) + 200, 240, 100, "BACK" , "", false, false };
-Button pos3 = { BUFFER_W / 2, (BUFFER_H / 2) + 60, 240, 100, "GUIDE", "", false, true };
-Button pos4 = { BUFFER_W / 2, (BUFFER_H / 2) + 180, 240, 100, "RANKING", "", false, true };
-Button pos5 = { BUFFER_W / 2, (BUFFER_H / 2) - 60, 240, 100, "Easy", "", false, true };
-Button pos6 = { BUFFER_W / 2, (BUFFER_H / 2) + 60, 240, 100, "Normal", "", false, true };
-Button pos7 = { BUFFER_W / 2, (BUFFER_H / 2) + 250, 240, 100, "Hard", "", false, true };
-Button pos8 = { BUFFER_W / 2, (BUFFER_H / 2) , 240, 100, "DANSO", "", false, true };
-Button pos9 = { BUFFER_W / 2, (BUFFER_H / 2) + 120 , 240, 100, "ZARUBAN", "", false, true };
+pos1 = { BUFFER_W / 2, (BUFFER_H / 2) - 60 , 240, 100, "START", "", false, true };
+pos2 = { BUFFER_W / 2, (BUFFER_H / 2) + 200, 240, 100, "BACK" , "", false, false };
+pos3 = { BUFFER_W / 2, (BUFFER_H / 2) + 60, 240, 100, "GUIDE", "", false, true };
+pos4 = { BUFFER_W / 2, (BUFFER_H / 2) + 180, 240, 100, "RANKING", "", false, true };
+pos5 = { BUFFER_W / 2, (BUFFER_H / 2) - 60, 240, 100, "Easy", "", false, true };
+pos6 = { BUFFER_W / 2, (BUFFER_H / 2) + 60, 240, 100, "Normal", "", false, true };
+pos7 = { BUFFER_W / 2, (BUFFER_H / 2) + 250, 240, 100, "Hard", "", false, true };
+pos8 = { BUFFER_W / 2, (BUFFER_H / 2) , 240, 100, "DANSO", "", false, true };
+pos9 = { BUFFER_W / 2, (BUFFER_H / 2) + 120 , 240, 100, "ZARUBAN", "", false, true };
 
 
-Button* BUT_List[] = { &pos1, &pos2, &pos3, &pos4 ,&pos5, &pos6, &pos7, &pos8, &pos9 };
-#define BTN_COUNT   sizeof(BUT_List) / sizeof(BUT_List[0])
+BUT_List[] = { &pos1, &pos2, &pos3, &pos4 ,&pos5, &pos6, &pos7, &pos8, &pos9 };
 
 /* 히트 테스트는 항상 '버퍼 좌표계'로 비교해야 정확 */
 bool pt_in_rect(float px, float py, const Button* b) {
@@ -202,36 +176,14 @@ void Button_draw(const Button* pos, ALLEGRO_FONT* font)
 
 
 
-/* --- FIRST Game UI State  --- */
-typedef enum {
-    STATE_MENU = 10, // 첫 시작 화면
-    STATE_MODE = 11, // 난이도 화면
-    STATE_CHOICE = 12,// 직업 선택
-    STATE_RUNNING = 13   // 게임 시작 누를 때 실행
-} GameState;
 
-/* --- 게임 난이도에 따른 구조체 선언 ---*/
-
-typedef enum {
-    DIFF_EASY = 1,   // 하 (×1)
-    DIFF_NORMAL = 2, // 중 (×2)
-    DIFF_HARD = 3 // 상 (×3)
-}DIFFICULTY;
-DIFFICULTY game_difficulty;
 
 // 난이도에 따른 초기값 구현
 // 
 
 
-/* --- 직업에 대한 구조체 선언 --- */
-typedef enum {
-    JOB_None = 0,
-    JOB_DANSO = 8,
-    JOB_ZARUBAN = 9
-}JOB;
 
-JOB job = JOB_None;
-
+job = JOB_None;
 
 /* --- display menu ---  */
 void show_back_only(void)
@@ -256,24 +208,15 @@ void show_main_menu(void)
     pos2.active = false;    // 백 버튼 비활성화
 }
 
-
-/* --- Prologue ---*/
-#define PRO 14
-
-// 알레그로 비트맵 사진 리스트
-ALLEGRO_BITMAP* prologue_List[PRO] = { 0 };
-
-// 프롤로그 상태 구조체 선언
-typedef struct {
-    int curr;   // 현재 위치
-    int start;  // 시작 위치
-    int end;    // 끝 위치
-    bool blink; // 빈 화면의 유무
-}PROLOGUE_STATE;
+prologue_List[PRO] = { 0 };
 
 
-// 프롤로그 상태 초기값
-PROLOGUE_STATE ps = { 0,0,0,false };
+
+
+
+
+
+ps = { 0,0,0,false };
 
 // 직업에 따라 달라지는 프롤로그 설정 함수
 static void set_pro_job(void)
@@ -338,19 +281,6 @@ void load_slides(void)
 
 }
 
-// 프롤로그 비트맵 화면 삭제 함수
-
-void destroy_slides(void) {
-    for (int i = 0; i < PRO; ++i)
-    {
-        if (prologue_List[i])
-        {
-            al_destroy_bitmap(prologue_List[i]);
-            prologue_List[i] = NULL;
-        }
-    }
-}
-
 
 // 프롤로그 화면 순차적으로 넘기는 함수
 void next_slide()
@@ -368,8 +298,7 @@ void next_slide()
     }
 }
 
-
-
+#if 0
 /* --- main --- */
 int main(void)
 {

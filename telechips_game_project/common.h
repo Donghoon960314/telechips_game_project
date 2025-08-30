@@ -5,6 +5,8 @@
 int time_limit;
 int time_left;
 
+
+
 //======================================================
 //                      GENERAL
 //======================================================
@@ -99,6 +101,107 @@ ALLEGRO_BITMAP* subway_floor;   // 지하철 바닥 이미지
 
 void sprites_init();
 void sprites_deinit();
+
+//======================================================
+//                       FIRST_UI
+//======================================================
+/* --- Button --- */
+typedef struct {
+    float x;    // 왼쪽 X
+    float y;    // 위쪽 Y
+    float w;    // 폭
+    float h;    // 높이
+
+    char label1[20];
+    char label2[20]; // (unused)
+    bool hover;
+    bool active;    // 메인 화면 활성화 여부
+} Button;
+
+/* 버튼 4개 초기화
+---  init  ---
+pos1 : START
+pos2 : BACK
+pos3 : GUIDE
+pos4 : RANKING
+--- mode ---
+pos5 : easy
+pos6 : Normal
+pos7 : Hard
+
+--- job ---
+pos8 : Danso
+pos9 : Zaruban
+*/
+
+Button pos1;
+Button pos2;
+Button pos3;
+Button pos4;
+Button pos5;
+Button pos6;
+Button pos7;
+Button pos8;
+Button pos9;
+
+
+Button* BUT_List[];
+#define BTN_COUNT   sizeof(BUT_List) / sizeof(BUT_List[0])
+Button* hit_button(float bx, float by);
+void update_hover_all(float bx, float by);
+float to_buffer_x(float mx);
+float to_buffer_y(float my);
+void Button_draw(const Button* pos, ALLEGRO_FONT* font);
+
+/* --- FIRST Game UI State  --- */
+typedef enum {
+    STATE_MENU = 10, // 첫 시작 화면
+    STATE_MODE = 11, // 난이도 화면
+    STATE_CHOICE = 12,// 직업 선택
+    STATE_RUNNING = 13   // 게임 시작 누를 때 실행
+} GameState;
+
+
+/* --- 직업에 대한 구조체 선언 --- */
+typedef enum {
+    JOB_None = 0,
+    JOB_DANSO = 8,
+    JOB_ZARUBAN = 9
+}JOB;
+
+JOB job;
+
+void show_back_only(void);
+
+void show_main_menu(void);
+
+/* --- Prologue ---*/
+#define PRO 14
+
+// 알레그로 비트맵 사진 리스트
+ALLEGRO_BITMAP* prologue_List[PRO];
+
+// 프롤로그 상태 구조체 선언
+typedef struct {
+    int curr;   // 현재 위치
+    int start;  // 시작 위치
+    int end;    // 끝 위치
+    bool blink; // 빈 화면의 유무
+}PROLOGUE_STATE;
+
+// 프롤로그 상태 초기값
+PROLOGUE_STATE ps;
+
+static void set_pro_job(void);
+void prologue_display(ALLEGRO_BITMAP* bitmap);
+void load_slides(void);
+
+void next_slide();
+
+
+
+bool pt_in_rect(float px, float py, const Button* b);
+
 
 //======================================================
 //                       AUDIO
