@@ -44,7 +44,9 @@ unsigned char key[ALLEGRO_KEY_MAX];
 void keyboard_init();
 void keyboard_update(ALLEGRO_EVENT* event);
 
-//sprite
+//======================================================
+//                      SPRITES
+//======================================================
 #define PLAYER_W 50
 #define PLAYER_H 100
 
@@ -71,15 +73,17 @@ typedef struct SPRITES
     ALLEGRO_BITMAP* player2;
     ALLEGRO_BITMAP* player2_attack;
 
-    ALLEGRO_BITMAP* player_shot[2];
+    ALLEGRO_BITMAP* player_shot[2][2]; // [0: 직업1, 1: 직업2][0: 일반, 1: 스킬1]
+
     ALLEGRO_BITMAP* enemy[2];
-    ALLEGRO_BITMAP* enemy_shot;
+    ALLEGRO_BITMAP* enemy_shot[2];
 } SPRITES;
 SPRITES sprites;
 
 ALLEGRO_BITMAP* sprite_grab(int x, int y, int w, int h);
 ALLEGRO_BITMAP* subway_background;   // 지하철 배경 이미지
 ALLEGRO_BITMAP* subway_floor;   // 지하철 바닥 이미지
+
 void sprites_init();
 void sprites_deinit();
 
@@ -93,7 +97,9 @@ void audio_deinit();
 //collide
 int enemies_collide(bool player, int x, int y, int w, int h);
 
-// player
+//======================================================
+//                      PLAYER
+//======================================================
 float DEPTH_MIN_SCALE;
 float DEPTH_MAX_SCALE;
 
@@ -121,6 +127,7 @@ typedef struct PLAYER
 {
     int x, y; // 위치 좌표
     int hp; // HP
+    int speed; // 이동 속도
     int power_normal; // 일반 공격 공격력
     int power_skill_1; // 스킬1 공격력
     //int power_skill_2; // 스킬2 공격력
@@ -185,7 +192,9 @@ void enemies_init();
 void enemies_update();
 void enemies_draw();
 
-//shot
+//======================================================
+//                        SHOT
+//======================================================
 // 플레이어 총알 방향
 typedef enum SHOT_DIR {
     SHOT_UP,
@@ -193,6 +202,14 @@ typedef enum SHOT_DIR {
     SHOT_LEFT,
     SHOT_RIGHT
 } SHOT_DIR;
+
+typedef enum {
+    ATTACK_NORMAL, // 플레이어 일반 공격
+    ATTACK_SKILL_1, // 플레이어 스킬1
+
+    ATTACK_ENEMY, // 일반몹 공격
+    ATTACK_BOSS // 보스몹 공격
+} ATTACK_TYPE;
 
 typedef struct SHOT
 {
@@ -202,13 +219,14 @@ typedef struct SHOT
     bool used; // 사용 여부(활성화된 총알인지)
     SHOT_DIR dir; // 총알 방향
     int power; // 총알 공격력
+    ATTACK_TYPE attack_type;
 } SHOT;
 
 #define SHOTS_N 128
 SHOT shots[SHOTS_N];
 
 void shots_init();
-bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int power);
+bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int power, ATTACK_TYPE attack_type);
 void shots_update();
 int shots_collide(bool player, int x, int y, int w, int h);
 void shots_draw();

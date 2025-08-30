@@ -22,17 +22,20 @@ void sprites_init()
 
     sprites.player1 = al_load_bitmap("player.png");
     sprites.player1_attack = al_load_bitmap("player_attack.png");
+    sprites.player2 = al_load_bitmap("player2.png");
+    sprites.player2_attack = al_load_bitmap("player2_attack.png");
 
-    sprites.player2 = al_load_bitmap("player.png");
-    sprites.player2_attack = al_load_bitmap("player_attack.png");
-
-    sprites.player_shot[0] = al_load_bitmap("shot1.png");
-    sprites.player_shot[1] = al_load_bitmap("shot2.png");
+    // 나중에 직업별/스킬별 공격 나가는 이미지 다르게 설정해야 함
+    sprites.player_shot[JOB_TYPE_1][0] = al_load_bitmap("shot1.png");
+    sprites.player_shot[JOB_TYPE_1][1] = al_load_bitmap("shot2.png");
+    sprites.player_shot[JOB_TYPE_2][0] = al_load_bitmap("player2_shot1.png");
+    sprites.player_shot[JOB_TYPE_2][1] = al_load_bitmap("player2_shot2.png");
 
     sprites.enemy[0] = al_load_bitmap("monster01.jpg");
     sprites.enemy[1] = al_load_bitmap("monster02.jpg");
 
-    sprites.enemy_shot = sprite_grab(13, 10, ENEMY_SHOT_W, ENEMY_SHOT_H);
+    sprites.enemy_shot[0] = sprite_grab(13, 10, ENEMY_SHOT_W, ENEMY_SHOT_H); // 일반 몹
+    sprites.enemy_shot[0] = sprite_grab(13, 10, ENEMY_SHOT_W, ENEMY_SHOT_H); // 보스 몹
 
     // 배경 이미지
     subway_background = al_load_bitmap("subway_background.jpg"); 
@@ -47,13 +50,16 @@ void sprites_deinit()
     al_destroy_bitmap(sprites.player2);
     al_destroy_bitmap(sprites.player2_attack);
 
-    al_destroy_bitmap(sprites.player_shot[0]);
-    al_destroy_bitmap(sprites.player_shot[1]);
+    al_destroy_bitmap(sprites.player_shot[JOB_TYPE_1][0]);
+    al_destroy_bitmap(sprites.player_shot[JOB_TYPE_1][1]);
+    al_destroy_bitmap(sprites.player_shot[JOB_TYPE_2][0]);
+    al_destroy_bitmap(sprites.player_shot[JOB_TYPE_2][1]);
 
     al_destroy_bitmap(sprites.enemy[0]);
     al_destroy_bitmap(sprites.enemy[1]);
 
-    al_destroy_bitmap(sprites.enemy_shot);
+    al_destroy_bitmap(sprites.enemy_shot[0]);
+    al_destroy_bitmap(sprites.enemy_shot[1]);
 
     al_destroy_bitmap(sprites._sheet);
 

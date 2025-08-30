@@ -75,7 +75,7 @@ void stage_font(int stage_num_for) //각 stage가 시작되기전에 stage 폰트 띄워주는
     }
 }
 
-int stage_player_var(void) //스테이지가 바뀔때마다 변화하는 변수들 모음
+void stage_player_var(void) //스테이지가 바뀔때마다 변화하는 변수들 모음
 {
     player.x = 10;
     player.y = 10;
