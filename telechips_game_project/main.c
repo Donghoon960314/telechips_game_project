@@ -7,8 +7,9 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
 #include "common.h"
-bool restarted = false;
 
+bool restarted = false;
+bool game_started = false;
 
 int main() {
     must_init(al_init(), "allegro"); // Allegro 라이브러리 초기화
