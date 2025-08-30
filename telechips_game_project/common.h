@@ -1,11 +1,19 @@
 #pragma once
-// main
+//======================================================
+//                       MAIN
+//======================================================
 int time_limit;
 int time_left;
 
-// general
+//======================================================
+//                      GENERAL
+//======================================================
 long frames;
 long score;
+extern stage_num_for;
+extern stage_num;
+extern delay;
+extern bool restarted;
 
 typedef enum {
     DIFF_EASY = 1, // 하 (×1)
@@ -23,9 +31,8 @@ bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int 
 #define BUFFER_W 1600
 #define BUFFER_H 900
 
-#define DISP_SCALE 1
-#define DISP_W (BUFFER_W * DISP_SCALE)
-#define DISP_H (BUFFER_H * DISP_SCALE)
+#define DISP_W BUFFER_W
+#define DISP_H BUFFER_H
 
 ALLEGRO_DISPLAY* disp;
 ALLEGRO_BITMAP* buffer;
@@ -35,7 +42,9 @@ void disp_deinit();
 void disp_pre_draw();
 void disp_post_draw();
 
-// keyboard
+//======================================================
+//                     KEYBOARD
+//======================================================
 #define KEY_SEEN 1 // 현재 프레임에서 눌렸는지 확인, 다음 프레임에선 무조건 비트 해제 (0b00000001)
 #define KEY_DOWN 2 // 키를 계속 누르고 있는지, 누르고 있다면 다음 프레임까지 비트 유지 (0b00000010)
 
@@ -44,12 +53,14 @@ unsigned char key[ALLEGRO_KEY_MAX];
 void keyboard_init();
 void keyboard_update(ALLEGRO_EVENT* event);
 
-//sprite
-#define PLAYER_W 50
-#define PLAYER_H 100
+//======================================================
+//                      SPRITES
+//======================================================
+#define PLAYER_W 80
+#define PLAYER_H 80
 
-#define PLAYER_SHOT_W 8
-#define PLAYER_SHOT_H 15
+#define PLAYER_SHOT_W 90
+#define PLAYER_SHOT_H 60
 
 extern const int ENEMY_W[];
 extern const int ENEMY_H[];
@@ -58,6 +69,10 @@ extern const int ENEMY_H[];
 #define ENEMY_1_H ENEMY_H[0]
 #define ENEMY_2_W ENEMY_W[1]
 #define ENEMY_2_H ENEMY_H[1]
+#define BOSS_1_W ENEMY_W[2]
+#define BOSS_1_H ENEMY_H[2]
+#define BOSS_2_W ENEMY_W[3]
+#define BOSS_2_H ENEMY_H[3]
 
 #define ENEMY_SHOT_W 4
 #define ENEMY_SHOT_H 4
@@ -66,39 +81,55 @@ typedef struct SPRITES
 {
     ALLEGRO_BITMAP* _sheet;
 
-    ALLEGRO_BITMAP* player;
-    ALLEGRO_BITMAP* player_attack;
-    ALLEGRO_BITMAP* player_shot[2];
+    ALLEGRO_BITMAP* player1;
+    ALLEGRO_BITMAP* player1_attack;
+    ALLEGRO_BITMAP* player2;
+    ALLEGRO_BITMAP* player2_attack;
 
-    ALLEGRO_BITMAP* enemy[2];
-    ALLEGRO_BITMAP* enemy_shot;
+    ALLEGRO_BITMAP* player_shot[2][2]; // [0: 직업1, 1: 직업2][0: 일반, 1: 스킬1]
+
+    ALLEGRO_BITMAP* enemy[4];
+    ALLEGRO_BITMAP* enemy_shot[2];
 } SPRITES;
 SPRITES sprites;
 
 ALLEGRO_BITMAP* sprite_grab(int x, int y, int w, int h);
 ALLEGRO_BITMAP* subway_background;   // 지하철 배경 이미지
 ALLEGRO_BITMAP* subway_floor;   // 지하철 바닥 이미지
+
 void sprites_init();
 void sprites_deinit();
 
-// audio
+//======================================================
+//                       AUDIO
+//======================================================
 ALLEGRO_SAMPLE* sample_normal_shot; // 일반 공격
 ALLEGRO_SAMPLE* sample_strong_shot; // 강한 공격
+ALLEGRO_SAMPLE* sample_ENEMY1; //몬스터1 공격
+ALLEGRO_SAMPLE* sample_BOSS1; 
+ALLEGRO_SAMPLE* sample_BOSS2; //단소살인마 공격
+
+ALLEGRO_AUDIO_STREAM* bgm_stream;
+
 
 void audio_init();
 void audio_deinit();
 
-//collide
+//======================================================
+//                      COLLIDE
+//======================================================
 int enemies_collide(bool player, int x, int y, int w, int h);
 
-// player
+//======================================================
+//                      PLAYER
+//======================================================
 float DEPTH_MIN_SCALE;
 float DEPTH_MAX_SCALE;
 
 #define PLAYER_SPEED 10
 #define PLAYER_MAX_X (BUFFER_W - PLAYER_W)
-#define PLAYER_MIN_Y (BUFFER_H * 0.34)
-#define PLAYER_MAX_Y (BUFFER_H - PLAYER_H) * 0.74
+#define PLAYER_MIN_Y (BUFFER_H * 0.4)
+#define PLAYER_MAX_Y (BUFFER_H - PLAYER_H) * 0.78
 
 // 플레이어 이동 방향
 typedef enum DIRECTION {
@@ -108,15 +139,34 @@ typedef enum DIRECTION {
     DIR_RIGHT
 } DIRECTION;
 
+typedef enum { 
+    JOB_TYPE_1, 
+    JOB_TYPE_2
+} JOB_TYPE;
+JOB_TYPE job_type;
+
+
 typedef struct PLAYER
 {
-    int x, y; // 플레이어 위치 좌표
-    int normal_shot_timer; // 일반공격 딜레이 카운터
-    int strong_shot_timer; // 강공격 딜레이 카운터
-    int hp; // 플레이어 HP
-    int invincible_timer; // 무적 상태 타이머
+    int x, y; // 위치 좌표
+    int hp; // HP
+    int speed; // 이동 속도
+    int power_normal; // 일반 공격 공격력
+    int power_skill_1; // 스킬1 공격력
+    //int power_skill_2; // 스킬2 공격력
+
+    int normal_shot_timer; // 일반 공격 타이머
+    int normal_shot_cooldown; // 일반 공격 쿨타임 기준값
+    int skill_1_timer; // 스킬 1 타이머
+    int skill_1_cooldown; // 스킬 1 쿨타임 기준값
+    //int skill_2_timer; // 스킬 2 쿨타임
+    //int skill_2_cooldown; // 스킬 2 쿨타임 기준값
+
+    int invincible_timer; // 무적 상태 시간
+    int attack_anim_timer; // 공격 모션 유지 시간
+
     DIRECTION last_dir; // 마지막 이동 방향
-    int attack_anim_timer; // 공격 모션 유지 타이머
+    JOB_TYPE job; // 직업
 } PLAYER;
 PLAYER player;
 
@@ -124,18 +174,21 @@ void player_init();
 void player_update();
 void player_draw();
 
-// enemy
+//======================================================
+//                      ENEMY
+//======================================================
 typedef enum ENEMY_TYPE
 {
     ENEMY_TYPE_1 = 0, // 일반 몹(1)
     ENEMY_TYPE_2, // 일반 몹(2)
     BOSS_TYPE_1, // 보스 몹(1)
+    BOSS_TYPE_2,
     ENEMY_TYPE_N // 몹 종류 개수
 } ENEMY_TYPE;
 
 typedef enum {
-    BOSS_IDLE,     // 멈춰있는 상태
-    BOSS_CHASE     // 플레이어를 추적하는 상태
+    BOSS_IDLE, // 멈춰있는 상태
+    BOSS_CHASE // 플레이어를 추적하는 상태
 } BOSS_STATE;
 
 typedef struct ENEMY
@@ -165,7 +218,9 @@ void enemies_init();
 void enemies_update();
 void enemies_draw();
 
-//shot
+//======================================================
+//                        SHOT
+//======================================================
 // 플레이어 총알 방향
 typedef enum SHOT_DIR {
     SHOT_UP,
@@ -173,6 +228,16 @@ typedef enum SHOT_DIR {
     SHOT_LEFT,
     SHOT_RIGHT
 } SHOT_DIR;
+
+typedef enum {
+    ATTACK_NORMAL, // 플레이어 일반 공격
+    ATTACK_SKILL_1, // 플레이어 스킬1
+
+    ATTACK_ENEMY, // 일반몹 공격
+    ATTACK_BOSS1, // 보스몹 공격
+    ATTACK_BOSS2
+
+} ATTACK_TYPE;
 
 typedef struct SHOT
 {
@@ -182,18 +247,21 @@ typedef struct SHOT
     bool used; // 사용 여부(활성화된 총알인지)
     SHOT_DIR dir; // 총알 방향
     int power; // 총알 공격력
+    ATTACK_TYPE attack_type;
 } SHOT;
 
 #define SHOTS_N 128
 SHOT shots[SHOTS_N];
 
 void shots_init();
-bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int power);
+bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int power, ATTACK_TYPE attack_type);
 void shots_update();
 int shots_collide(bool player, int x, int y, int w, int h);
 void shots_draw();
 
-// hud
+//======================================================
+//                      HUD
+//======================================================
 ALLEGRO_FONT* font; // HUD용 폰트
 long score_display; // 화면에 표시할 점수
 
@@ -201,7 +269,9 @@ void hud_init();
 void hud_draw();
 void hud_deinit();
 
-// background
+//======================================================
+//                   BACKGROUND
+//======================================================
 void draw_background();
 void draw_floor();
 void draw_horizon_lines();

@@ -8,7 +8,7 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-game_difficulty = DIFF_EASY;
+DIFFICULTY game_difficulty = DIFF_EASY;
 
 void must_init(bool test, const char* description)
 {
