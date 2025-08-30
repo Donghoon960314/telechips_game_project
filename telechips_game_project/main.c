@@ -80,6 +80,7 @@ int main() {
             shots_update();     // 총알 업데이트
             player_update();      // 플레이어 업데이트
             enemies_update();    // 적 업데이트
+            update_shake(); // 배경 흔들림 업데이트
             
             // 매 프레임마다 시간 감소
             if (frames % 60 == 0 && time_left > 0)
@@ -168,7 +169,8 @@ int main() {
             draw_floor(); // 바닥
             draw_vertical_lines(); // 세로선
             draw_horizon_lines(); // 가로선
-            draw_background(); // 배경
+            draw_background(); // 지하철 창문 밖 배경
+            draw_subway_background(); // 지하철 배경
 
             enemies_draw(); // 적
             shots_draw();   // 총알

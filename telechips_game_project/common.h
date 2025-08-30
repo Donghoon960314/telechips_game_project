@@ -96,6 +96,7 @@ SPRITES sprites;
 ALLEGRO_BITMAP* sprite_grab(int x, int y, int w, int h);
 ALLEGRO_BITMAP* subway_background;   // 지하철 배경 이미지
 ALLEGRO_BITMAP* subway_floor;   // 지하철 바닥 이미지
+ALLEGRO_BITMAP* background;
 
 void sprites_init();
 void sprites_deinit();
@@ -264,7 +265,12 @@ void hud_deinit();
 //======================================================
 //                   BACKGROUND
 //======================================================
+float shake_y;
+int shake_timer;
+
+void update_shake();
 void draw_background();
+void draw_subway_background();
 void draw_floor();
 void draw_horizon_lines();
 void draw_vertical_lines();

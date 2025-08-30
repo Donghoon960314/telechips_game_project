@@ -152,6 +152,7 @@
     <None Include="shot.flac" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="background.jpg" />
     <Image Include="boss01.png" />
     <Image Include="monster01.png" />
     <Image Include="monster02.png" />
@@ -173,7 +174,7 @@
     <Image Include="stage3_new_new.PNG" />
     <Image Include="shot1.png" />
     <Image Include="shot2.png" />
-    <Image Include="subway_background.jpg" />
+    <Image Include="subway_background.png" />
     <Image Include="subway_floor.jpg" />
   </ItemGroup>
   <ItemGroup>

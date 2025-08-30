@@ -1,4 +1,4 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
@@ -8,7 +8,51 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
+float shake_y = 0.0f; 
+int shake_timer = 0;
+
+void update_shake() {
+    if (shake_timer <= 0) {
+        shake_y = between(-10, 10); // í”ë“¤ë¦¼ ì •ë„
+        shake_timer = between(10, 15); // í”ë“¤ë¦¼ ì£¼ê¸°
+    }
+    else {
+        shake_timer--;
+    }
+}
+
+// ì°½ë¬¸ ë°– ë°°ê²½
 void draw_background() {
+    if (!background) return;
+
+    int bg_w = al_get_bitmap_width(background);
+    int bg_h = al_get_bitmap_height(background);
+
+    int dest_h = (int)(BUFFER_H * 0.40f);
+
+    float scale = (float)dest_h / bg_h;
+    int scaled_w = (int)(bg_w * scale);
+
+    // ìŠ¤í¬ë¡¤
+    static float background_offset = 0.0f;
+    float scroll_speed = 4.0f;
+    background_offset += scroll_speed;
+    if (background_offset >= scaled_w) {
+        background_offset -= scaled_w;
+    }
+
+    for (int x = -background_offset; x < BUFFER_W; x += scaled_w) {
+        al_draw_scaled_bitmap(
+            background,
+            0, 0, bg_w, bg_h,
+            x, (int)shake_y, scaled_w, dest_h,
+            0
+        );
+    }
+}
+
+// ì°½ë¬¸ í”„ë ˆìž„
+void draw_subway_background() {
     if (!subway_background) return;
 
     int src_w = al_get_bitmap_width(subway_background);
@@ -17,11 +61,12 @@ void draw_background() {
     al_draw_scaled_bitmap(
         subway_background,
         0, 0, src_w, src_h,
-        0, 0, BUFFER_W, (int)(BUFFER_H * 0.50f),
+        0, (int)(shake_y * 0.4f), BUFFER_W, (int)(BUFFER_H * 0.50f),
         0
     );
 }
 
+// ë°”ë‹¥ (ðŸš‰ ìž‘ê²Œ í”ë“¤ë¦¼)
 void draw_floor() {
     if (!subway_floor) return;
 
@@ -31,19 +76,21 @@ void draw_floor() {
     al_draw_scaled_bitmap(
         subway_floor,
         0, 0, src_w, src_h,
-        0, (int)(BUFFER_H * 0.50f), BUFFER_W, BUFFER_H - (int)(BUFFER_H * 0.50f),
+        0, (int)(BUFFER_H * 0.50f + shake_y * 0.4f),
+        BUFFER_W, BUFFER_H - (int)(BUFFER_H * 0.50f),
         0
     );
 }
 
+// ë°”ë‹¥ ê°€ë¡œì„  
 void draw_horizon_lines() {
-    float min_gap = 50; // À§ÂÊ °£°Ý (Á¼À½)
-    float max_gap = 150; // ¾Æ·¡ÂÊ °£°Ý (³ÐÀ½)
-    float min_thick = 2; // À§ÂÊ ¶óÀÎ µÎ²² (¾ãÀ½)
-    float max_thick = 20; // ¾Æ·¡ÂÊ ¶óÀÎ µÎ²² (±½À½)
+    float min_gap = 50; // ìœ„ìª½ ê°„ê²© (ì¢ìŒ)
+    float max_gap = 150; // ì•„ëž˜ìª½ ê°„ê²© (ë„“ìŒ)
+    float min_thick = 2; // ìœ„ìª½ ë¼ì¸ ë‘ê»˜ (ì–‡ìŒ)
+    float max_thick = 20; // ì•„ëž˜ìª½ ë¼ì¸ ë‘ê»˜ (êµµìŒ)
 
-    float start_y = BUFFER_H * 0.5f; // ÁöÇÏÃ¶ ¹Ù´Ú ¹è°æºÎÅÍ ½ÃÀÛ
-    float end_y = BUFFER_H; // È­¸é ³¡
+    float start_y = BUFFER_H * 0.5f + shake_y * 0.4f;
+    float end_y = BUFFER_H + shake_y * 0.4f;          
     float y = start_y;
 
     while (y <= end_y) {
@@ -62,37 +109,30 @@ void draw_horizon_lines() {
     }
 }
 
+// ë°”ë‹¥ ì„¸ë¡œì„ 
 void draw_vertical_lines() {
-    float start_y = 110;
-    float end_y = BUFFER_H; // ¹Ù´Ú ³¡
-    float vanishing_x = BUFFER_W / 2; // ¼Ò½ÇÁ¡ x ÁÂÇ¥
-    float vanishing_y = -100;  // ¼Ò½ÇÁ¡ yÁÂÇ¥
+    float start_y = 110 + shake_y * 0.4f;
+    float end_y = BUFFER_H + shake_y * 0.4f;
+    float vanishing_x = BUFFER_W / 2;
+    float vanishing_y = -100 + shake_y * 0.4f;
 
-    // ±×¸± ¼¼·Î¼±ÀÇ °³¼ö
+    // ê·¸ë¦´ ì„¸ë¡œì„  ê°œìˆ˜
     int lines = 4;
 
     for (int i = 0; i <= lines; i++) {
-        // 0.0 ~ 1.0 »çÀÌ ºñÀ²
         float t = (float)i / lines;
-        // ¾Æ·¡ÂÊ¿¡¼­ÀÇ x ÁÂÇ¥
         float bottom_x = t * BUFFER_W;
-        // À§ÂÊ¿¡¼­´Â ¼Ò½ÇÁ¡À¸·Î ¼ö·Å
         float top_x = vanishing_x;
 
-        // ¾Æ·¡ÂÊÀÏ¼ö·Ï ±½°Ô
         float min_thick = 1.0f;
         float max_thick = 5.0f;
-        float thick = min_thick + (end_y - start_y) / (end_y - vanishing_y) * (max_thick - min_thick);
-
-        // »ö»óµµ À§ÂÊÀº Èå¸®°í, ¾Æ·¡ÂÊÀº ÁøÇÏ°Ô
-        ALLEGRO_COLOR color = al_map_rgb(200, 200, 200);
+        float thick = min_thick + t * (max_thick - min_thick);
 
         al_draw_line(
             top_x, vanishing_y,
             bottom_x, end_y,
-            color,
+            al_map_rgb(200, 200, 200),
             thick
         );
     }
 }
-
