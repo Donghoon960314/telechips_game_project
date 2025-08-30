@@ -81,12 +81,11 @@ void enemies_update()
         {
             if (spawn_enabled && new_quota > 0)
             {
-                // x좌표 배치 : 출현 quota 개수에 따라 오른쪽에서 간격을 두고 배치
+                // x좌표 배치
                 enemies[i].x = start_x - (new_quota - 1) * gap;
 
-
-                // y좌표 배치 : 110 이상, 화면 높이의 75% 지점 이하에서 랜덤
-                //enemies[i].y = between(400, 500);
+                // y좌표 배치
+                enemies[i].y = between(PLAYER_MIN_Y, PLAYER_MAX_Y - ENEMY_H[enemies[i].type]);
 
                 // y좌표 배치 : 범위 내 랜덤*******************************************
                 enemies[i].y = between(0.4 * BUFFER_H, 0.78 * (BUFFER_H - ENEMY_H[0]));
@@ -165,8 +164,8 @@ void enemies_update()
 
                 if (enemies[i].x < 0) enemies[i].x = 0;
                 if (enemies[i].x > BUFFER_W - boss_w) enemies[i].x = BUFFER_W - boss_w;
-                if (enemies[i].y < 110) enemies[i].y = 110;
-                if (enemies[i].y > BUFFER_H - boss_h) enemies[i].y = BUFFER_H - boss_h;
+                if (enemies[i].y < PLAYER_MIN_Y) enemies[i].y = PLAYER_MIN_Y;
+                if (enemies[i].y > PLAYER_MAX_Y - boss_h) enemies[i].y = PLAYER_MAX_Y - boss_h;
             }
             break;
         }
@@ -181,7 +180,7 @@ void enemies_update()
         int h = ENEMY_H[enemies[i].type];
 
         // 깊이 스케일 계산 (2.5D 효과)
-        float t = (float)(enemies[i].y - 110) / (PLAYER_MAX_Y - 110);
+        float t = (float)(enemies[i].y - PLAYER_MIN_Y) / (PLAYER_MAX_Y - PLAYER_MIN_Y);
         if (t < 0) t = 0; if (t > 1) t = 1;
         float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
 
@@ -215,10 +214,10 @@ void enemies_update()
 
             if (enemies[i].type == BOSS_TYPE_1) {
                 // 보스: 상하좌우 4방향 발사
-                shots_add(false, true, cx, cy, DIR_LEFT, 10);
-                shots_add(false, true, cx, cy, DIR_RIGHT, 10);
-                shots_add(false, true, cx, cy, DIR_UP, 10);
-                shots_add(false, true, cx, cy, DIR_DOWN, 10);
+                shots_add(false, true, cx, cy, DIR_LEFT, 10, ATTACK_BOSS);
+                shots_add(false, true, cx, cy, DIR_RIGHT, 10, ATTACK_BOSS);
+                shots_add(false, true, cx, cy, DIR_UP, 10, ATTACK_BOSS);
+                shots_add(false, true, cx, cy, DIR_DOWN, 10, ATTACK_BOSS);
 
                 enemies[i].shot_timer = (int)(60 * fire_mult[game_difficulty - 1]);
             }
@@ -229,7 +228,7 @@ void enemies_update()
                 else if (enemies[i].vx < 0) fire_dir = DIR_RIGHT;
                 else fire_dir = DIR_LEFT;
 
-                shots_add(false, true, cx, cy, fire_dir, 5);
+                shots_add(false, true, cx, cy, fire_dir, 5, ATTACK_ENEMY);
 
                 switch (enemies[i].type) {
                 case ENEMY_TYPE_1: enemies[i].shot_timer = (int)(between(60, 150) * fire_mult[game_difficulty - 1]); break;
@@ -299,7 +298,7 @@ void enemies_draw()
         if (enemies[i].blink > 2) continue;
 
         // 깊이 스케일 계산 (2.5D 효과)
-        float t = (float)(enemies[i].y - 110) / (PLAYER_MAX_Y - 110);
+        float t = (float)(enemies[i].y - PLAYER_MIN_Y) / (PLAYER_MAX_Y - PLAYER_MIN_Y);
         if (t < 0) t = 0; if (t > 1) t = 1;
         float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
 

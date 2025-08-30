@@ -157,6 +157,10 @@
     <Image Include="monster02.png" />
     <Image Include="player.png" />
     <Image Include="player1.png" />
+    <Image Include="player2.png" />
+    <Image Include="player2_attack.png" />
+    <Image Include="player2_shot1.png" />
+    <Image Include="player2_shot2.png" />
     <Image Include="player_attack.png" />
     <Image Include="spritesheet.png" />
     <Image Include="stage1.PNG" />
