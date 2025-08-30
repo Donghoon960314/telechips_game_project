@@ -16,6 +16,24 @@ void shots_init() {
 bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int power, ATTACK_TYPE attack_type)
 {
     // 강한 공격(플레이어)
+    switch (attack_type) { //ENENMY타입별로 오디오 다르게 설정
+    case ATTACK_NORMAL:
+        al_play_sample(sample_normal_shot, 0.3, 0, player ? 1.0 : 1.5, ALLEGRO_PLAYMODE_ONCE, NULL);
+        break;
+    case ATTACK_SKILL_1:
+        al_play_sample(sample_strong_shot, 0.8, 0, 0.6, ALLEGRO_PLAYMODE_ONCE, NULL);
+        break;
+    case ATTACK_ENEMY:
+        al_play_sample(sample_ENEMY1, 0.6, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        break;
+    case ATTACK_BOSS1:
+        al_play_sample(sample_BOSS1, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        break;
+    case ATTACK_BOSS2:
+        al_play_sample(sample_BOSS2, 1.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        break;
+    }
+    /*
     if (player && power >= 4)
     {
         al_play_sample(
@@ -39,6 +57,7 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
             NULL
         );
     }
+    */
 
     for (int i = 0; i < SHOTS_N; i++)
     {
@@ -211,7 +230,7 @@ int shots_collide(bool is_player, int x, int y, int w, int h) {
         else {
             // 적 총알 크기 = 스프라이트 크기 × 깊이 스케일
             ALLEGRO_BITMAP* bmp = NULL;
-            if (shots[i].attack_type == ATTACK_BOSS) {
+            if (shots[i].attack_type == ATTACK_BOSS1) {
                 bmp = sprites.enemy_shot[1];
             }
             else {
@@ -305,7 +324,7 @@ void shots_draw() {
 
             // 적 타입마다 총알 구분
             if (shots[i].power >= 10) {
-                bmp = sprites.enemy_shot[1]; // 보스 총알
+                bmp = sprites.enemy_shot[1]; // 보스 총알 //나중에 보스 추가시 여기에 추가
             }
             else {
                 bmp = sprites.enemy_shot[0]; // 일반 몹 총알

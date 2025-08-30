@@ -59,12 +59,11 @@ bool check_monster_die(void) // 몬스터 5마리가 전부 죽었는지 체크�
         if (enemies[i].used == false) check_num += 1;
     if (check_num == 5)
     {
+        shots_init();
         if (stage_num == 1) {
-            shots_init();
             return true;
         } //1단계일때는 stage_reset()에 무조건 true넘겨줘서 보스몹 출현없이 
         else {
-            shots_init();
             return (boss_spawned && !boss_check_live());
         }
 

@@ -188,6 +188,14 @@
   <ItemGroup>
     <Font Include="BebasNeue-Regular.ttf" />
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="back.mp3" />
+    <Media Include="boss1_shot.mp3" />
+    <Media Include="BOSS1_who_are_you.mp3" />
+    <Media Include="BOSS1_an.mp3" />
+    <Media Include="ENEMY1.mp3" />
+    <Media Include="Enemy_re.mp3" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\AllegroDeps.1.15.0\build\native\AllegroDeps.targets" Condition="Exists('..\packages\AllegroDeps.1.15.0\build\native\AllegroDeps.targets')" />

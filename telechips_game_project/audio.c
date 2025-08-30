@@ -8,6 +8,7 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
+
 void audio_init()
 {
     al_install_audio();
@@ -16,12 +17,35 @@ void audio_init()
 
     sample_normal_shot = al_load_sample("shot.flac");
     must_init(sample_normal_shot, "shot sample");
+
     sample_strong_shot = al_load_sample("shot.flac");
     must_init(sample_strong_shot, "shot sample");
+
+    sample_ENEMY1 = al_load_sample("Enemy_re.mp3");
+    must_init(sample_strong_shot, "shot sample");
+
+    sample_BOSS1 = al_load_sample("BOSS1_who_are_you.mp3");
+    must_init(sample_BOSS1, "boss1_shot");
+
+    sample_BOSS2 = al_load_sample("BOSS1_an.mp3");
+    must_init(sample_BOSS2, "boss2_shot");
+
+    bgm_stream = al_load_audio_stream("back.mp3", 4, 2048);
+    must_init(bgm_stream, "background music");
+    al_attach_audio_stream_to_mixer(bgm_stream, al_get_default_mixer());
+    al_set_audio_stream_playmode(bgm_stream, ALLEGRO_PLAYMODE_LOOP); // 반복 재생
+
 }
 
 void audio_deinit()
 {
     al_destroy_sample(sample_normal_shot);
     al_destroy_sample(sample_strong_shot);
+    al_destroy_sample(sample_BOSS1);
+    al_destroy_sample(sample_BOSS2);
+
+    if (bgm_stream) {
+        al_destroy_audio_stream(bgm_stream);
+    }
+
 }
