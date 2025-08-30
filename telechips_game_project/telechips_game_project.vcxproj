@@ -163,6 +163,13 @@
     <Image Include="prologue_dialog_05.png" />
     <Image Include="prologue_dialog_06.png" />
     <Image Include="prologue_dialog_07.png" />
+    <Image Include="prologue_dialog_08.png" />
+    <Image Include="prologue_dialog_09.png" />
+    <Image Include="prologue_dialog_10.png" />
+    <Image Include="prologue_dialog_11.png" />
+    <Image Include="prologue_dialog_12.png" />
+    <Image Include="prologue_dialog_13.png" />
+    <Image Include="prologue_dialog_14.png" />
     <Image Include="spritesheet.png" />
     <Image Include="stage1.PNG" />
     <Image Include="stage1_new.png" />

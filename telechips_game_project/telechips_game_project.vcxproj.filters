@@ -152,6 +152,27 @@
     <Image Include="prologue_dialog_07.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="prologue_dialog_08.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_09.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_10.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_11.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_12.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_13.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_14.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Easy rank.txt">

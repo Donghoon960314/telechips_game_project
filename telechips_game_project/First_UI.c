@@ -219,7 +219,7 @@ typedef struct {
 
 // 난이도에 따른 초기값 구현
 // 
-MODE m = { 4,5,6 };
+MODE m = { 1,2,3 };
 
 
 /* --- 직업에 대한 구조체 선언 --- */
@@ -228,7 +228,7 @@ typedef enum {
     JOB_ZARUBAN
 }JOB;
 
-JOB job = JOB_NONE;
+JOB job = JOB_DANSO;
 
 /* --- display menu ---  */
 void show_back_only(void)
