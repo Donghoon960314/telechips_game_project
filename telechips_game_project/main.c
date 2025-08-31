@@ -398,7 +398,6 @@ int main() {
     sprites_deinit();
     hud_deinit();
     audio_deinit();
-    al_destroy_font(font);
     disp_deinit();
     al_destroy_font(font);
     al_destroy_bitmap(bitmap);
