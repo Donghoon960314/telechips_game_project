@@ -27,6 +27,7 @@ int main() {
     must_init(al_init_font_addon(), "font");      // 폰트 모듈 초기화
     must_init(al_init_image_addon(), "image");    // 이미지 모듈 초기화
     must_init(al_init_primitives_addon(), "primitives"); // 도형 모듈 초기화
+    must_init(al_init_ttf_addon(), "ttf addon");
 
     // 이벤트 큐 생성
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
@@ -342,10 +343,10 @@ int main() {
                 draw_horizon_lines();
                 draw_background();
                 draw_subway_background();
+                items_draw();
                 enemies_draw();
                 shots_draw();
                 player_draw();
-                 items_draw();
                 hud_draw();
                 break;
 
