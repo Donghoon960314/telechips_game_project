@@ -56,7 +56,6 @@ int main() {
     // 게임 객체 초기화
     keyboard_init(); // 키보드 상태 초기화
     shots_init();    // 총알 초기화
-    player_init();   // 플레이어 초기화
     enemies_init();  // 적 초기화
     items_init(); // 아이템 초기화
     stage_image_pop_init(); // 스테이지 배너 초기화
@@ -161,21 +160,21 @@ int main() {
                     state = STATE_PROLOGUE;
                 }
 
-                // 직업 선택 1 : DANSO
+                // 직업 선택 1: Tanjiro
                 else if (b == &pos8)
                 {
                     state = STATE_MODE;
-                    job = JOB_DANSO;
+                    job_type = JOB_TYPE_1;
                     pos5.active = true;
                     pos6.active = true;
                     pos7.active = true;
                 }
 
-                // 직업 선택 2 : ZARUBAN
+                // 직업 선택 2: Rengoku
                 else if (b == &pos9)
                 {
                     state = STATE_MODE;
-                    job = JOB_ZARUBAN;
+                    job_type = JOB_TYPE_2;
                     pos5.active = true;
                     pos6.active = true;
                     pos7.active = true;
@@ -330,11 +329,14 @@ int main() {
                 {
                     state = STATE_RUNNING;  // 프롤로그 끝 → 게임 시작
                     stage_font(0);          // Stage1 배너 띄움
+
+                    player_init();   // 플레이어 초기화
                 }
                 break;
   
             // 프롤로그가 끝났을 때 -> 본격적인 게임 화면
             case STATE_RUNNING:
+                printf("%d", game_difficulty);
                 draw_floor();
                 draw_vertical_lines();
                 draw_horizon_lines();

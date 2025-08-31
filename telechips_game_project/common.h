@@ -98,7 +98,10 @@ SPRITES sprites;
 ALLEGRO_BITMAP* sprite_grab(int x, int y, int w, int h);
 ALLEGRO_BITMAP* subway_background;   // 지하철 배경 이미지
 ALLEGRO_BITMAP* subway_floor;   // 지하철 바닥 이미지
-ALLEGRO_BITMAP* background;
+ALLEGRO_BITMAP* background; // 배경 이미지
+
+ALLEGRO_BITMAP* hp_heal;
+ALLEGRO_BITMAP* attack_speed_up;
 
 void sprites_init();
 void sprites_deinit();
@@ -380,6 +383,7 @@ typedef struct ITEM {
     int x, y; // 아이템 위치
     ITEM_TYPE type; // 아이템 종류
     bool used; // 현재 화면에 존재하는지
+    int lifetime; // 아이템 남은 시간
 } ITEM;
 
 #define ITEMS_N 3

@@ -43,6 +43,10 @@ void sprites_init()
     subway_background = al_load_bitmap("subway_background.png"); 
     subway_floor = al_load_bitmap("subway_floor.jpg");
     background = al_load_bitmap("background.jpg");
+
+    // 아이템 이미지
+    hp_heal = al_load_bitmap("item_hp_heal.png");
+    attack_speed_up = al_load_bitmap("item_attack_speedup.png");
 }
 
 void sprites_deinit()
@@ -69,4 +73,7 @@ void sprites_deinit()
     al_destroy_bitmap(subway_background);
     al_destroy_bitmap(subway_floor);
     al_destroy_bitmap(background);
+
+    al_destroy_bitmap(hp_heal);
+    al_destroy_bitmap(attack_speed_up);
 }
