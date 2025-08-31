@@ -294,19 +294,27 @@ void print_ranking_table(const char* player_name, int player_min, int player_sec
         if (game_difficulty == DIFF_EASY)
         {
             al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "EASY_MODE - TOP 10");
+            al_draw_text(name_font, al_map_rgb(200, 200, 0), BUFFER_W - 10, BUFFER_H - al_get_font_line_height(name_font) - 10, ALLEGRO_ALIGN_RIGHT, "Press ESC Back");
+
         }
         else if (game_difficulty == DIFF_NORMAL)
         {
             al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "NORMAL_MODE - TOP 10");
+            al_draw_text(name_font, al_map_rgb(0, 0, 200), BUFFER_W - 10, BUFFER_H - al_get_font_line_height(name_font) - 10, ALLEGRO_ALIGN_RIGHT, "Press ESC to return to menu");
+
         }
         else if (game_difficulty == DIFF_HARD)
         {
             al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "HARD_MODE - TOP 10");
+            al_draw_text(name_font, al_map_rgb(0, 0, 200), BUFFER_W - 10, BUFFER_H - al_get_font_line_height(name_font) - 10, ALLEGRO_ALIGN_RIGHT, "Press ESC to return to menu");
+
 
         }
         else
         {
             al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "HARD_MODE - TOP 10");
+            al_draw_text(name_font, al_map_rgb(0, 0, 200), BUFFER_W - 10, BUFFER_H - al_get_font_line_height(name_font) - 10, ALLEGRO_ALIGN_RIGHT, "Press ESC to return to menu");
+
         }
 
 
@@ -323,6 +331,7 @@ void print_ranking_table(const char* player_name, int player_min, int player_sec
                 al_draw_filled_rectangle(DISP_W / 2 - 300, y - 10, DISP_W / 2 + 300, y + 60, al_map_rgb(50, 50, 150));
             }
             al_draw_text(name_font, al_map_rgb(200, 200, 0), DISP_W / 2, y, ALLEGRO_ALIGN_CENTER, buf);
+
         }
     }
     else if (mode == BUTTON_TO_RANK)
@@ -350,6 +359,8 @@ void print_ranking_table(const char* player_name, int player_min, int player_sec
             int base_y = 50;
 
             al_draw_text(button_to_rank_title_font, al_map_rgb(255, 255, 255), base_x, base_y, ALLEGRO_ALIGN_CENTER, titles[d]);
+            al_draw_text(name_font, al_map_rgb(0, 0, 200), BUFFER_W - 10, BUFFER_H - al_get_font_line_height(name_font) - 10, ALLEGRO_ALIGN_RIGHT, "Press ESC to return to menu");
+
 
             // 상위 10 출력
             for (int i = 0; i < count && i < 10; i++) {
