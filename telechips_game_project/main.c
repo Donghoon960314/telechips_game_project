@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
@@ -11,6 +12,8 @@
 #include "common.h"
 
 bool restarted = false;
+ALLEGRO_FONT* name_font = NULL;   // 전역 정의
+ALLEGRO_FONT* title_font = NULL;  // 전역 정의
 
 //======================================================
 //                  MAIN GAME LOOP
@@ -25,6 +28,7 @@ int main() {
     must_init(timer, "timer");
 
     must_init(al_init_font_addon(), "font");      // 폰트 모듈 초기화
+    must_init(al_init_ttf_addon(), "ttf");
     must_init(al_init_image_addon(), "image");    // 이미지 모듈 초기화
     must_init(al_init_primitives_addon(), "primitives"); // 도형 모듈 초기화
 
@@ -33,7 +37,17 @@ int main() {
     must_init(queue, "queue");
 
     // UI용 폰트 / 비트맵 로드
+
     ALLEGRO_FONT* font = al_create_builtin_font();
+    name_font = al_load_ttf_font("BebasNeue-Regular.ttf", 50, 0);
+    title_font = al_load_ttf_font("BebasNeue-Regular.ttf", 80, 0);
+    printf("DEBUG: name_font=%p, title_font=%p\n", name_font, title_font);
+
+    if (!name_font || !title_font) {
+        fprintf(stderr, "폰트 로드 실패! 실행 경로에 BebasNeue-Regular.ttf가 있는지 확인하세요.\n");
+        return -1; // 프로그램 바로 종료
+    }
+
     must_init(font, "builtin font");
     ALLEGRO_BITMAP* bitmap = al_load_bitmap("start_display.png");
     must_init(bitmap, "bitmap");
@@ -90,9 +104,9 @@ int main() {
 
         switch (event.type)
         {
-        //======================================================
-        //                    UI 관련 처리
-        //======================================================
+            //======================================================
+            //                    UI 관련 처리
+            //======================================================
         case ALLEGRO_EVENT_MOUSE_AXES:
         {
             /* 디스플레이 좌표 → 버퍼 좌표로 변환 후 hover 갱신 */
@@ -131,9 +145,13 @@ int main() {
                 }
 
                 // 랭킹,게임 설명
-                else if ((b == &pos3) || (b == &pos4))
+                else if (b == &pos3)
                 {
                     show_back_only();
+                }
+                else if (b == &pos4)
+                {
+                    state = STATE_RANKING;
                 }
 
                 // 난이도: 쉬운 모드
@@ -142,7 +160,7 @@ int main() {
                     set_pro_job();
                     game_difficulty = DIFF_EASY;
                     state = STATE_PROLOGUE;
-                    
+
                 }
 
                 // 난이도: 중간 모드
@@ -201,7 +219,7 @@ int main() {
             }
             break;
 
-        // 알레그로 타이머 이벤트 
+            // 알레그로 타이머 이벤트 
         case ALLEGRO_EVENT_TIMER:
             if (state == STATE_RUNNING) {
                 // 게임 로직 업데이트 (스테이지 안일 때만)
@@ -222,7 +240,14 @@ int main() {
                 // 스테이지 클리어 체크
                 if (stage_reset() > 3) {
                     rank_name_open(al_get_timer_count(timer), player_name, &min, &sec);
-                    print_ranking_table(player_name, min, sec);
+                    //print_ranking_table(player_name, min, sec);
+                    ALLEGRO_EVENT clean_queue_for_rank;
+                    while (al_get_next_event(queue, &clean_queue_for_rank))
+                    {
+                        //남은 이벤트 다 버리는중 
+                    }
+                    // show_main_menu(); 이거 있으면 루프돌면서 입력후 바로 화면으로 초기 UI로 넘어옴 queue비우고 
+                    //상태 변화후 ranking
                     state = STATE_RANKING;
                 }
 
@@ -269,8 +294,8 @@ int main() {
             frames++;
             redraw = true;
             break;
-        
-        // 창 닫기 이벤트
+
+            // 창 닫기 이벤트
         case ALLEGRO_EVENT_DISPLAY_CLOSE:
             done = true;
             break;
@@ -289,7 +314,7 @@ int main() {
         {
             disp_pre_draw(); // 더블 버퍼 준비
             al_clear_to_color(al_map_rgb(0, 0, 0)); // 화면 클리어 (검정색)
-           
+
             // UI 상태에 따른 화면 표시
             switch (state)
             {
@@ -332,8 +357,8 @@ int main() {
                     stage_font(0);          // Stage1 배너 띄움
                 }
                 break;
-  
-            // 프롤로그가 끝났을 때 -> 본격적인 게임 화면
+
+                // 프롤로그가 끝났을 때 -> 본격적인 게임 화면
             case STATE_RUNNING:
                 draw_floor();
                 draw_vertical_lines();
@@ -343,12 +368,12 @@ int main() {
                 enemies_draw();
                 shots_draw();
                 player_draw();
-                 items_draw();
+                items_draw();
                 hud_draw();
                 break;
 
             case STATE_RANKING:
-                print_ranking_table(player_name, min, sec);
+                print_ranking_table("", 0, 0);
                 break;
 
             }
@@ -374,7 +399,8 @@ int main() {
     al_destroy_timer(timer);
     al_destroy_event_queue(queue);
     stage_image_pop_deinit();
-
-        return 0;
-    }
+    
+    return 0;
+        
 }
+    

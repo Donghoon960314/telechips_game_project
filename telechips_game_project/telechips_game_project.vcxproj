@@ -198,7 +198,9 @@
     <Text Include="Easy rank.txt" />
     <Text Include="Hard rank.txt" />
     <Text Include="Medium rank.txt" />
-    <Text Include="rank.txt" />
+    <Text Include="Rank_Easy.txt" />
+    <Text Include="Rank_Hard.txt" />
+    <Text Include="Rank_Normal.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
