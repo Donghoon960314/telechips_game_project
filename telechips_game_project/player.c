@@ -103,11 +103,12 @@ void player_update()
     float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
 
     // 실제 히트 박스 크기
-    int scaled_w = PLAYER_W * scale;
+    int scaled_w = 0.7 * PLAYER_W * scale;
     int scaled_h = PLAYER_H * scale;
 
     // 아래 부분만 충돌하도록 히트박스 축소 (2.5D 느낌으로)
-    int hitbox_h = scaled_h / 3;
+    int hitbox_x = player.x + PLAYER_W * scale * 0.15;
+    int hitbox_h = scaled_h / 2.0f;
     int hitbox_y = player.y + scaled_h - hitbox_h;
 
     // 무적 상태 처리
@@ -118,7 +119,7 @@ void player_update()
     else // 무적 상태 X
     {
         // 플레이어 <-> 몹 충돌
-        int enemy_index = enemies_collide(true, player.x, hitbox_y, scaled_w, hitbox_h);
+        int enemy_index = enemies_collide(true, hitbox_x, hitbox_y, scaled_w, hitbox_h);
         if (enemy_index != -1)
         {
             if (enemies[enemy_index].type == BOSS_TYPE_1) // 보스 충돌 → 20 깎음
@@ -138,7 +139,7 @@ void player_update()
         }
 
         // 플레이어 <-> 몹 총알 충돌
-        int damage = shots_collide(true, player.x, hitbox_y, scaled_w, hitbox_h);
+        int damage = shots_collide(true, hitbox_x, hitbox_y, scaled_w, hitbox_h);
         if (damage > 0)
         {
             player.hp -= damage; // HP 감소
@@ -261,6 +262,19 @@ void player_draw()
     if (t < 0) t = 0;
     if (t > 1) t = 1;
     float depth_scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
+
+    int scaled_w = 0.7 * PLAYER_W * depth_scale;
+    int scaled_h = PLAYER_H * depth_scale;
+    int hitbox_x = player.x + PLAYER_W * depth_scale * 0.15;
+    int hitbox_h = scaled_h / 2;
+    int hitbox_y = player.y + scaled_h - hitbox_h;
+
+    // === 히트박스 표시 (빨간 네모) ===
+    al_draw_rectangle(
+        hitbox_x, hitbox_y,
+        hitbox_x + scaled_w, hitbox_y + hitbox_h,
+        al_map_rgb(255, 0, 0), 2
+    );
     
     // 공격 모션 적용
     ALLEGRO_BITMAP* bmp = NULL; // 초기화
