@@ -7,7 +7,6 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
-#include <allegro5/allegro_ttf.h>
 #include <stdbool.h>
 #include <string.h>
 #include <time.h>
@@ -271,7 +270,7 @@ int main() {
 
                     disp_pre_draw();
                     al_clear_to_color(al_map_rgb(0, 0, 0));
-                    print_ranking_table("", 0, 0);
+                    
                     disp_post_draw();
 
                     redraw = false;
