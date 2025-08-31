@@ -60,7 +60,7 @@ void hud_draw()
     if (blink)
         sprintf(time_text, "%02d:%02d", minutes, seconds);
     else
-        sprintf(time_text, "%02d %02d", minutes, seconds); // 콜론 OFF 상태
+        sprintf(time_text, "%02d %02d", minutes, seconds);
 
     // 색상 변화 (기본: 흰색 → 30초 이하: 주황 → 10초 이하: 빨강)
     ALLEGRO_COLOR col = al_map_rgb(255, 255, 255);
