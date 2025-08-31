@@ -63,7 +63,7 @@ bool check_monster_die(void) // 몬스터 5마리가 전부 죽었는지 체크�
         if (enemies[i].used == false) check_num += 1;
     if (check_num == 5)
     {
-        shots_init();
+        shots_init(); //5명 모두 죽으면 남아있는 총알 초기화 
         if (stage_num == 1) {
             return true;
         } //1단계일때는 stage_reset()에 무조건 true넘겨줘서 보스몹 출현없이 
@@ -175,7 +175,7 @@ int stage_reset(void)
             stage_num += 1;
         }
     }
-    else if (check_monster_die() == true) {
+    else if (check_monster_die() == true) { //특정 프레임에서 몬스터가 다 죽으면 바로 delay = 60으로 설정하고 매 프레
         delay = 60;
     }
 

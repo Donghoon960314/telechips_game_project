@@ -374,7 +374,14 @@ int main() {
                 else
                 {
                     state = STATE_RUNNING;  // 프롤로그 끝 → 게임 시작
+                    frames = 0; //8.31 수정
+                    time_left = time_limit;     //8.31 수정
+                    keyboard_init(); //지맘대로 움직이는거 초기화 8.31
                     stage_font(0);          // Stage1 배너 띄움
+                    
+                    al_stop_timer(timer); //게임 종료후 재시작 시간 오류 수정//
+                    al_set_timer_count(timer, 0);
+                    al_start_timer(timer);
 
                     stage_init();
                     player_init();   // 플레이어 초기화
