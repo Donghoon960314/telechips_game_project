@@ -425,6 +425,16 @@ typedef struct ITEM {
 #define ITEMS_N 3
 ITEM items[ITEMS_N];
 
+typedef struct {
+    bool active;
+    int x, y;
+    int timer;      // 몇 프레임 동안 표시할지
+    char text[16];  // 표시할 텍스트
+} HealText;
+
+#define HEAL_TEXTS_N 10
+HealText heal_texts[HEAL_TEXTS_N];
+
 int item_spawn_timer;
 
 void items_init();
@@ -438,6 +448,7 @@ ALLEGRO_FONT* font; // HUD용 폰트
 long score_display; // 화면에 표시할 점수
 
 void hud_init();
+void hud_update();
 void hud_draw();
 void hud_deinit();
 

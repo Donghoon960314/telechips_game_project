@@ -8,6 +8,7 @@
 #include <allegro5/allegro_image.h>
 #include <stdbool.h>
 #include <string.h>
+#include <time.h>
 #include "common.h"
 
 bool restarted = false;
@@ -27,6 +28,7 @@ int main() {
     must_init(al_init_font_addon(), "font");      // 폰트 모듈 초기화
     must_init(al_init_image_addon(), "image");    // 이미지 모듈 초기화
     must_init(al_init_primitives_addon(), "primitives"); // 도형 모듈 초기화
+    must_init(al_init_ttf_addon(), "ttf addon");
 
     // 이벤트 큐 생성
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
@@ -78,6 +80,7 @@ int main() {
 
     // 타이머 시작
     al_start_timer(timer);
+    srand((unsigned int)time(NULL));
 
     //======================================================
     //                  메인 루프 시작
@@ -208,6 +211,7 @@ int main() {
                 player_update();
                 enemies_update();
                 items_update();
+                hud_update();
                 update_shake();
 
                 // 매 프레임마다 시간 감소
@@ -336,16 +340,15 @@ int main() {
   
             // 프롤로그가 끝났을 때 -> 본격적인 게임 화면
             case STATE_RUNNING:
-                printf("%d", game_difficulty);
                 draw_floor();
                 draw_vertical_lines();
                 draw_horizon_lines();
                 draw_background();
                 draw_subway_background();
+                items_draw();
                 enemies_draw();
                 shots_draw();
                 player_draw();
-                 items_draw();
                 hud_draw();
                 break;
 

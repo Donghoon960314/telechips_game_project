@@ -161,14 +161,12 @@ void player_update()
     {
         if (player.job == JOB_TYPE_1)
         {
-            printf("JOB_TYPE_1\n");
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal, ATTACK_NORMAL);
             player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
             player.attack_anim_timer = 18; // 공격 모션 유지 시간
         }
         else if (player.job == JOB_TYPE_2)
         {
-            printf("JOB_TYPE_2\n");
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal, ATTACK_NORMAL);
             player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
             player.attack_anim_timer = 9; // 공격 모션 유지 시간
@@ -208,6 +206,23 @@ void player_draw()
     if (player.hp <= 0)
         return;
 
+    // 무적 깜빡임 효과 처리
+    if (player.invincible_timer > 0)
+    {
+        if (((player.invincible_timer / 2) % 3) == 1)
+            return; // 이 프레임에는 그리지 않음
+    }
+
+    // 2.5D 구현
+    DEPTH_MIN_SCALE = 1.5f; 
+    DEPTH_MAX_SCALE = 3.0f;  
+
+    // y = 110일 때 min_scale, y = PLAYER_MAX_Y일 때 max_scale
+    float t = (float)(player.y - PLAYER_MIN_Y) / (PLAYER_MAX_Y - PLAYER_MIN_Y);
+    if (t < 0) t = 0;
+    if (t > 1) t = 1;
+    float depth_scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
+
     /*
     // 플레이어 HP 표시
     char hp_text[16];
@@ -222,10 +237,20 @@ void player_draw()
     );
     */
     //여기 나중에 실행되는거 보고 위치 옮겨서 맞춰야 할 듯
-    int bar_width = player.max_hp * 2; // 전체 체력바 너비
-    int bar_height = 10;   // 체력바 높이
-    int bar_x = player.x + 40;  // 체력바 위치 X
-    int bar_y = player.y - 20; // 캐릭터 위쪽
+
+    // 깊이감 스케일 적용
+    int w = PLAYER_W;
+    int h = PLAYER_H;
+
+    float final_scale_x = PLAYER_W * depth_scale;
+    float final_scale_y = PLAYER_H * depth_scale;
+
+    // HP바 그리기
+    int base_bar_width = 60;                        // 기본 HP바 너비 (픽셀)
+    int bar_width = base_bar_width * depth_scale;   // 깊이에 따른 너비
+    int bar_height = 4 * depth_scale;               // 높이 줄임
+    int bar_x = player.x + 20;                      // 위치는 캐릭터에 맞춰서 조정
+    int bar_y = player.y - (12 * depth_scale);      // 캐릭터 위쪽
 
     // 현재 체력 비율
     float hp_ratio = (float)player.hp / (float)player.max_hp;
@@ -301,13 +326,6 @@ void player_draw()
             bmp = sprites.player2;
         }
     }
-
-    int w = PLAYER_W;
-    int h = PLAYER_H;
-
-    // 깊이감 스케일 적용
-    float final_scale_x = w * depth_scale;
-    float final_scale_y = h * depth_scale;
 
     // 좌/우 방향 반전
     if (player.last_dir == DIR_LEFT) {

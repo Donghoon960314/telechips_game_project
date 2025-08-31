@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
@@ -95,7 +97,19 @@ void items_update()
                 player.hp += 20;
                 if (player.hp > player.max_hp)
                     player.hp = player.max_hp;
+
+                for (int j = 0; j < HEAL_TEXTS_N; j++) {
+                    if (!heal_texts[j].active) {
+                        heal_texts[j].active = true;
+                        heal_texts[j].x = player.x + PLAYER_W / 2;
+                        heal_texts[j].y = player.y - 30;
+                        heal_texts[j].timer = 60; // 1초 동안 표시 (60fps 기준)
+                        sprintf(heal_texts[j].text, "+20");
+                        break;
+                    }
+                }
             }
+
             else if (items[i].type == ITEM_ATK_SPEED) // 공격 속도 증가 아이템
             {
                 player.atk_speed_buff = true;
@@ -166,20 +180,6 @@ void items_draw()
             w * scale, h * scale,                      // 스케일 적용 크기
             0
         );
-
-        // ==============================
-        //         히트박스 표시
-        // ==============================
-        al_draw_rectangle(
-            items[i].x - (w * scale) / 2,
-            items[i].y - (h * scale) / 2,
-            items[i].x + (w * scale) / 2,
-            items[i].y + (h * scale) / 2,
-            al_map_rgb(255, 0, 0), 1
-        );
-        // ==============================
-        //         히트박스 표시
-        // ==============================
     }
 }
 
