@@ -38,7 +38,8 @@ bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int 
 
 ALLEGRO_DISPLAY* disp;
 ALLEGRO_BITMAP* buffer;
-
+extern ALLEGRO_FONT* name_font;
+extern ALLEGRO_FONT* title_font;
 void disp_init();
 void disp_deinit();
 void disp_pre_draw();
@@ -408,6 +409,16 @@ typedef struct ITEM {
 #define ITEMS_N 3
 ITEM items[ITEMS_N];
 
+typedef struct {
+    bool active;
+    int x, y;
+    int timer;      // 몇 프레임 동안 표시할지
+    char text[16];  // 표시할 텍스트
+} HealText;
+
+#define HEAL_TEXTS_N 10
+HealText heal_texts[HEAL_TEXTS_N];
+
 int item_spawn_timer;
 
 void items_init();
@@ -421,6 +432,7 @@ ALLEGRO_FONT* font; // HUD용 폰트
 long score_display; // 화면에 표시할 점수
 
 void hud_init();
+void hud_update();
 void hud_draw();
 void hud_deinit();
 

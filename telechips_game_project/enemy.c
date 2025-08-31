@@ -260,10 +260,11 @@ void enemies_update()
                 // 보스: 상하좌우 4방향 발사
                 shots_add(false, true, cx, cy, DIR_LEFT, 10, ATTACK_BOSS1);
                 shots_add(false, true, cx, cy, DIR_RIGHT, 10, ATTACK_BOSS1);
+
                 
 
 
-                enemies[i].shot_timer = (int)(120 * fire_mult[game_difficulty - 1]);
+                enemies[i].shot_timer = (int)(90 * fire_mult[game_difficulty - 1]);
             }
             else if (enemies[i].type == BOSS_TYPE_2) {
                 // 보스: 상하좌우 4방향 발사
@@ -272,7 +273,8 @@ void enemies_update()
 
 
 
-                enemies[i].shot_timer = (int)(120 * fire_mult[game_difficulty - 1]);
+                enemies[i].shot_timer = (int)(90 * fire_mult[game_difficulty - 1]);
+
             }
             else {
                 // 일반 몬스터: 이동 방향 기준 발사

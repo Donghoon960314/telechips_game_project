@@ -157,6 +157,7 @@
     <Image Include="background.jpg" />
     <Image Include="boss01.png" />
     <Image Include="boss_shot2.png" />
+
     <Image Include="enemy_attack.png" />
     <Image Include="item_attack_speedup.png" />
     <Image Include="item_hp_heal.png" />
@@ -203,7 +204,9 @@
     <Text Include="Easy rank.txt" />
     <Text Include="Hard rank.txt" />
     <Text Include="Medium rank.txt" />
-    <Text Include="rank.txt" />
+    <Text Include="Rank_Easy.txt" />
+    <Text Include="Rank_Hard.txt" />
+    <Text Include="Rank_Normal.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -212,7 +215,7 @@
     <Font Include="BebasNeue-Regular.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <Media Include="back.mp3" />
+    <Media Include="bgm.mp3" />
     <Media Include="boss1_shot.mp3" />
     <Media Include="BOSS1_who_are_you.mp3" />
     <Media Include="BOSS1_an.mp3" />

@@ -20,6 +20,8 @@ int cmp_rank(const void* a, const void* b)
     return (x->seconds - y->seconds);
 }
 
+
+/*
 void print_ranking_table(const char* player_name, int player_min, int player_sec)
 {
     al_init_font_addon();
@@ -108,6 +110,112 @@ void print_ranking_table(const char* player_name, int player_min, int player_sec
     }
     al_destroy_event_queue(queue);
 }
+*/
+
+
+
+//======================================================
+//    여기서부터작동되는 코드 25.8.31.11:36
+//======================================================
+/*
+void print_ranking_table(const char* player_name, int player_min, int player_sec)
+{
+    //ALLEGRO_FONT* name_font = al_load_ttf_font("BebasNeue-Regular.ttf", 50, 0);
+    //ALLEGRO_FONT* title_font = al_load_ttf_font("BebasNeue-Regular.ttf", 80, 0);
+
+    // rank.txt 읽기
+    FILE* f = fopen("rank.txt", "r");
+    _RANK entries[128];
+    int count = 0;
+    if (f) {
+        while (fscanf(f, "%31s %d %d",
+            entries[count].name,
+            &entries[count].minutes,
+            &entries[count].seconds) == 3)
+        {
+            count++;
+            if (count >= 128) break;
+        }
+        fclose(f);
+    }
+    qsort(entries, count, sizeof(_RANK), cmp_rank);
+
+    // 제목
+    al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "SCOREBOARD - TOP 10");
+
+    // 상위 10개 출력
+    for (int i = 0; i < count && i < 10; i++) {
+        char buf[128];
+        sprintf(buf, "%2d. %-10s  %02d:%02d", i + 1, entries[i].name, entries[i].minutes, entries[i].seconds);
+
+        int y = 120 + i * 80;
+        if (strcmp(entries[i].name, player_name) == 0 &&
+            entries[i].minutes == player_min &&
+            entries[i].seconds == player_sec)
+        {
+            al_draw_filled_rectangle(DISP_W / 2 - 300, y - 10, DISP_W / 2 + 300, y + 60, al_map_rgb(50, 50, 150));
+        }
+        al_draw_text(name_font, al_map_rgb(200, 200, 0), DISP_W / 2, y, ALLEGRO_ALIGN_CENTER, buf);
+    }
+}
+======================================================
+*/
+
+void print_ranking_table(const char* player_name, int player_min, int player_sec)
+{
+    //ALLEGRO_FONT* name_font = al_load_ttf_font("BebasNeue-Regular.ttf", 50, 0);
+    //ALLEGRO_FONT* title_font = al_load_ttf_font("BebasNeue-Regular.ttf", 80, 0);
+
+    // rank.txt 읽기
+
+    FILE* f = NULL;
+
+    if (game_difficulty == DIFF_EASY)
+    {
+        FILE* f = fopen("Rank_Easy.txt", "r");
+    }
+    else if (game_difficulty == DIFF_NORMAL)
+    {
+        FILE* f = fopen("Rank_Normal.txt", "r");
+    }
+    else if (game_difficulty == DIFF_HARD)
+    {
+        FILE* f = fopen("Rank_Hard.txt", "r");
+    }
+    //FILE* f = fopen("rank.txt", "r");
+    _RANK entries[128];
+    int count = 0;
+    if (f) 
+    {
+        while (fscanf(f, "%31s %d %d", entries[count].name, &entries[count].minutes, &entries[count].seconds) == 3)
+        {
+            count++;
+            if (count >= 128) break;
+        }
+        fclose(f);
+    }
+    qsort(entries, count, sizeof(_RANK), cmp_rank);
+
+    // 제목
+    al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "SCOREBOARD - TOP 10");
+
+    // 상위 10개 출력
+    for (int i = 0; i < count && i < 10; i++) {
+        char buf[128];
+        sprintf(buf, "%2d. %-10s  %02d:%02d", i + 1, entries[i].name, entries[i].minutes, entries[i].seconds);
+
+        int y = 120 + i * 80;
+        if (strcmp(entries[i].name, player_name) == 0 && entries[i].minutes == player_min && entries[i].seconds == player_sec)
+        {
+            al_draw_filled_rectangle(DISP_W / 2 - 300, y - 10, DISP_W / 2 + 300, y + 60, al_map_rgb(50, 50, 150));
+        }
+        al_draw_text(name_font, al_map_rgb(200, 200, 0), DISP_W / 2, y, ALLEGRO_ALIGN_CENTER, buf);
+    }
+}
+
+
+
+
 
 #if 0
 #include <stdio.h>
@@ -275,6 +383,7 @@ void table(void)
 #endif
 
 #if 0
+
 // dnf_like_full.c
 #define _CRT_SECURE_NO_WARNINGS
 #include <allegro5/allegro5.h>
@@ -1050,4 +1159,5 @@ int main(void) {
     al_destroy_display(disp);
     return 0;
 }
+
 #endif
