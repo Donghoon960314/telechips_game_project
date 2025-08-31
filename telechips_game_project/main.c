@@ -209,6 +209,7 @@ int main() {
                 player_update();
                 enemies_update();
                 items_update();
+                hud_update();
                 update_shake();
 
                 // 매 프레임마다 시간 감소

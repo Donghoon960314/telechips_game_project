@@ -29,7 +29,23 @@ void hud_init()
     font_large = al_load_ttf_font("BebasNeue-Regular.ttf", 150, 0);
     must_init(font_large, "font_large");
 
+    for (int i = 0; i < HEAL_TEXTS_N; i++) {
+        heal_texts[i].active = false;
+    }
+
     score_display = 0;
+}
+
+void hud_update() {
+    for (int i = 0; i < HEAL_TEXTS_N; i++) {
+        if (heal_texts[i].active) {
+            heal_texts[i].y -= 1;      // 위로 이동
+            heal_texts[i].timer--;
+            if (heal_texts[i].timer <= 0) {
+                heal_texts[i].active = false;
+            }
+        }
+    }
 }
 
 void hud_draw()
@@ -91,6 +107,21 @@ void hud_draw()
             buff_text
         );
     }
+
+
+    for (int i = 0; i < HEAL_TEXTS_N; i++) {
+        if (heal_texts[i].active) {
+            al_draw_text(
+                font_small,
+                al_map_rgb(0, 200, 0),   // 초록색
+                heal_texts[i].x,
+                heal_texts[i].y,
+                ALLEGRO_ALIGN_CENTER,
+                heal_texts[i].text
+            );
+        }
+    }
+ 
 
     // 게임 오버 표시
     if (player.hp <= 0)
