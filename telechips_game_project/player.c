@@ -280,13 +280,7 @@ void player_draw()
 
     // 2.5D 구현
     DEPTH_MIN_SCALE = 1.5f; 
-    DEPTH_MAX_SCALE = 3.0f;  
-
-    // y = 110일 때 min_scale, y = PLAYER_MAX_Y일 때 max_scale
-    float t = (float)(player.y - PLAYER_MIN_Y) / (PLAYER_MAX_Y - PLAYER_MIN_Y);
-    if (t < 0) t = 0;
-    if (t > 1) t = 1;
-    float depth_scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
+    DEPTH_MAX_SCALE = 3.0f;
 
     int scaled_w = 0.7 * PLAYER_W * depth_scale;
     int scaled_h = PLAYER_H * depth_scale;

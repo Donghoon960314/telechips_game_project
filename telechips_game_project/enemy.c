@@ -258,8 +258,8 @@ void enemies_update()
 
             if (enemies[i].type == BOSS_TYPE_1) {
                 // 보스: 상하좌우 4방향 발사
-                shots_add(false, true, cx, cy, DIR_LEFT, 10, ATTACK_BOSS);
-                shots_add(false, true, cx, cy, DIR_RIGHT, 10, ATTACK_BOSS);
+                shots_add(false, true, cx, cy, DIR_LEFT, 10, ATTACK_BOSS1);
+                shots_add(false, true, cx, cy, DIR_RIGHT, 10, ATTACK_BOSS1);
                 
 
 
