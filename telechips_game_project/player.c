@@ -25,12 +25,12 @@ void player_init()
         player.max_hp = player.hp;
         player.speed = PLAYER_SPEED >> 1; // 이동 속도
 
-        player.power_normal = 3; // 일반 공격 공격력
+        player.power_normal = 2; // 일반 공격 공격력
         player.power_skill_1 = 6; // 스킬 1 공격력
         //player.power_skill_2 = 6; // 스킬 2 공격력
 
         player.normal_shot_cooldown = 30; // 일반 공격 쿨타임
-        player.skill_1_cooldown = 120; // 스킬 1 쿨타임
+        player.skill_1_cooldown = 150; // 스킬 1 쿨타임
         //player.skill_2_cooldown = 120; // 스킬 2 쿨타임
          
         player.normal_shot_timer = 0;
@@ -44,12 +44,12 @@ void player_init()
         player.max_hp = player.hp;
         player.speed = PLAYER_SPEED;
 
-        player.power_normal = 1;
-        player.power_skill_1 = 3;
+        player.power_normal = 3;
+        player.power_skill_1 = 5;
         //player.power_skill_2 = 3;
 
         player.normal_shot_cooldown = 15; 
-        player.skill_1_cooldown = 60; 
+        player.skill_1_cooldown = 90; 
         //player.skill_2_cooldown = 120;
 
         player.normal_shot_timer = 0;
@@ -163,13 +163,13 @@ void player_update()
         {
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal, ATTACK_NORMAL);
             player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
-            player.attack_anim_timer = 18; // 공격 모션 유지 시간
+            player.attack_anim_timer = 36; // 공격 모션 유지 시간
         }
         else if (player.job == JOB_TYPE_2)
         {
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal, ATTACK_NORMAL);
             player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
-            player.attack_anim_timer = 9; // 공격 모션 유지 시간
+            player.attack_anim_timer = 36; // 공격 모션 유지 시간
 
         }
     }
@@ -185,19 +185,23 @@ void player_update()
         {
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_skill_1, ATTACK_SKILL_1);
             player.skill_1_timer = player.skill_1_cooldown;
-            player.attack_anim_timer = 18;
+            player.attack_anim_timer2 = 24;
         }
         else if (player.job == JOB_TYPE_2)
         {
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_skill_1, ATTACK_SKILL_1);
             player.skill_1_timer = player.skill_1_cooldown;
-            player.attack_anim_timer = 9;
+            player.attack_anim_timer2 = 24;
         }
     }
      // 공격 모션 유지 시간
     if (player.attack_anim_timer > 0)
     {
         player.attack_anim_timer--;
+    }
+    if (player.attack_anim_timer2 > 0)
+    {
+        player.attack_anim_timer2--;
     }
 }
 
@@ -301,7 +305,11 @@ void player_draw()
     {
         if (player.attack_anim_timer > 0)
         {
-            bmp = sprites.player1_attack;
+            bmp = sprites.player1_attack1;
+        }
+        else if (player.attack_anim_timer2 > 0)
+        {
+            bmp = sprites.player1_attack2;
         }
         else
         {
@@ -313,7 +321,11 @@ void player_draw()
     {
         if (player.attack_anim_timer > 0)
         {
-            bmp = sprites.player2_attack;
+            bmp = sprites.player2_attack1;
+        }
+        else if (player.attack_anim_timer2 > 0)
+        {
+            bmp = sprites.player2_attack2;
         }
         else
         {
