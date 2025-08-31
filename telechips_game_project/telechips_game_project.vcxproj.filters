@@ -66,6 +66,9 @@
     <ClCompile Include="First_UI.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="items.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -89,24 +92,18 @@
     <Image Include="shot2.png">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="subway_background.jpg">
-      <Filter>리소스 파일</Filter>
-    </Image>
     <Image Include="subway_floor.jpg">
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="player.png">
       <Filter>리소스 파일</Filter>
     </Image>
-
-
     <Image Include="monster01.png">
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="monster02.png">
       <Filter>리소스 파일</Filter>
     </Image>
-
     <Image Include="player1.png">
       <Filter>리소스 파일</Filter>
     </Image>
@@ -117,13 +114,11 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="stage1_new.png">
-
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="stage2_new.png">
       <Filter>리소스 파일</Filter>
     </Image>
-
     <Image Include="stage3.PNG">
       <Filter>리소스 파일</Filter>
     </Image>
@@ -170,7 +165,36 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="prologue_dialog_14.png">
-
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="background.jpg">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="boss01.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="player2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="player2_attack.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="player2_shot1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="player2_shot2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="stage1.PNG">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="stage2.PNG">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="subway_background.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="TUTORIAL.png">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>
@@ -193,5 +217,16 @@
   </ItemGroup>
   <ItemGroup>
     <Font Include="BebasNeue-Regular.ttf" />
+    <Font Include="x64\Debug\OpenSans_Bold.ttf">
+      <Filter>리소스 파일</Filter>
+    </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="back.mp3" />
+    <Media Include="boss1_shot.mp3" />
+    <Media Include="BOSS1_who_are_you.mp3" />
+    <Media Include="BOSS1_an.mp3" />
+    <Media Include="ENEMY1.mp3" />
+    <Media Include="Enemy_re.mp3" />
   </ItemGroup>
 </Project>

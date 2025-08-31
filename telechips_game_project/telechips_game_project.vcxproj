@@ -199,6 +199,7 @@
     <Image Include="start_display.png" />
     <Image Include="subway_background.png" />
     <Image Include="subway_floor.jpg" />
+    <Image Include="TUTORIAL.png" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Easy rank.txt" />
@@ -213,6 +214,7 @@
   </ItemGroup>
   <ItemGroup>
     <Font Include="BebasNeue-Regular.ttf" />
+    <Font Include="x64\Debug\OpenSans_Bold.ttf" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="attack2.mp3" />

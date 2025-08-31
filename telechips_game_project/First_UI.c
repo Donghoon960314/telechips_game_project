@@ -6,13 +6,14 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
+#include <allegro5/allegro_ttf.h>
 #include <stdbool.h>
 #include <string.h>
 #include "common.h"
 /*
-- °ÔÀÓ ½ÃÀÛ È­¸é ¹öÆ° 3°³
-- ³­ÀÌµµ¿¡ µû¸¥ ¹öÆ° 3°³ ±¸Çö +
-- ¹è°æ È­¸é ³Ö±â
+- ê²Œì„ ì‹œì‘ í™”ë©´ ë²„íŠ¼ 3ê°œ
+- ë‚œì´ë„ì— ë”°ë¥¸ ë²„íŠ¼ 3ê°œ êµ¬í˜„ +
+- ë°°ê²½ í™”ë©´ ë„£ê¸°
 -
 */
 
@@ -24,7 +25,7 @@
 //long frames;
 //long score;
 
-// ¾Ë·¹±×·Î ÃÊ±âÈ­ ÇÔ¼ö ÀÛ¾÷ -> ÇØ´ç ÀÛ¾÷ º¯¼ö°¡ ¾øÀ» ½Ã °æ°í¹®
+// ì•Œë ˆê·¸ë¡œ ì´ˆê¸°í™” í•¨ìˆ˜ ì‘ì—… -> í•´ë‹¹ ì‘ì—… ë³€ìˆ˜ê°€ ì—†ì„ ì‹œ ê²½ê³ ë¬¸
 /*static void must_init(bool test, const char* description)
 {
     if (test) return;
@@ -63,7 +64,7 @@ static bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx
 ALLEGRO_DISPLAY* disp;
 ALLEGRO_BITMAP* buffer;
 
-// µğ½ºÇÃ·¹ÀÌ È­¸é ÃÊ±âÈ­ ÇÔ¼ö
+// ë””ìŠ¤í”Œë ˆì´ í™”ë©´ ì´ˆê¸°í™” í•¨ìˆ˜
 void disp_init(void)
 {
     al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
@@ -99,22 +100,22 @@ void disp_post_draw(void)
 /*---  --- */
 
 
-Button pos1 = { BUFFER_W / 2, (BUFFER_H / 2) - 60 , 240, 100, "START", "", false, true };
-Button pos2 = { BUFFER_W / 2, (BUFFER_H / 2) + 200, 240, 100, "BACK" , "", false, false };
-Button pos3 = { BUFFER_W / 2, (BUFFER_H / 2) + 60, 240, 100, "GUIDE", "", false, true };
-Button pos4 = { BUFFER_W / 2, (BUFFER_H / 2) + 180, 240, 100, "RANKING", "", false, true };
-Button pos5 = { BUFFER_W / 2, (BUFFER_H / 2) - 60, 240, 100, "Easy", "", false, true };
-Button pos6 = { BUFFER_W / 2, (BUFFER_H / 2) + 60, 240, 100, "Normal", "", false, true };
-Button pos7 = { BUFFER_W / 2, (BUFFER_H / 2) + 250, 240, 100, "Hard", "", false, true };
-Button pos8 = { BUFFER_W / 2, (BUFFER_H / 2) , 240, 100, "DANSO", "", false, true };
-Button pos9 = { BUFFER_W / 2, (BUFFER_H / 2) + 120 , 240, 100, "ZARUBAN", "", false, true };
+Button pos1 = { BUFFER_W / 2 - 120 , (BUFFER_H / 2) - 180 , 240, 100, "START", "", false, true };
+Button pos2 = { BUFFER_W /2 + 440 , (BUFFER_H / 2) - 440, 240, 100, "BACK" , "", false, false };
+Button pos3 = { BUFFER_W / 2 - 120, (BUFFER_H / 2)  , 240, 100, "TUTORIAL", "", false, true };
+Button pos4 = { BUFFER_W / 2 - 120, (BUFFER_H / 2) + 180, 240, 100, "RANKING", "", false, true };
+Button pos5 = { BUFFER_W / 2 - 120, (BUFFER_H / 2) - 180, 240, 100, "Easy", "", false, true };
+Button pos6 = { BUFFER_W / 2 - 120, (BUFFER_H / 2) , 240, 100, "Normal", "", false, true };
+Button pos7 = { BUFFER_W / 2 - 120, (BUFFER_H / 2) + 180, 240, 100, "Hard", "", false, true };
+Button pos8 = { BUFFER_W / 2 - 300, (BUFFER_H / 2)  , 240, 100, "Tanjiro", "", false, true };
+Button pos9 = { BUFFER_W / 2 + 100, (BUFFER_H / 2)  , 240, 100, "Rengoku", "", false, true };
 
 
 
 
 Button* BUT_List[] = { &pos1, &pos2, &pos3, &pos4 ,&pos5, &pos6, &pos7, &pos8, &pos9 };
 
-/* È÷Æ® Å×½ºÆ®´Â Ç×»ó '¹öÆÛ ÁÂÇ¥°è'·Î ºñ±³ÇØ¾ß Á¤È® */
+/* íˆíŠ¸ í…ŒìŠ¤íŠ¸ëŠ” í•­ìƒ 'ë²„í¼ ì¢Œí‘œê³„'ë¡œ ë¹„êµí•´ì•¼ ì •í™• */
 bool pt_in_rect(float px, float py, const Button* b) {
     return b->active &&
         (px >= b->x && px <= b->x + b->w &&
@@ -138,7 +139,7 @@ void update_hover_all(float bx, float by)
 }
 
 
-/* ½ºÄÉÀÏµÈ µğ½ºÇÃ·¹ÀÌ ÁÂÇ¥ -> ¹öÆÛ ÁÂÇ¥ º¯È¯ */
+/* ìŠ¤ì¼€ì¼ëœ ë””ìŠ¤í”Œë ˆì´ ì¢Œí‘œ -> ë²„í¼ ì¢Œí‘œ ë³€í™˜ */
 float to_buffer_x(float mx)
 {
     return mx * (float)BUFFER_W / (float)DISP_W;
@@ -153,21 +154,23 @@ float to_buffer_y(float my)
 
 
 
-/* ¹öÆ° ¼³°è ÇÔ¼ö(Á÷»ç°¢Çü ¶óÀÌºê·¯¸® , µµÇü »ö±ò Ã¤¿ò, ÆùÆ® ÇÏÀÌ¶óÀÌÆ®) */
+/* ë²„íŠ¼ ì„¤ê³„ í•¨ìˆ˜(ì§ì‚¬ê°í˜• ë¼ì´ë¸ŒëŸ¬ë¦¬ , ë„í˜• ìƒ‰ê¹” ì±„ì›€, í°íŠ¸ í•˜ì´ë¼ì´íŠ¸) */
 void Button_draw(const Button* pos, ALLEGRO_FONT* font)
 {
     if (!pos->active) return;
 
-    // ¹öÆ° º¸µå »ö±ò 
+    // ë²„íŠ¼ ë³´ë“œ ìƒ‰ê¹” 
     ALLEGRO_COLOR btn_col = pos->hover
         ? al_map_rgb(80, 170, 240)
-        : al_map_rgb(60, 130, 200);
+        : al_map_rgb(100, 100, 100);
     ALLEGRO_COLOR btn_border = al_map_rgb(10, 10, 10);
 
     al_draw_filled_rectangle(pos->x, pos->y, pos->x + pos->w, pos->y + pos->h, btn_col);
 
     al_draw_rectangle(pos->x, pos->y, pos->x + pos->w, pos->y + pos->h, btn_border, 4.0f);
 
+    font = al_load_ttf_font("OpenSans_Bold.ttf", 40, 0);
+    
     int tw = al_get_text_width(font, pos->label1);
     int th = al_get_font_line_height(font);
     float tx = pos->x + (pos->w - tw) / 2.0f;
@@ -180,7 +183,7 @@ void Button_draw(const Button* pos, ALLEGRO_FONT* font)
 
 
 
-// ³­ÀÌµµ¿¡ µû¸¥ ÃÊ±â°ª ±¸Çö
+// ë‚œì´ë„ì— ë”°ë¥¸ ì´ˆê¸°ê°’ êµ¬í˜„
 // 
 
 
@@ -198,7 +201,7 @@ void show_back_only(void)
     pos7.active = false;
     pos8.active = false;
     pos9.active = false;
-    // Back ¹öÆ° È°¼ºÈ­
+    // Back ë²„íŠ¼ í™œì„±í™”
     pos2.active = true;
 }
 
@@ -207,18 +210,21 @@ void show_main_menu(void)
     pos1.active = true;
     pos3.active = true;
     pos4.active = true;
-    pos2.active = false;    // ¹é ¹öÆ° ºñÈ°¼ºÈ­
+    pos2.active = false;    // ë°± ë²„íŠ¼ ë¹„í™œì„±í™”
 }
 
 ALLEGRO_BITMAP* prologue_List[PRO] = { 0 };
+
 PROLOGUE_STATE ps = { 0,0,0,false };
 
-// Á÷¾÷¿¡ µû¶ó ´Ş¶óÁö´Â ÇÁ·Ñ·Î±× ¼³Á¤ ÇÔ¼ö
+// ì§ì—…ì— ë”°ë¼ ë‹¬ë¼ì§€ëŠ” í”„ë¡¤ë¡œê·¸ ì„¤ì • í•¨ìˆ˜
 void set_pro_job(void)
 {
     switch (job_type)
     {
+
     case JOB_TYPE_1: // Tanjiro
+
         ps.start = 0;
         ps.end = 6;
         break;
@@ -232,10 +238,10 @@ void set_pro_job(void)
 
 }
 
-// ÇÁ·Ñ·Î±× È­¸é ÇÔ¼ö
+// í”„ë¡¤ë¡œê·¸ í™”ë©´ í•¨ìˆ˜
 void prologue_display(ALLEGRO_BITMAP* bitmap)
 {
-    // ¹è°æÈ­¸é »çÁøÀ» ¹öÆÛ Å©±â¿¡ ¸ÂÃß±â
+    // ë°°ê²½í™”ë©´ ì‚¬ì§„ì„ ë²„í¼ í¬ê¸°ì— ë§ì¶”ê¸°
     float w = al_get_bitmap_width(bitmap);
     float h = al_get_bitmap_height(bitmap);
     float dw = BUFFER_W;
@@ -247,7 +253,22 @@ void prologue_display(ALLEGRO_BITMAP* bitmap)
 
 }
 
-// ÇÁ·Ñ·Î±× ºñÆ®¸Ê ·Îµå ÇÔ¼ö
+// íŠœí† ë¦¬ì–¼ í™”ë©´
+void Tutorial_display(ALLEGRO_BITMAP* bitmap)
+{
+    // ë°°ê²½í™”ë©´ ì‚¬ì§„ì„ ë²„í¼ í¬ê¸°ì— ë§ì¶”ê¸°
+    float w = al_get_bitmap_width(bitmap);
+    float h = al_get_bitmap_height(bitmap);
+    float dw = BUFFER_W;
+    float dh = BUFFER_H;
+    al_draw_scaled_bitmap(bitmap,
+        0, 0, w, h,
+        400, 90, w, h,
+        0);
+
+}
+
+// í”„ë¡¤ë¡œê·¸ ë¹„íŠ¸ë§µ ë¡œë“œ í•¨ìˆ˜
 void load_slides(void)
 {
 
@@ -277,17 +298,17 @@ void load_slides(void)
 }
 
 
-// ÇÁ·Ñ·Î±× È­¸é ¼øÂ÷ÀûÀ¸·Î ³Ñ±â´Â ÇÔ¼ö
+// í”„ë¡¤ë¡œê·¸ í™”ë©´ ìˆœì°¨ì ìœ¼ë¡œ ë„˜ê¸°ëŠ” í•¨ìˆ˜
 void next_slide()
 {
-    // °ø¹éÀÏ ¶§
+    // ê³µë°±ì¼ ë•Œ
     if (ps.blink)
         return;
 
-    // ½½¶óÀÌµåÀÇ ¼ö¸¸Å­ ½½¶óÀÌµå ÀÎµ¦½º Ãß°¡
+    // ìŠ¬ë¼ì´ë“œì˜ ìˆ˜ë§Œí¼ ìŠ¬ë¼ì´ë“œ ì¸ë±ìŠ¤ ì¶”ê°€
     if (ps.curr < ps.end)
         ps.curr++;
-    // ¸¶Áö¸· È­¸éÀ» Áö³¯ ½Ã¿¡ ºí·¢ È­¸éÀ¸·Î °íÁ¤
+    // ë§ˆì§€ë§‰ í™”ë©´ì„ ì§€ë‚  ì‹œì— ë¸”ë™ í™”ë©´ìœ¼ë¡œ ê³ ì •
     else {
         ps.blink = true;
     }
@@ -297,7 +318,7 @@ void next_slide()
 /* --- main --- */
 int main(void)
 {
-    // ¾Ë·¹±×·Î ¶óÀÌºê·¯¸® ÃÊ±âÈ­ ÇÔ¼ö ¼±¾ğ
+    // ì•Œë ˆê·¸ë¡œ ë¼ì´ë¸ŒëŸ¬ë¦¬ ì´ˆê¸°í™” í•¨ìˆ˜ ì„ ì–¸
     must_init(al_init(), "allegro");
     must_init(al_install_keyboard(), "keyboard");
     must_init(al_install_mouse(), "mouse");
@@ -306,7 +327,7 @@ int main(void)
     must_init(al_init_image_addon(), "image");
 
 
-    /*¾Ë·¹±×·Î ÀÌº¥Æ® ¸â¹ö º¯¼öÀÎ ÀÌº¥Æ®, Å¸ÀÌ¸Ó, ÆùÆ®, ÀÌ¹ÌÁö ÃÊ±âÈ­ ÀÛ¾÷  */
+    /*ì•Œë ˆê·¸ë¡œ ì´ë²¤íŠ¸ ë©¤ë²„ ë³€ìˆ˜ì¸ ì´ë²¤íŠ¸, íƒ€ì´ë¨¸, í°íŠ¸, ì´ë¯¸ì§€ ì´ˆê¸°í™” ì‘ì—…  */
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
     must_init(queue, "queue");
 
@@ -321,13 +342,13 @@ int main(void)
 
 
 
-    // µğ½ºÇÃ·¹ÀÌ È­¸é ÃÊ±âÈ­
+    // ë””ìŠ¤í”Œë ˆì´ í™”ë©´ ì´ˆê¸°í™”
     disp_init();
 
-    // ÇÁ·Ñ·Î±× ½½¶óÀÌµå »ı¼ºÇÏ±â
+    // í”„ë¡¤ë¡œê·¸ ìŠ¬ë¼ì´ë“œ ìƒì„±í•˜ê¸°
     load_slides();
 
-    /* ÀÌº¥Æ® ¼Ò½º´Â 'disp'(½ºÄÉÀÏµÈ Ã¢)¿¡¼­ ¹Ş¾Æ¾ß ÇÔ */
+    /* ì´ë²¤íŠ¸ ì†ŒìŠ¤ëŠ” 'disp'(ìŠ¤ì¼€ì¼ëœ ì°½)ì—ì„œ ë°›ì•„ì•¼ í•¨ */
     al_register_event_source(queue, al_get_display_event_source(disp));
     al_register_event_source(queue, al_get_keyboard_event_source());
     al_register_event_source(queue, al_get_mouse_event_source());
@@ -338,28 +359,28 @@ int main(void)
     bool redraw = true;
     GameState state = STATE_MENU;
 
-    // ¾Ë·¹±×·Î ¶óÀÌºê·¯¸® Å¸ÀÌ¸Ó ½ÃÀÛ 
+    // ì•Œë ˆê·¸ë¡œ ë¼ì´ë¸ŒëŸ¬ë¦¬ íƒ€ì´ë¨¸ ì‹œì‘ 
     al_start_timer(timer);
 
-    // ¹«ÇÑ ¹İº¹
+    // ë¬´í•œ ë°˜ë³µ
     while (running)
     {
         al_wait_for_event(queue, &event);
 
-        // ÀÌº¥Æ®¿¡ µû¸¥ ÄÉÀÌ½º º°·Î ³ª´©±â
+        // ì´ë²¤íŠ¸ì— ë”°ë¥¸ ì¼€ì´ìŠ¤ ë³„ë¡œ ë‚˜ëˆ„ê¸°
         switch (event.type) {
-            // µğ½ºÇÃ·¹ÀÌ È­¸é Á¾·á¿¡ °ü·ÃµÈ ÀÌº¥Æ®
+            // ë””ìŠ¤í”Œë ˆì´ í™”ë©´ ì¢…ë£Œì— ê´€ë ¨ëœ ì´ë²¤íŠ¸
         case ALLEGRO_EVENT_DISPLAY_CLOSE:
             running = false;
             break;
 
-            // Å°ÆĞµå °ü·Ã ÀÌº¥Æ® ¹ß»ı ½Ã
+            // í‚¤íŒ¨ë“œ ê´€ë ¨ ì´ë²¤íŠ¸ ë°œìƒ ì‹œ
         case ALLEGRO_EVENT_KEY_DOWN:
-            // ALLEGRO_KEY_ESCAPEÀÇ ESCÅ°¸¦ ´©¸£¸é È­¸é Á¾·á
+            // ALLEGRO_KEY_ESCAPEì˜ ESCí‚¤ë¥¼ ëˆ„ë¥´ë©´ í™”ë©´ ì¢…ë£Œ
             if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
                 running = false;
 
-            // SÅ° ¹öÆ°À» ´©¸¦ ½Ã 
+            // Sí‚¤ ë²„íŠ¼ì„ ëˆ„ë¥¼ ì‹œ 
             else if (event.keyboard.keycode == ALLEGRO_KEY_S && state == STATE_RUNNING)
             {
                 next_slide();
@@ -367,10 +388,10 @@ int main(void)
             }
             break;
 
-            // ¸¶¿ì½º Ä¿¼­ ÁÂÇ¥ °ü·Ã ÀÌº¥Æ®
+            // ë§ˆìš°ìŠ¤ ì»¤ì„œ ì¢Œí‘œ ê´€ë ¨ ì´ë²¤íŠ¸
         case ALLEGRO_EVENT_MOUSE_AXES:
         {
-            /* µğ½ºÇÃ·¹ÀÌ ÁÂÇ¥ ¡æ ¹öÆÛ ÁÂÇ¥·Î º¯È¯ ÈÄ hover °»½Å */
+            /* ë””ìŠ¤í”Œë ˆì´ ì¢Œí‘œ â†’ ë²„í¼ ì¢Œí‘œë¡œ ë³€í™˜ í›„ hover ê°±ì‹  */
             float bx = to_buffer_x(event.mouse.x);
             float by = to_buffer_y(event.mouse.y);
             update_hover_all(bx, by);
@@ -379,17 +400,17 @@ int main(void)
         }
         break;
 
-        // ¸¶¿ì½º Å¬¸¯ °ü·Ã ÀÌº¥Æ® ¹ß»ı ½Ã      
+        // ë§ˆìš°ìŠ¤ í´ë¦­ ê´€ë ¨ ì´ë²¤íŠ¸ ë°œìƒ ì‹œ      
         case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
             if (event.mouse.button == 1) {
                 float bx = to_buffer_x(event.mouse.x);
                 float by = to_buffer_y(event.mouse.y);
-                // ¸¶¿ì½º À§Ä¡°¡ ¹öÆ° À§Ä¡
+                // ë§ˆìš°ìŠ¤ ìœ„ì¹˜ê°€ ë²„íŠ¼ ìœ„ì¹˜
 
                 Button* b = hit_button(bx, by);
                 if (!b)  break;
 
-                // °ÔÀÓ ½ÃÀÛ ¹öÆ°
+                // ê²Œì„ ì‹œì‘ ë²„íŠ¼
                 if (b == &pos1)
                 {
                     show_back_only();
@@ -398,14 +419,14 @@ int main(void)
                     pos9.active = true;
                 }
 
-                // µÚ·Î °¡±â ¼±¾ğ
+                // ë’¤ë¡œ ê°€ê¸° ì„ ì–¸
                 else if (b == &pos2)
                 {
                     state = STAGE_MENU;
                     show_main_menu();
                 }
 
-                // ·©Å· , °ÔÀÓ ¼³¸í 
+                // ë­í‚¹ , ê²Œì„ ì„¤ëª… 
                 else if (b == &pos3)
                 {
 
@@ -417,17 +438,17 @@ int main(void)
                     show_back_only();
                 }
 
-                // ³­ÀÌµµ : ½¬¿î ¸ğµå
+                // ë‚œì´ë„ : ì‰¬ìš´ ëª¨ë“œ
                 else if (b == &pos5)
                 {
                     set_pro_job();
 
                     game_difficulty = DIFF_HARD;
-                    printf("Very Easy~~~~~~~~~~~~ : %d\n", DIFF_EASY);    // Å×½ºÆ®
+                    printf("Very Easy~~~~~~~~~~~~ : %d\n", DIFF_EASY);    // í…ŒìŠ¤íŠ¸
                     state = STATE_RUNNING;
 
                 }
-                // ³­ÀÌµµ : Áß°£ ¸ğµå
+                // ë‚œì´ë„ : ì¤‘ê°„ ëª¨ë“œ
 
                 else if (b == &pos6)
                 {
@@ -438,20 +459,20 @@ int main(void)
                     state = STATE_RUNNING;
 
                 }
-                // ³­ÀÌµµ : ¾î·Á¿î ¸ğµå
+                // ë‚œì´ë„ : ì–´ë ¤ìš´ ëª¨ë“œ
                 else if (b == &pos7)
                 {
                     set_pro_job();
                     game_difficulty = DIFF_HARD;
-                    printf("Hard~~~~~~~~~~~~ : %d\n", DIFF_HARD);      // Å×½ºÆ®    
+                    printf("Hard~~~~~~~~~~~~ : %d\n", DIFF_HARD);      // í…ŒìŠ¤íŠ¸    
                     state = STATE_RUNNING;
 
 
                 }
-                // Á÷¾÷ ¼±ÅÃ 1 : DANSO
+                // ì§ì—… ì„ íƒ 1 : DANSO
                 else if (b == &pos8)
                 {
-                    state = STATE_MODE;     // ¸ğµå ¼±ÅÃ
+                    state = STATE_MODE;     // ëª¨ë“œ ì„ íƒ
                     job = JOB_DANSO;        // 
                     pos5.active = true;
                     pos6.active = true;
@@ -460,7 +481,7 @@ int main(void)
 
                 }
 
-                // Á÷¾÷ ¼±ÅÃ 2 : ZARUBAN
+                // ì§ì—… ì„ íƒ 2 : ZARUBAN
                 else if (b == &pos9)
                 {
                     state = STATE_MODE;
@@ -474,18 +495,18 @@ int main(void)
             }
             break;
 
-            // ¾Ë·¹±×·Î Å¸ÀÌ¸Ó ÀÌº¥Æ® 
+            // ì•Œë ˆê·¸ë¡œ íƒ€ì´ë¨¸ ì´ë²¤íŠ¸ 
         case ALLEGRO_EVENT_TIMER:
             frames++;
             redraw = true;
             break;
         }
 
-        /* ¸ŞÀÎ ÀÌº¥Æ® Å¥¿¡ °ø¹é ÀÌº¥Æ®°¡ ¹ß»ı µÇ´Â °æ¿ì */
+        /* ë©”ì¸ ì´ë²¤íŠ¸ íì— ê³µë°± ì´ë²¤íŠ¸ê°€ ë°œìƒ ë˜ëŠ” ê²½ìš° */
         if (redraw && al_is_event_queue_empty(queue)) {
-            /* ¹öÆÛ¿¡ ±×¸®°í ¡æ ½ºÄÉÀÏÇØ¼­ Ã¢¿¡ º¹»ç */
+            /* ë²„í¼ì— ê·¸ë¦¬ê³  â†’ ìŠ¤ì¼€ì¼í•´ì„œ ì°½ì— ë³µì‚¬ */
             disp_pre_draw();
-            al_clear_to_color(al_map_rgb(30, 30, 30));   /* ¹è°æ */
+            al_clear_to_color(al_map_rgb(30, 30, 30));   /* ë°°ê²½ */
             prologue_display(bitmap);
 
             switch (state) {
@@ -500,10 +521,10 @@ int main(void)
 
             case STATE_RANKING:
                 //print_ranking_table(0, 0, 0);
-                //Button_draw(&pos2, font); // Back ¹öÆ°µµ Ç¥½Ã
+                //Button_draw(&pos2, font); // Back ë²„íŠ¼ë„ í‘œì‹œ
                 break;
 
-                /*³­ÀÌµµ ¼±ÅÃ È­¸é*/
+                /*ë‚œì´ë„ ì„ íƒ í™”ë©´*/
             case STATE_MODE:
                 Button_draw(&pos5, font);
                 Button_draw(&pos6, font);
@@ -511,21 +532,21 @@ int main(void)
 
                 break;
 
-                // Á÷¾÷ ¼±ÅÃ È­¸é
+                // ì§ì—… ì„ íƒ í™”ë©´
             case STATE_CHOICE:
                 Button_draw(&pos8, font);   //danso
                 Button_draw(&pos9, font);   //zaruban
 
                 break;
 
-                // ÇÁ·Ñ·Î±× ÁøÀÔ
+                // í”„ë¡¤ë¡œê·¸ ì§„ì…
             case STATE_RUNNING:
-                // ºó È­¸é
+                // ë¹ˆ í™”ë©´
             {
                 if (ps.blink)
                     al_clear_to_color(al_map_rgb(0, 0, 0));
 
-                // ÇÁ·Ñ·Î±× È­¸éÀ» ¼øÂ÷ÀûÀ¸·Î »ı¼º (Á÷¾÷ ¼øÀ¸·Î ³ª´®)
+                // í”„ë¡¤ë¡œê·¸ í™”ë©´ì„ ìˆœì°¨ì ìœ¼ë¡œ ìƒì„± (ì§ì—… ìˆœìœ¼ë¡œ ë‚˜ëˆ”)
                 else
                 {
                     ALLEGRO_BITMAP* bitmap2 = prologue_List[ps.curr];
@@ -541,7 +562,7 @@ int main(void)
         }
     }
 
-    /* ÇÔ¼ö ¸¶¹«¸® ¼±¾ğ(Å¸ÀÌ¸Ó, ÆùÆ®, µğ½ºÇÃ·¹ÀÌ, ÀÌº¥Æ® Å¥)*/
+    /* í•¨ìˆ˜ ë§ˆë¬´ë¦¬ ì„ ì–¸(íƒ€ì´ë¨¸, í°íŠ¸, ë””ìŠ¤í”Œë ˆì´, ì´ë²¤íŠ¸ í)*/
     al_destroy_timer(timer);
     al_destroy_font(font);
     disp_deinit();

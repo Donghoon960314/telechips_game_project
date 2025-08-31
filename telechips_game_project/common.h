@@ -185,7 +185,8 @@ typedef enum {
     STATE_CHOICE = 12,// 직업 선택
     STATE_PROLOGUE = 13,// 프롤로그
     STATE_RUNNING = 14,   // 게임 시작 누를 때 실행
-    STATE_RANKING = 15 // 랭킹 화면
+    STATE_RANKING = 15, // 랭킹 화면
+    STATE_TUTORIAL = 16 // 튜토리얼
 } GameState;
 
 
@@ -221,6 +222,7 @@ PROLOGUE_STATE ps;
 
 void set_pro_job(void);
 void prologue_display(ALLEGRO_BITMAP* bitmap);
+void Tutorial_display(ALLEGRO_BITMAP* bitmap);
 void load_slides(void);
 
 void next_slide();
