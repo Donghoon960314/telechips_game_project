@@ -139,6 +139,7 @@
     <ClCompile Include="First_UI.c" />
     <ClCompile Include="general.c" />
     <ClCompile Include="hud.c" />
+    <ClCompile Include="items.c" />
     <ClCompile Include="keyboard.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="player.c" />
@@ -153,6 +154,7 @@
     <None Include="shot.flac" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="background.jpg" />
     <Image Include="boss01.png" />
     <Image Include="monster01.png" />
     <Image Include="monster02.png" />
@@ -189,7 +191,7 @@
     <Image Include="shot1.png" />
     <Image Include="shot2.png" />
     <Image Include="start_display.png" />
-    <Image Include="subway_background.jpg" />
+    <Image Include="subway_background.png" />
     <Image Include="subway_floor.jpg" />
   </ItemGroup>
   <ItemGroup>

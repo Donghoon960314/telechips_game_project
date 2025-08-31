@@ -14,16 +14,6 @@ JOB_TYPE job_type = JOB_TYPE_1;
 
 void player_init()
 {
-
-    //player.x = (BUFFER_W / 2) - (PLAYER_W / 2);
-    //player.y = (BUFFER_H / 2) - (PLAYER_H / 2);
-    //player.normal_shot_timer = 0;
-    //player.strong_shot_timer = 0;
-
-    //player.hp = 60;
-
-    //player.hp = 70;
-
     player.x = (BUFFER_W / 7) - (PLAYER_W / 7);
     player.y = (BUFFER_H / 1.7) - (PLAYER_H / 1.7);
     player.invincible_timer = 120; // 무적 시간
@@ -33,15 +23,16 @@ void player_init()
     // 직업 선택에 따라 능력치 다르게 설정
     if (player.job == JOB_TYPE_1) // JOB_TYPE_1 → 공격력 강함, 공격속도/이동속도 느림
     {
-        player.hp = 50; // 체력
+        player.hp = 80; // 체력
+        player.max_hp = player.hp;
         player.speed = PLAYER_SPEED >> 1; // 이동 속도
 
         player.power_normal = 3; // 일반 공격 공격력
         player.power_skill_1 = 6; // 스킬 1 공격력
         //player.power_skill_2 = 6; // 스킬 2 공격력
 
-        player.normal_shot_cooldown = 5; // 일반 공격 쿨타임
-        player.skill_1_cooldown = 5; // 스킬 1 쿨타임
+        player.normal_shot_cooldown = 30; // 일반 공격 쿨타임
+        player.skill_1_cooldown = 120; // 스킬 1 쿨타임
         //player.skill_2_cooldown = 120; // 스킬 2 쿨타임
          
         player.normal_shot_timer = 0;
@@ -52,6 +43,7 @@ void player_init()
     else if (player.job == JOB_TYPE_2) // JOB_TYPE_2 → 공격력 약함, 공격속도/이동속도 빠름
     {
         player.hp = 50;
+        player.max_hp = player.hp;
         player.speed = PLAYER_SPEED;
 
         player.power_normal = 1;

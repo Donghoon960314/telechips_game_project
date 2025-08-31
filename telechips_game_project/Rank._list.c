@@ -10,15 +10,7 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-
-typedef struct RANK {
-    char name[32];
-    int minutes;
-    int seconds;
-} _RANK;
-
 //분 단위로는 오름차순->분이 같을때 초단위로 오름차순
-
 int cmp_rank(const void* a, const void* b) 
 {
     const _RANK* x = (const _RANK*)a; //Rank구조체 가르키는 포인터 x와 y
@@ -114,11 +106,8 @@ void print_ranking_table(const char* player_name, int player_min, int player_sec
 
         //disp_post_draw();
     }
-    al_destroy_font(name_font);
-    al_destroy_font(title_font);
     al_destroy_event_queue(queue);
 }
-
 
 #if 0
 #include <stdio.h>

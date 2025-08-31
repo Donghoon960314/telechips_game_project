@@ -40,8 +40,9 @@ void sprites_init()
     sprites.enemy_shot[1] = sprite_grab(13, 10, ENEMY_SHOT_W, ENEMY_SHOT_H); // 보스 몹
 
     // 배경 이미지
-    subway_background = al_load_bitmap("subway_background.jpg"); 
+    subway_background = al_load_bitmap("subway_background.png"); 
     subway_floor = al_load_bitmap("subway_floor.jpg");
+    background = al_load_bitmap("background.jpg");
 }
 
 void sprites_deinit()
@@ -67,4 +68,5 @@ void sprites_deinit()
 
     al_destroy_bitmap(subway_background);
     al_destroy_bitmap(subway_floor);
+    al_destroy_bitmap(background);
 }
