@@ -6,6 +6,7 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
+#include <allegro5/allegro_ttf.h>
 #include <stdbool.h>
 #include <string.h>
 #include "common.h"
@@ -27,6 +28,10 @@ int main() {
     must_init(al_init_font_addon(), "font");      // 폰트 모듈 초기화
     must_init(al_init_image_addon(), "image");    // 이미지 모듈 초기화
     must_init(al_init_primitives_addon(), "primitives"); // 도형 모듈 초기화
+    must_init(al_init_ttf_addon(), "ttf");
+    
+    al_init_font_addon();
+    al_init_ttf_addon();
 
     // 이벤트 큐 생성
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
@@ -38,11 +43,15 @@ int main() {
     ALLEGRO_BITMAP* bitmap = al_load_bitmap("start_display.png");
     must_init(bitmap, "bitmap");
 
+    ALLEGRO_BITMAP* bitmap3 = al_load_bitmap("TUTORIAL.png");
+    must_init(bitmap3, "bitmap");
+
     // 디스플레이 & 오디오 초기화
     disp_init(); // 화면 초기화
     audio_init(); // 오디오 초기화
     sprites_init(); // 스프라이트(캐릭터, 아이템 등) 초기화
     hud_init(); // HUD 초기화
+
 
     // 프롤로그 슬라이드 생성
     load_slides();
@@ -131,9 +140,10 @@ int main() {
                 }
 
                 // 랭킹,게임 설명
-                else if ((b == &pos3) || (b == &pos4))
+                else if (b == &pos3)
                 {
                     show_back_only();
+                    state = STATE_TUTORIAL;
                 }
 
                 // 난이도: 쉬운 모드
@@ -350,7 +360,12 @@ int main() {
             case STATE_RANKING:
                 print_ranking_table(player_name, min, sec);
                 break;
-
+            
+            case STATE_TUTORIAL:
+                prologue_display(bitmap);
+                Tutorial_display(bitmap3);
+                Button_draw(&pos2, font);
+                break;
             }
             disp_post_draw(); // 더블 버퍼 화면에 출력
             redraw = false;

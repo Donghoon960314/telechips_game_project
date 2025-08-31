@@ -6,6 +6,7 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
+#include <allegro5/allegro_ttf.h>
 #include <stdbool.h>
 #include <string.h>
 #include "common.h"
@@ -99,15 +100,15 @@ void disp_post_draw(void)
 /*---  --- */
 
 
-Button pos1 = { BUFFER_W / 2, (BUFFER_H / 2) - 60 , 240, 100, "START", "", false, true };
-Button pos2 = { BUFFER_W / 2, (BUFFER_H / 2) + 200, 240, 100, "BACK" , "", false, false };
-Button pos3 = { BUFFER_W / 2, (BUFFER_H / 2) + 60, 240, 100, "GUIDE", "", false, true };
-Button pos4 = { BUFFER_W / 2, (BUFFER_H / 2) + 180, 240, 100, "RANKING", "", false, true };
-Button pos5 = { BUFFER_W / 2, (BUFFER_H / 2) - 60, 240, 100, "Easy", "", false, true };
-Button pos6 = { BUFFER_W / 2, (BUFFER_H / 2) + 60, 240, 100, "Normal", "", false, true };
-Button pos7 = { BUFFER_W / 2, (BUFFER_H / 2) + 250, 240, 100, "Hard", "", false, true };
-Button pos8 = { BUFFER_W / 2, (BUFFER_H / 2) , 240, 100, "DANSO", "", false, true };
-Button pos9 = { BUFFER_W / 2, (BUFFER_H / 2) + 120 , 240, 100, "ZARUBAN", "", false, true };
+Button pos1 = { BUFFER_W / 2 - 120 , (BUFFER_H / 2) - 180 , 240, 100, "START", "", false, true };
+Button pos2 = { BUFFER_W /2 + 440 , (BUFFER_H / 2) - 440, 240, 100, "BACK" , "", false, false };
+Button pos3 = { BUFFER_W / 2 - 120, (BUFFER_H / 2)  , 240, 100, "TUTORIAL", "", false, true };
+Button pos4 = { BUFFER_W / 2 - 120, (BUFFER_H / 2) + 180, 240, 100, "RANKING", "", false, true };
+Button pos5 = { BUFFER_W / 2 - 120, (BUFFER_H / 2) - 180, 240, 100, "Easy", "", false, true };
+Button pos6 = { BUFFER_W / 2 - 120, (BUFFER_H / 2) , 240, 100, "Normal", "", false, true };
+Button pos7 = { BUFFER_W / 2 - 120, (BUFFER_H / 2) + 180, 240, 100, "Hard", "", false, true };
+Button pos8 = { BUFFER_W / 2 - 300, (BUFFER_H / 2)  , 240, 100, "Tanjiro", "", false, true };
+Button pos9 = { BUFFER_W / 2 + 100, (BUFFER_H / 2)  , 240, 100, "Rengoku", "", false, true };
 
 
 
@@ -161,13 +162,15 @@ void Button_draw(const Button* pos, ALLEGRO_FONT* font)
     // 버튼 보드 색깔 
     ALLEGRO_COLOR btn_col = pos->hover
         ? al_map_rgb(80, 170, 240)
-        : al_map_rgb(60, 130, 200);
+        : al_map_rgb(100, 100, 100);
     ALLEGRO_COLOR btn_border = al_map_rgb(10, 10, 10);
 
     al_draw_filled_rectangle(pos->x, pos->y, pos->x + pos->w, pos->y + pos->h, btn_col);
 
     al_draw_rectangle(pos->x, pos->y, pos->x + pos->w, pos->y + pos->h, btn_border, 4.0f);
 
+    font = al_load_ttf_font("OpenSans_Bold.ttf", 40, 0);
+    
     int tw = al_get_text_width(font, pos->label1);
     int th = al_get_font_line_height(font);
     float tx = pos->x + (pos->w - tw) / 2.0f;
@@ -213,11 +216,6 @@ void show_main_menu(void)
 ALLEGRO_BITMAP* prologue_List[PRO] = { 0 };
 
 
-
-
-
-
-
 PROLOGUE_STATE ps = { 0,0,0,false };
 
 // 직업에 따라 달라지는 프롤로그 설정 함수
@@ -225,6 +223,7 @@ void set_pro_job(void)
 {
     switch (job)
     {
+    // 직업이 단소 일 때(
     case JOB_DANSO:
         ps.start = 0;
         ps.end = 6;
@@ -250,6 +249,21 @@ void prologue_display(ALLEGRO_BITMAP* bitmap)
     al_draw_scaled_bitmap(bitmap,
         0, 0, w, h,
         0, 0, dw, dh,
+        0);
+
+}
+
+// 튜토리얼 화면
+void Tutorial_display(ALLEGRO_BITMAP* bitmap)
+{
+    // 배경화면 사진을 버퍼 크기에 맞추기
+    float w = al_get_bitmap_width(bitmap);
+    float h = al_get_bitmap_height(bitmap);
+    float dw = BUFFER_W;
+    float dh = BUFFER_H;
+    al_draw_scaled_bitmap(bitmap,
+        0, 0, w, h,
+        400, 90, w, h,
         0);
 
 }
