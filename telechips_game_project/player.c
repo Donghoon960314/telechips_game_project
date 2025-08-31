@@ -160,14 +160,12 @@ void player_update()
     {
         if (player.job == JOB_TYPE_1)
         {
-            printf("JOB_TYPE_1\n");
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal, ATTACK_NORMAL);
             player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
             player.attack_anim_timer = 18; // 공격 모션 유지 시간
         }
         else if (player.job == JOB_TYPE_2)
         {
-            printf("JOB_TYPE_2\n");
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal, ATTACK_NORMAL);
             player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
             player.attack_anim_timer = 9; // 공격 모션 유지 시간

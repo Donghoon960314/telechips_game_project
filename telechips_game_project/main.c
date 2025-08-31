@@ -8,6 +8,7 @@
 #include <allegro5/allegro_image.h>
 #include <stdbool.h>
 #include <string.h>
+#include <time.h>
 #include "common.h"
 
 bool restarted = false;
@@ -79,6 +80,7 @@ int main() {
 
     // 타이머 시작
     al_start_timer(timer);
+    srand((unsigned int)time(NULL));
 
     //======================================================
     //                  메인 루프 시작
@@ -338,7 +340,6 @@ int main() {
   
             // 프롤로그가 끝났을 때 -> 본격적인 게임 화면
             case STATE_RUNNING:
-                printf("%d", game_difficulty);
                 draw_floor();
                 draw_vertical_lines();
                 draw_horizon_lines();
