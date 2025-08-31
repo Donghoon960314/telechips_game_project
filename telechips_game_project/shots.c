@@ -8,8 +8,8 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-const int PLAYER_SHOT_W[] = { 40, 70 };
-const int PLAYER_SHOT_H[] = { 50, 50 };
+const int PLAYER_SHOT_W[] = { 30, 50 };
+const int PLAYER_SHOT_H[] = { 40, 50 };
 
 int PLAYER_SHOT_WIDTH;
 int PLAYER_SHOT_HEIGHT;
@@ -114,7 +114,7 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
             // 플레이어 방향 저장
             switch (dir)
             {
-            case DIR_DOWN:  shots[i].dir = SHOT_DOWN; break;
+            case DIR_LEFT:  shots[i].dir = SHOT_LEFT; break; 
             case DIR_RIGHT: shots[i].dir = SHOT_RIGHT; break;
             }
         }
@@ -331,14 +331,20 @@ void shots_draw() {
         else
         {            
             ALLEGRO_BITMAP* bmp = (shots[i].power >= 10)
-                ? sprites.enemy_shot[1]
+                ? (shots[i].power >= 12 ? sprites.enemy_shot[2] : sprites.enemy_shot[1])
                 : sprites.enemy_shot[0];
 
             int w = al_get_bitmap_width(bmp);
             int h = al_get_bitmap_height(bmp);
 
-            float scale = (float)(DEPTH_MIN_SCALE + ((shots[i].y - 110) / (PLAYER_MAX_Y - 110.0f)) *
-                (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE));
+            //float scale = (float)(DEPTH_MIN_SCALE + ((shots[i].y - 110) / (PLAYER_MAX_Y - 110.0f)) *
+               // (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE));
+
+            float t = (float)(shots[i].y - 110) / (PLAYER_MAX_Y - 110.0f);
+            if (t < 0) t = 0;
+            if (t > 1) t = 1;
+            float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
+
 
             float final_w = w * scale;
             float final_h = h * scale;

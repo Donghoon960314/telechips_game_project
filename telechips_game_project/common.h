@@ -64,30 +64,10 @@ void keyboard_update(ALLEGRO_EVENT* event);
 //======================================================
 #define PLAYER_W 80
 #define PLAYER_H 80
-/*
-#define PLAYER_W 50
-#define PLAYER_H 100
 
-#define PLAYER_SHOT_W 90
-#define PLAYER_SHOT_H 60
-
-extern const int ENEMY_W[];
-extern const int ENEMY_H[];
-
-#define ENEMY_1_W ENEMY_W[0]
-#define ENEMY_1_H ENEMY_H[0]
-#define ENEMY_2_W ENEMY_W[1]
-#define ENEMY_2_H ENEMY_H[1]
-#define BOSS_1_W ENEMY_W[2]
-#define BOSS_1_H ENEMY_H[2]
-#define BOSS_2_W ENEMY_W[3]
-#define BOSS_2_H ENEMY_H[3]
-
-#define ENEMY_SHOT_W 4
-#define ENEMY_SHOT_H 4
-*/
 extern const int PLAYER_SHOT_W[2];
 extern const int PLAYER_SHOT_H[2];
+
 extern int PLAYER_SHOT_WIDTH;
 extern int PLAYER_SHOT_HEIGHT;
 
@@ -124,9 +104,11 @@ typedef struct SPRITES
     ALLEGRO_BITMAP* _sheet;
 
     ALLEGRO_BITMAP* player1;
-    ALLEGRO_BITMAP* player1_attack;
+    ALLEGRO_BITMAP* player1_attack1;
+    ALLEGRO_BITMAP* player1_attack2;
     ALLEGRO_BITMAP* player2;
-    ALLEGRO_BITMAP* player2_attack;
+    ALLEGRO_BITMAP* player2_attack1;
+    ALLEGRO_BITMAP* player2_attack2;
 
     ALLEGRO_BITMAP* player_shot[2][2]; // [0: 직업1, 1: 직업2][0: 일반, 1: 스킬1]
 
@@ -247,7 +229,6 @@ void next_slide();
 
 bool pt_in_rect(float px, float py, const Button* b);
 
-
 //======================================================
 //                       AUDIO
 //======================================================
@@ -262,6 +243,30 @@ ALLEGRO_AUDIO_STREAM* bgm_stream;
 
 void audio_init();
 void audio_deinit();
+
+//======================================================
+//                       STAGE
+//======================================================
+int stage_num_for;  //bitmap에 저장된 stage font위한 파라미터용
+int stage_num; //실제 스테이지 변수
+int delay; //스테이지 변경 시 딜레이를 위한 초기화
+
+extern bool monster_all_die; //몬스터가 모두 죽었는지 확인하는 변수
+
+typedef struct IMAGES //스테이지별 이미지가 담긴 이미지 구조체
+{
+    ALLEGRO_BITMAP* stage[3];
+
+}IMAGES;
+
+void stage_init();
+void stage_image_pop_init();
+void stage_image_pop_deinit();
+bool boss_check_live(void);
+bool check_monster_die(void);
+void stage_font(int stage_num_for);
+void stage_player_var(void);
+int stage_reset(void);
 
 //======================================================
 //                      COLLIDE
@@ -313,6 +318,7 @@ typedef struct PLAYER
 
     int invincible_timer; // 무적 상태 시간
     int attack_anim_timer; // 공격 모션 유지 시간
+    int attack_anim_timer2;
 
     bool atk_speed_buff; // 공격속도 증가 버프 적용 여부
     int atk_speed_buff_timer; // 공격속도 증가 버프 타이머
@@ -386,8 +392,8 @@ typedef enum {
     ATTACK_SKILL_1, // 플레이어 스킬1
 
     ATTACK_ENEMY, // 일반몹 공격
-    ATTACK_BOSS1, // 보스몹 공격
-    ATTACK_BOSS2
+    ATTACK_BOSS1, // 보스몹 공격1
+    ATTACK_BOSS2  // 보스몹 공격2
 
 } ATTACK_TYPE;
 

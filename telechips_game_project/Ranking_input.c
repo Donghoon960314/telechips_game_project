@@ -96,6 +96,14 @@ void rank_name_open(int time, char * rank_name, int * rank_min, int * rank_sec)/
     //여기서 부터는 키보드 이벤트 기다리는 로직 
     while (!user_input)
     {
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        al_draw_text(big_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 - 100, ALLEGRO_ALIGN_CENTER, "YOU WIN!!");
+        al_draw_text(medium_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 - 20, ALLEGRO_ALIGN_CENTER, time_text);
+        al_draw_text(small_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 + 60, ALLEGRO_ALIGN_CENTER, "Enter your name:");
+        al_draw_text(medium_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 + 110, ALLEGRO_ALIGN_CENTER, name);
+
+        al_flip_display(); //버퍼에 있는걸 화면에 출력 //더블버퍼를 사용해서 부드럽게
+
         ALLEGRO_EVENT event;
         al_wait_for_event(queue, &event);
 
@@ -115,17 +123,6 @@ void rank_name_open(int time, char * rank_name, int * rank_min, int * rank_sec)/
                 name[name_len] = '\0';
             }
         }
-     
-        al_clear_to_color(al_map_rgb(0, 0, 0));
-
-        al_draw_text(big_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 - 100, ALLEGRO_ALIGN_CENTER, "YOU WIN!!");
-        al_draw_text(medium_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 - 20, ALLEGRO_ALIGN_CENTER, time_text);
-        al_draw_text(small_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 + 60, ALLEGRO_ALIGN_CENTER, "Enter your name:");
-        al_draw_text(medium_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 + 110, ALLEGRO_ALIGN_CENTER, name);
-
-        al_flip_display(); //버퍼에 있는걸 화면에 출력 //더블버퍼를 사용해서 부드럽게
-       
-
     }
     printf("Player Name: %s, Time: %d min %d sec\n", name, minutes, seconds);
 

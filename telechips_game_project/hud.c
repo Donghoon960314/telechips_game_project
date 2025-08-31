@@ -54,16 +54,37 @@ void hud_draw()
     int minutes = time_left / 60;
     int seconds = time_left % 60;
 
+    // 0.5초마다 깜박이는 효과
+    bool blink = (frames / 30) % 2;
     char time_text[16];
-    sprintf(time_text, "%02d:%02d", minutes, seconds);
+    if (blink)
+        sprintf(time_text, "%02d:%02d", minutes, seconds);
+    else
+        sprintf(time_text, "%02d %02d", minutes, seconds);
 
-    al_draw_text(
-        font_medium,
-        al_map_rgb(0, 0, 0),
-        BUFFER_W / 2, 0, // 화면 상단 중앙
-        ALLEGRO_ALIGN_CENTER,
-        time_text
+    // 색상 변화 (기본: 흰색 → 30초 이하: 주황 → 10초 이하: 빨강)
+    ALLEGRO_COLOR col = al_map_rgb(255, 255, 255);
+    if (time_left <= 10)       col = al_map_rgb(255, 0, 0);
+    else if (time_left <= 30)  col = al_map_rgb(255, 165, 0);
+
+    // 좌표
+    int x = BUFFER_W / 2;
+    int y = 20;
+
+    // 반투명 박스 배경
+    al_draw_filled_rectangle(
+        x - 100, y,
+        x + 100, y + 110,
+        al_map_rgba(0, 0, 0, 150) // 반투명 검정
     );
+
+    // 그림자 효과 (글자를 약간 오른쪽/아래로 그려줌)
+    al_draw_text(font_medium, al_map_rgb(30, 30, 30),
+        x + 3, y + 3, ALLEGRO_ALIGN_CENTER, time_text);
+
+    // 본문 글자 (색상 변화 적용)
+    al_draw_text(font_medium, col,
+        x, y, ALLEGRO_ALIGN_CENTER, time_text);
 
     // 공격 쿨타임 표시
     float normal_cd = player.normal_shot_timer / 60.0f;

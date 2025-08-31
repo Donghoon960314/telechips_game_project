@@ -29,7 +29,7 @@ void enemy_set_stats(ENEMY* e) {
         e->hp = 2 * hp_mult[game_difficulty - 1];
         e->vx = 2 * speed_mult[game_difficulty - 1];
         e->vy = 0;
-        e->shot_timer = (int)(between(60, 150) * fire_mult[game_difficulty - 1]);
+        //e->shot_timer = (int)(between(60, 150) * fire_mult[game_difficulty - 1]);
         break;
 
     case ENEMY_TYPE_2:
@@ -43,7 +43,7 @@ void enemy_set_stats(ENEMY* e) {
         e->hp = 20 * hp_mult[game_difficulty - 1];
         e->vx = 1 * speed_mult[game_difficulty - 1];
         e->vy = 1 * speed_mult[game_difficulty - 1];
-        e->shot_timer = (int)(60 * fire_mult[game_difficulty - 1]);
+        e->shot_timer = (int)(120 * fire_mult[game_difficulty - 1]);
         e->state = BOSS_IDLE;
         e->state_timer = 30;
         break;
@@ -52,7 +52,7 @@ void enemy_set_stats(ENEMY* e) {
         e->hp = 20 * hp_mult[game_difficulty - 1];
         e->vx = 1 * speed_mult[game_difficulty - 1];
         e->vy = 1 * speed_mult[game_difficulty - 1];
-        e->shot_timer = (int)(60 * fire_mult[game_difficulty - 1]);
+        e->shot_timer = (int)(90 * fire_mult[game_difficulty - 1]);
         e->state = BOSS_IDLE;
         e->state_timer = 30;
         break;
@@ -260,10 +260,21 @@ void enemies_update()
                 // 보스: 상하좌우 4방향 발사
                 shots_add(false, true, cx, cy, DIR_LEFT, 10, ATTACK_BOSS1);
                 shots_add(false, true, cx, cy, DIR_RIGHT, 10, ATTACK_BOSS1);
+
                 
 
 
-                enemies[i].shot_timer = (int)(60 * fire_mult[game_difficulty - 1]);
+                enemies[i].shot_timer = (int)(90 * fire_mult[game_difficulty - 1]);
+            }
+            else if (enemies[i].type == BOSS_TYPE_2) {
+                // 보스: 상하좌우 4방향 발사
+                shots_add(false, true, cx, cy, DIR_LEFT, 12, ATTACK_BOSS2);
+                shots_add(false, true, cx, cy, DIR_RIGHT, 12, ATTACK_BOSS2);
+
+
+
+                enemies[i].shot_timer = (int)(90 * fire_mult[game_difficulty - 1]);
+
             }
             else {
                 // 일반 몬스터: 이동 방향 기준 발사

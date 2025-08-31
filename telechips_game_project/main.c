@@ -85,7 +85,7 @@ int main() {
     //======================================================
     frames = 0;          // 프레임 카운터
     score = 0;           // 점수 초기화
-    time_limit = 120;    // 제한 시간
+    time_limit = 60;    // 제한 시간
     time_left = time_limit;
 
     char player_name[32]; // 랭킹용 이름
@@ -252,14 +252,20 @@ int main() {
                     rank_name_open(al_get_timer_count(timer), player_name, &min, &sec);
                     game_end_ranking = true;   // 게임 끝나서 들어온 거니까 하이라이트 O
                     //print_ranking_table(player_name, min, sec);
-                    ALLEGRO_EVENT clean_queue_for_rank;
-                    while (al_get_next_event(queue, &clean_queue_for_rank))
-                    {
-                        //남은 이벤트 다 버리는중 
-                    }
-                    // show_main_menu(); 이거 있으면 루프돌면서 입력후 바로 화면으로 초기 UI로 넘어옴 queue비우고 
+                    
+                    al_flush_event_queue(queue);
+
                     //상태 변화후 ranking
                     state = STATE_RANKING;
+
+                    disp_pre_draw();
+                    al_clear_to_color(al_map_rgb(0, 0, 0));
+                    print_ranking_table("", 0, 0);
+                    disp_post_draw();
+
+                    redraw = false;
+
+                    continue;
                 }
 
                 // 첫 120프레임 동안만 소환 허용
@@ -277,15 +283,7 @@ int main() {
                     score = 0;
                     time_left = time_limit;
 
-                    spawn_enabled = true;
-                    boss_spawned = false;
-                    boss_spawn_timer = 0;
-
-                    boss_spawn_timer = -1;   // 대기 타이머도 리셋
-                    delay = 0;               // 스테이지 전환 대기 카운터 리셋
-
-                    stage_num = 1;           // 논리 스테이지 1로
-                    stage_num_for = 0;       // 배너/이미지 인덱스도 0(STAGE1)로
+                    stage_init();
 
                     al_stop_timer(timer);
                     al_set_timer_count(timer, 0);
@@ -367,6 +365,7 @@ int main() {
                     state = STATE_RUNNING;  // 프롤로그 끝 → 게임 시작
                     stage_font(0);          // Stage1 배너 띄움
 
+                    stage_init();
                     player_init();   // 플레이어 초기화
                 }
                 break;
@@ -382,7 +381,6 @@ int main() {
                 enemies_draw();
                 shots_draw();
                 player_draw();
-                items_draw();
                 hud_draw();
                 break;
 
@@ -413,7 +411,6 @@ int main() {
     sprites_deinit();
     hud_deinit();
     audio_deinit();
-    al_destroy_font(font);
     disp_deinit();
     al_destroy_font(font);
     al_destroy_bitmap(bitmap);
