@@ -98,6 +98,7 @@ SPRITES sprites;
 ALLEGRO_BITMAP* sprite_grab(int x, int y, int w, int h);
 ALLEGRO_BITMAP* subway_background;   // 지하철 배경 이미지
 ALLEGRO_BITMAP* subway_floor;   // 지하철 바닥 이미지
+ALLEGRO_BITMAP* background;
 
 void sprites_init();
 void sprites_deinit();
@@ -144,7 +145,6 @@ Button pos7;
 Button pos8;
 Button pos9;
 
-
 Button* BUT_List[];
 #define BTN_COUNT   sizeof(BUT_List) / sizeof(BUT_List[0])
 Button* hit_button(float bx, float by);
@@ -158,7 +158,9 @@ typedef enum {
     STATE_MENU = 10, // 첫 시작 화면
     STATE_MODE = 11, // 난이도 화면
     STATE_CHOICE = 12,// 직업 선택
-    STATE_RUNNING = 13   // 게임 시작 누를 때 실행
+    STATE_PROLOGUE = 13,// 프롤로그
+    STATE_RUNNING = 14,   // 게임 시작 누를 때 실행
+    STATE_RANKING = 15 // 랭킹 화면
 } GameState;
 
 
@@ -253,6 +255,7 @@ typedef struct PLAYER
 {
     int x, y; // 위치 좌표
     int hp; // HP
+    int max_hp; // 최대 HP
     int speed; // 이동 속도
     int power_normal; // 일반 공격 공격력
     int power_skill_1; // 스킬1 공격력
@@ -267,6 +270,9 @@ typedef struct PLAYER
 
     int invincible_timer; // 무적 상태 시간
     int attack_anim_timer; // 공격 모션 유지 시간
+
+    bool atk_speed_buff; // 공격속도 증가 버프 적용 여부
+    int atk_speed_buff_timer; // 공격속도 증가 버프 타이머
 
     DIRECTION last_dir; // 마지막 이동 방향
     JOB_TYPE job; // 직업
@@ -363,6 +369,29 @@ int shots_collide(bool player, int x, int y, int w, int h);
 void shots_draw();
 
 //======================================================
+//                      ITEM
+//======================================================
+typedef enum {
+    ITEM_HEAL, // 체력 회복
+    ITEM_ATK_SPEED // 공격 속도 증가
+} ITEM_TYPE;
+
+typedef struct ITEM {
+    int x, y; // 아이템 위치
+    ITEM_TYPE type; // 아이템 종류
+    bool used; // 현재 화면에 존재하는지
+} ITEM;
+
+#define ITEMS_N 3
+ITEM items[ITEMS_N];
+
+int item_spawn_timer;
+
+void items_init();
+void items_update();
+void items_draw();
+
+//======================================================
 //                      HUD
 //======================================================
 ALLEGRO_FONT* font; // HUD용 폰트
@@ -375,7 +404,30 @@ void hud_deinit();
 //======================================================
 //                   BACKGROUND
 //======================================================
+float shake_y;
+int shake_timer;
+
+void update_shake();
 void draw_background();
+void draw_subway_background();
 void draw_floor();
 void draw_horizon_lines();
 void draw_vertical_lines();
+
+//======================================================
+//                   RANK LIST
+//======================================================
+typedef struct RANK {
+    char name[32];
+    int minutes;
+    int seconds;
+} _RANK;
+
+int cmp_rank(const void* a, const void* b);
+void print_ranking_table(const char* player_name, int player_min, int player_sec);
+
+//======================================================
+//                RANKING INPUT
+//======================================================
+void rank_name_open(int time, char* rank_name, int* rank_min, int* rank_sec);
+

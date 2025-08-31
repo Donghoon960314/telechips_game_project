@@ -170,6 +170,7 @@ int stage_reset(void)
 
             enemies_init();
             shots_init();
+            items_init();
             stage_num += 1;
         }
     }
