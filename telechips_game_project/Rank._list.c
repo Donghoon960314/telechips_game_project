@@ -161,26 +161,37 @@ void print_ranking_table(const char* player_name, int player_min, int player_sec
 ======================================================
 */
 
+
+
+
+
+//======================================================
+//    여기서부터작동되는 코드 25.8.31.13:36
+//======================================================
+/*
 void print_ranking_table(const char* player_name, int player_min, int player_sec)
 {
     //ALLEGRO_FONT* name_font = al_load_ttf_font("BebasNeue-Regular.ttf", 50, 0);
     //ALLEGRO_FONT* title_font = al_load_ttf_font("BebasNeue-Regular.ttf", 80, 0);
 
     // rank.txt 읽기
-
     FILE* f = NULL;
 
     if (game_difficulty == DIFF_EASY)
     {
-        FILE* f = fopen("Rank_Easy.txt", "r");
+        f = fopen("Rank_Easy.txt", "r");
     }
     else if (game_difficulty == DIFF_NORMAL)
     {
-        FILE* f = fopen("Rank_Normal.txt", "r");
+        f = fopen("Rank_Normal.txt", "r");
     }
     else if (game_difficulty == DIFF_HARD)
     {
-        FILE* f = fopen("Rank_Hard.txt", "r");
+        f = fopen("Rank_Hard.txt", "r");
+    }
+    else
+    {
+        f = fopen("Rank_Hard.txt", "r");
     }
     //FILE* f = fopen("rank.txt", "r");
     _RANK entries[128];
@@ -197,10 +208,34 @@ void print_ranking_table(const char* player_name, int player_min, int player_sec
     qsort(entries, count, sizeof(_RANK), cmp_rank);
 
     // 제목
-    al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "SCOREBOARD - TOP 10");
+    if (game_difficulty == DIFF_EASY)
+    {
+        al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "EASY_MODE - TOP 10");
+    }
+    else if (game_difficulty == DIFF_NORMAL)
+    {
+        al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "NORMAL_MODE - TOP 10");
+    }
+    else if (game_difficulty == DIFF_HARD)
+    {
+        al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "HARD_MODE - TOP 10");
+
+    }
+    else
+    {
+        al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "HARD_MODE - TOP 10");
+    }
+
 
     // 상위 10개 출력
-    for (int i = 0; i < count && i < 10; i++) {
+    for (int i = 0; i < count && i < 10; i++) 
+    {
+        printf("DEBUG: comparing '%s' with '%s' (%d:%d vs %d:%d)\n",
+            entries[i].name, player_name,
+            entries[i].minutes, player_min,
+            entries[i].seconds, player_sec);
+
+
         char buf[128];
         sprintf(buf, "%2d. %-10s  %02d:%02d", i + 1, entries[i].name, entries[i].minutes, entries[i].seconds);
 
@@ -212,6 +247,122 @@ void print_ranking_table(const char* player_name, int player_min, int player_sec
         al_draw_text(name_font, al_map_rgb(200, 200, 0), DISP_W / 2, y, ALLEGRO_ALIGN_CENTER, buf);
     }
 }
+*/
+
+void print_ranking_table(const char* player_name, int player_min, int player_sec, RankMode mode)
+{
+    _RANK entries[128];
+    int count = 0;
+    //ALLEGRO_FONT* name_font = al_load_ttf_font("BebasNeue-Regular.ttf", 50, 0);
+    //ALLEGRO_FONT* title_font = al_load_ttf_font("BebasNeue-Regular.ttf", 80, 0);
+
+    // rank.txt 읽기
+    if (mode == END_TO_RANK)
+    {
+        FILE* f = NULL;
+
+        if (game_difficulty == DIFF_EASY)
+        {
+            f = fopen("Rank_Easy.txt", "r");
+        }
+        else if (game_difficulty == DIFF_NORMAL)
+        {
+            f = fopen("Rank_Normal.txt", "r");
+        }
+        else if (game_difficulty == DIFF_HARD)
+        {
+            f = fopen("Rank_Hard.txt", "r");
+        }
+        else
+        {
+            f = fopen("Rank_Hard.txt", "r");
+        }
+        //FILE* f = fopen("rank.txt", "r");
+
+        if (f)
+        {
+            while (fscanf(f, "%31s %d %d", entries[count].name, &entries[count].minutes, &entries[count].seconds) == 3)
+            {
+                count++;
+                if (count >= 128) break;
+            }
+            fclose(f);
+        }
+        qsort(entries, count, sizeof(_RANK), cmp_rank);
+
+        // 제목
+        if (game_difficulty == DIFF_EASY)
+        {
+            al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "EASY_MODE - TOP 10");
+        }
+        else if (game_difficulty == DIFF_NORMAL)
+        {
+            al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "NORMAL_MODE - TOP 10");
+        }
+        else if (game_difficulty == DIFF_HARD)
+        {
+            al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "HARD_MODE - TOP 10");
+
+        }
+        else
+        {
+            al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "HARD_MODE - TOP 10");
+        }
+
+
+        // 상위 10개 출력
+        for (int i = 0; i < count && i < 10; i++)
+        {
+
+            char buf[128];
+            sprintf(buf, "%2d. %-10s  %02d:%02d", i + 1, entries[i].name, entries[i].minutes, entries[i].seconds);
+
+            int y = 120 + i * 80;
+            if (strcmp(entries[i].name, player_name) == 0 && entries[i].minutes == player_min && entries[i].seconds == player_sec)
+            {
+                al_draw_filled_rectangle(DISP_W / 2 - 300, y - 10, DISP_W / 2 + 300, y + 60, al_map_rgb(50, 50, 150));
+            }
+            al_draw_text(name_font, al_map_rgb(200, 200, 0), DISP_W / 2, y, ALLEGRO_ALIGN_CENTER, buf);
+        }
+    }
+    else if (mode == BUTTON_TO_RANK)
+    {
+        const char* files[3] = { "Rank_Easy.txt","Rank_Normal.txt","Rank_Hard.txt" };
+        const char* titles[3] = { "EASY_MODE - TOP 10","NORMAL_MODE - TOP 10","HARD_MODE - TOP 10" };
+
+        for (int d = 0; d < 3; d++) {
+            count = 0;
+            FILE* f = fopen(files[d], "r");
+            if (f) {
+                while (fscanf(f, "%31s %d %d",
+                    entries[count].name,
+                    &entries[count].minutes,
+                    &entries[count].seconds) == 3)
+                {
+                    count++;
+                    if (count >= 128) break;
+                }
+                fclose(f);
+            }
+            qsort(entries, count, sizeof(_RANK), cmp_rank);
+
+            int base_x = (DISP_W / 6) + (d * DISP_W / 3);
+            int base_y = 50;
+
+            al_draw_text(button_to_rank_title_font, al_map_rgb(255, 255, 255), base_x, base_y, ALLEGRO_ALIGN_CENTER, titles[d]);
+
+            // 상위 10 출력
+            for (int i = 0; i < count && i < 10; i++) {
+                char buf[128];
+                sprintf(buf, "%2d. %-10s  %02d:%02d", i + 1, entries[i].name, entries[i].minutes, entries[i].seconds);
+
+                int y = base_y + 80 + i * 60; // 제목 밑 60px부터, 한 줄 30px 간격
+                al_draw_text(name_font, al_map_rgb(200, 200, 0), base_x, y, ALLEGRO_ALIGN_CENTER, buf);
+            }
+        }
+    }
+}
+    
 
 
 

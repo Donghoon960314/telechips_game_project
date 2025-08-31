@@ -15,6 +15,8 @@
 bool restarted = false;
 ALLEGRO_FONT* name_font = NULL;   // 전역 정의
 ALLEGRO_FONT* title_font = NULL;  // 전역 정의
+ALLEGRO_FONT* button_to_rank_title_font = NULL;
+
 
 //======================================================
 //                  MAIN GAME LOOP
@@ -41,8 +43,10 @@ int main() {
     // UI용 폰트 / 비트맵 로드
 
     ALLEGRO_FONT* font = al_create_builtin_font();
+    button_to_rank_title_font = al_load_ttf_font("BebasNeue-Regular.ttf", 60, 0);
     name_font = al_load_ttf_font("BebasNeue-Regular.ttf", 50, 0);
     title_font = al_load_ttf_font("BebasNeue-Regular.ttf", 80, 0);
+
     printf("DEBUG: name_font=%p, title_font=%p\n", name_font, title_font);
 
     if (!name_font || !title_font) {
@@ -86,6 +90,7 @@ int main() {
 
     char player_name[32]; // 랭킹용 이름
     int min, sec;         // 랭킹용 시간
+    bool game_end_ranking = false; //게임종료후 랭킹출력
 
     bool done = false;   // 게임 종료 여부
     bool redraw = true;  // 화면 다시 그릴지 여부
@@ -209,6 +214,8 @@ int main() {
             {
                 // 랭킹 화면일 때는 어떤 키를 눌러도 메뉴로 복귀
                 state = STATE_MENU;
+                game_end_ranking = false;   // 게임 끝나서 들어온 거니까 하이라이트 O
+                stage_num = 1; //게임시작 -> 종료 -> 랭킹입력 -> esc -> 다시 게임시작 할때 필요함
                 show_main_menu();   // 메뉴 버튼 다시 활성화
                 redraw = true;
             }
@@ -243,6 +250,7 @@ int main() {
                 // 스테이지 클리어 체크
                 if (stage_reset() > 3) {
                     rank_name_open(al_get_timer_count(timer), player_name, &min, &sec);
+                    game_end_ranking = true;   // 게임 끝나서 들어온 거니까 하이라이트 O
                     //print_ranking_table(player_name, min, sec);
                     
                     al_flush_event_queue(queue);
@@ -377,7 +385,14 @@ int main() {
                 break;
 
             case STATE_RANKING:
-                print_ranking_table("", 0, 0);
+                if (game_end_ranking)
+                {
+                    print_ranking_table(player_name, min, sec, END_TO_RANK);
+                }
+                else
+                {
+                    print_ranking_table("", 0, 0, BUTTON_TO_RANK);
+                }
                 break;
 
             }

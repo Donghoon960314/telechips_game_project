@@ -40,6 +40,9 @@ ALLEGRO_DISPLAY* disp;
 ALLEGRO_BITMAP* buffer;
 extern ALLEGRO_FONT* name_font;
 extern ALLEGRO_FONT* title_font;
+extern ALLEGRO_FONT* button_to_rank_title_font;
+
+
 void disp_init();
 void disp_deinit();
 void disp_pre_draw();
@@ -481,8 +484,13 @@ typedef struct RANK {
     int seconds;
 } _RANK;
 
+typedef enum {
+    BUTTON_TO_RANK,   // 메뉴 버튼 눌러서 들어왔을 때
+    END_TO_RANK     // 게임 끝난 후
+} RankMode;
+
 int cmp_rank(const void* a, const void* b);
-void print_ranking_table(const char* player_name, int player_min, int player_sec);
+void print_ranking_table(const char* player_name, int player_min, int player_sec, RankMode mode);
 
 //======================================================
 //                RANKING INPUT
