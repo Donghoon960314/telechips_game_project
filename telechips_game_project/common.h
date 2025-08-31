@@ -276,3 +276,14 @@ void draw_background();
 void draw_floor();
 void draw_horizon_lines();
 void draw_vertical_lines();
+
+//======================================================
+//                      STAGE
+//======================================================
+void stage_font(int stage_num_for);
+void rank_name_open(int time, char* rank_name, int* rank_min, int* rank_sec);
+void print_ranking_table(const char* player_name, int player_min, int player_sec);
+int stage_reset(void);
+void stage_player_var(void);
+void stage_image_pop_init();
+void stage_image_pop_deinit();

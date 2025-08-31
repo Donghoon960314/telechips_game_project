@@ -420,7 +420,6 @@ int main(void)
     // 무한 반복
     while (running)
     {
-        ALLEGRO_EVENT event;
         al_wait_for_event(queue, &event);
 
         // 이벤트에 따른 케이스 별로 나누기

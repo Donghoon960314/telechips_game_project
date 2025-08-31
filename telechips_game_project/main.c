@@ -57,136 +57,575 @@ int main() {
 
     bool done = false; // 게임 종료 여부
     bool redraw = true; // 화면 다시 그릴지 여부
+    bool running = true;
 
+    GameState state = STATE_MENU;
     ALLEGRO_EVENT event;
 
     // 타이머 시작 -> 매 1/60초마다 ALLEGRO_EVENT_TIMER 이벤트 발생
     al_start_timer(timer);
 
-    stage_font(0);
+    // 무한 반복
     while (1)
     {
-        // 이벤트 대기
-        // 이벤트가 큐에 차곡차곡 쌓이고, 루프에서 하나씩 처리됨
-        // 타이머, 키보드, 창 닫기 이벤트가 섞여도 순서대로 안전하게 처리 가능
-        al_wait_for_event(queue, &event);
-
-        // 이벤트 처리
-        switch (event.type)
+        while (running)
         {
+            ALLEGRO_EVENT event;
+            al_wait_for_event(queue, &event);
 
-        case ALLEGRO_EVENT_TIMER:  // 타이머 이벤트 -> 게임 업데이트
-            //background_update(); // 배경 업데이트
-            shots_update();     // 총알 업데이트
-            player_update();      // 플레이어 업데이트
-            enemies_update();    // 적 업데이트
-            
-            // 매 프레임마다 시간 감소
-            if (frames % 60 == 0 && time_left > 0)
+            // 이벤트에 따른 케이스 별로 나누기
+            switch (event.type) {
+                // 디스플레이 화면 종료에 관련된 이벤트
+            case ALLEGRO_EVENT_DISPLAY_CLOSE:
+                running = false;
+                break;
+
+                // 키패드 관련 이벤트 발생 시
+            case ALLEGRO_EVENT_KEY_DOWN:
+                // ALLEGRO_KEY_ESCAPE의 ESC키를 누르면 화면 종료
+                if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
+                    running = false;
+
+                // S키 버튼을 누를 시 
+                else if (event.keyboard.keycode == ALLEGRO_KEY_S && state == STATE_RUNNING)
+                {
+                    next_slide();
+                    redraw = true;
+                }
+                break;
+
+                // 마우스 커서 좌표 관련 이벤트
+            case ALLEGRO_EVENT_MOUSE_AXES:
             {
-                time_left--;
+                /* 디스플레이 좌표 → 버퍼 좌표로 변환 후 hover 갱신 */
+                float bx = to_buffer_x(event.mouse.x);
+                float by = to_buffer_y(event.mouse.y);
+                update_hover_all(bx, by);
+                redraw = true;
+
             }
-            // 시간 지나면 게임 오버 
-            if (time_left <= 0)
+            break;
+
+            // 마우스 클릭 관련 이벤트 발생 시      
+            case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
+                if (event.mouse.button == 1) {
+                    float bx = to_buffer_x(event.mouse.x);
+                    float by = to_buffer_y(event.mouse.y);
+                    // 마우스 위치가 버튼 위치
+
+                    Button* b = hit_button(bx, by);
+                    if (!b)  break;
+
+                    // 게임 시작 버튼
+                    if (b == &pos1)
+                    {
+                        show_back_only();
+                        state = STATE_CHOICE;
+                        pos8.active = true;
+                        pos9.active = true;
+                    }
+
+                    // 뒤로 가기 선언
+                    else if (b == &pos2)
+                    {
+                        show_main_menu();
+                    }
+
+                    // 랭킹 , 게임 설명 
+                    else if ((b == &pos3) || (b == &pos4))
+                    {
+                        show_back_only();
+                    }
+
+                    // 난이도 : 쉬운 모드
+                    else if (b == &pos5)
+                    {
+                        set_pro_job();
+
+                        game_difficulty = DIFF_HARD;
+                        printf("Very Easy~~~~~~~~~~~~ : %d\n", DIFF_EASY);    // 테스트
+                        state = STATE_RUNNING;
+
+                    }
+                    // 난이도 : 중간 모드
+
+                    else if (b == &pos6)
+                    {
+                        set_pro_job();
+
+                        game_difficulty = DIFF_NORMAL;
+                        printf("Normal~~~~~~~~~~~~ : %d\n", DIFF_NORMAL);    //
+                        state = STATE_RUNNING;
+
+                    }
+                    // 난이도 : 어려운 모드
+                    else if (b == &pos7)
+                    {
+                        set_pro_job();
+                        game_difficulty = DIFF_HARD;
+                        printf("Hard~~~~~~~~~~~~ : %d\n", DIFF_HARD);      // 테스트    
+                        state = STATE_RUNNING;
+
+
+                    }
+                    // 직업 선택 1 : DANSO
+                    else if (b == &pos8)
+                    {
+                        state = STATE_MODE;     // 모드 선택
+                        job = JOB_DANSO;        // 
+                        pos5.active = true;
+                        pos6.active = true;
+                        pos7.active = true;
+
+
+                    }
+
+                    // 직업 선택 2 : ZARUBAN
+                    else if (b == &pos9)
+                    {
+                        state = STATE_MODE;
+                        job = JOB_ZARUBAN;
+                        pos5.active = true;
+                        pos6.active = true;
+                        pos7.active = true;
+                    }
+
+                    redraw = true;
+                }
+                break;
+
+                // 알레그로 타이머 이벤트 
+            case ALLEGRO_EVENT_TIMER:
+                frames++;
+                redraw = true;
+                break;
+            }
+
+            /* 메인 이벤트 큐에 공백 이벤트가 발생 되는 경우 */
+            if (redraw && al_is_event_queue_empty(queue)) {
+                /* 버퍼에 그리고 → 스케일해서 창에 복사 */
+                disp_pre_draw();
+                al_clear_to_color(al_map_rgb(30, 30, 30));   /* 배경 */
+                prologue_display(bitmap);
+
+                switch (state) {
+
+                case STATE_MENU:
+                    Button_draw(&pos1, font);
+                    Button_draw(&pos2, font);
+                    Button_draw(&pos3, font);
+                    Button_draw(&pos4, font);
+
+                    break;
+
+                    /*난이도 선택 화면*/
+                case STATE_MODE:
+                    Button_draw(&pos5, font);
+                    Button_draw(&pos6, font);
+                    Button_draw(&pos7, font);
+
+                    break;
+
+                    // 직업 선택 화면
+                case STATE_CHOICE:
+                    Button_draw(&pos8, font);   //danso
+                    Button_draw(&pos9, font);   //zaruban
+
+                    break;
+
+                    // 프롤로그 진입
+                case STATE_RUNNING:
+                    // 빈 화면
+                {
+                    if (ps.blink)
+                        al_clear_to_color(al_map_rgb(0, 0, 0));
+
+                    // 프롤로그 화면을 순차적으로 생성 (직업 순으로 나눔)
+                    else
+                    {
+                        ALLEGRO_BITMAP* bitmap2 = prologue_List[ps.curr];
+                        prologue_display(bitmap2);
+                    }
+                    break;
+                }
+                default:
+                    break;
+                }
+                disp_post_draw();
+                redraw = false;
+            }
+        }
+
+        stage_font(0);
+        while (1)
+        {
+            // 이벤트 대기
+            // 이벤트가 큐에 차곡차곡 쌓이고, 루프에서 하나씩 처리됨
+            // 타이머, 키보드, 창 닫기 이벤트가 섞여도 순서대로 안전하게 처리 가능
+            al_wait_for_event(queue, &event);
+
+            // 이벤트 처리
+            switch (event.type)
             {
-                player.hp = 0;
+
+            case ALLEGRO_EVENT_TIMER:  // 타이머 이벤트 -> 게임 업데이트
+                //background_update(); // 배경 업데이트
+                shots_update();     // 총알 업데이트
+                player_update();      // 플레이어 업데이트
+                enemies_update();    // 적 업데이트
+
+                // 매 프레임마다 시간 감소
+                if (frames % 60 == 0 && time_left > 0)
+                {
+                    time_left--;
+                }
+                // 시간 지나면 게임 오버 
+                if (time_left <= 0)
+                {
+                    player.hp = 0;
+                }
+
+                //stage_reset();
+
+                if (stage_reset() > 3)
+                {
+                    //rank_name_open(al_get_timer_count(timer));
+                    //print_ranking_table(rank_name_open(al_get_timer_count(timer)));
+                    rank_name_open(al_get_timer_count(timer), player_name, &min, &sec);
+                    print_ranking_table(player_name, min, sec);
+                    done = true;
+
+                }
+
+                if (frames > 120) {   // 첫 120프레임 동안만 소환 허용
+                    spawn_enabled = false;
+
+                }
+
+                // ESC 키 -> 게임 종료
+                if (key[ALLEGRO_KEY_ESCAPE])
+                    done = true;
+
+                // R 키 -> 게임 리스타트 (플레이어 죽었을 때만)
+                if (player.hp <= 0 && key[ALLEGRO_KEY_R]) {
+                    frames = 0;
+                    score = 0;
+                    time_left = time_limit;
             }
-
-            //stage_reset();
-
-            if (stage_reset() > 3)
-            {
-                //rank_name_open(al_get_timer_count(timer));
-                //print_ranking_table(rank_name_open(al_get_timer_count(timer)));
-                rank_name_open(al_get_timer_count(timer), player_name, &min, &sec);
-                print_ranking_table(player_name, min, sec);
-                done = true;
-                    
-            }
-
-            if (frames > 120) {   // 첫 120프레임 동안만 소환 허용
-              spawn_enabled = false;
-
-            }
-
-            // ESC 키 -> 게임 종료
-            if (key[ALLEGRO_KEY_ESCAPE])
-                done = true;
+            break;
+            //여기까지
 
             // R 키 -> 게임 리스타트 (플레이어 죽었을 때만)
             if (player.hp <= 0 && key[ALLEGRO_KEY_R]) {
                 frames = 0;
                 score = 0;
                 time_left = time_limit;
-
-                spawn_enabled = true;
-                boss_spawned = false;
-                boss_spawn_timer = 0;
-
-                boss_spawn_timer = -1;   // 대기 타이머도 리셋
-                delay = 0;    // 스테이지 전환 대기 카운터 리셋
-
-                stage_num = 1;    // 논리 스테이지 1로
-                stage_num_for = 0;    // 배너/이미지 인덱스도 0(STAGE1)로
-
-                al_stop_timer(timer);               
-                al_set_timer_count(timer, 0);       
-                al_start_timer(timer);              
-
-                shots_init();
-                player_init();
-                enemies_init();
-
-                stage_font(stage_num_for);
-
-                // 다시 스테이지 1로 시작
             }
+            break;
+            //여기까지
 
+            // R 키 -> 게임 리스타트 (플레이어 죽었을 때만)
+            if (player.hp <= 0 && key[ALLEGRO_KEY_R]) {
+                frames = 0;
+                score = 0;
+                time_left = time_limit;
+            }
+            break;
+            //여기까지
+                    // 다시 스테이지 1로 시작
+                }
+            if (player.hp <= 0 && key[ALLEGRO_KEY_R]) {
+                redraw = true; // 화면 다시 그리기 플래그
+                frames++;      // 프레임 증가;
+                break;
+
+                // 창 닫기 이벤트
+            case ALLEGRO_EVENT_DISPLAY_CLOSE:
+                done = true;
+                break;
+            }
+            if (player.hp <= 0 && key[ALLEGRO_KEY_R]) {
             redraw = true; // 화면 다시 그리기 플래그
             frames++;      // 프레임 증가;
             break;
-
-            // 창 닫기 이벤트
-        case ALLEGRO_EVENT_DISPLAY_CLOSE:
+        
+            // 키보드 입력 업데이트
+            keyboard_update(&event);
             done = true;
-            break;
-        }
+            // 화면 그리기
+            if (redraw && al_is_event_queue_empty(queue))
+            {
+                disp_pre_draw(); // 더블 버퍼 준비
+                al_clear_to_color(al_map_rgb(0, 0, 0)); // 화면 클리어 (검정색)
 
-        // 종료 조건 확인
-        if (done)
-            break;
-
-        // 키보드 입력 업데이트
-        keyboard_update(&event);
-
+                draw_floor(); // 바닥
+                draw_vertical_lines(); // 세로선
+                draw_horizon_lines(); // 가로선
+                draw_background(); // 배경
+            done = true;
         // 화면 그리기
         if (redraw && al_is_event_queue_empty(queue))
         {
             disp_pre_draw(); // 더블 버퍼 준비
             al_clear_to_color(al_map_rgb(0, 0, 0)); // 화면 클리어 (검정색)
+            
+            //명훈 ui
+            prologue_display(bitmap);
+
+            switch (state) {
+        /* 함수 마무리 선언(타이머, 폰트, 디스플레이, 이벤트 큐)*/
+        /*al_destroy_timer(timer);
+        al_destroy_font(font);
+        disp_deinit();
+        al_destroy_bitmap(bitmap);
+        al_destroy_event_queue(queue);*/
+
+        sprites_deinit();
+        hud_deinit();
+        audio_deinit();
+        al_destroy_font(font);
+        disp_deinit();
+        al_destroy_bitmap(bitmap);
+        al_destroy_timer(timer);
+        al_destroy_event_queue(queue);
+        stage_image_pop_deinit();
+
+                // 직업 선택 화면
+            case STATE_CHOICE:
+                Button_draw(&pos8, font);   //danso
+                Button_draw(&pos9, font);   //zaruban
+
+                break;
+
+                // 프롤로그 진입
+            case STATE_RUNNING:
+                // 빈 화면
+            {
+                if (ps.blink)
+                    al_clear_to_color(al_map_rgb(0, 0, 0));
+
+                // 프롤로그 화면을 순차적으로 생성 (직업 순으로 나눔)
+                else
+                {
+                    ALLEGRO_BITMAP* bitmap2 = prologue_List[ps.curr];
+                    prologue_display(bitmap2);
+                }
+                break;
+            }
+            default:
+                break;
+            }
+            //여기까지
+
+            draw_floor(); // 바닥
+            draw_vertical_lines(); // 세로선
+            draw_horizon_lines(); // 가로선
+            draw_background(); // 배경
+            done = true;
+        // 화면 그리기
+        if (redraw && al_is_event_queue_empty(queue))
+        {
+            disp_pre_draw(); // 더블 버퍼 준비
+            al_clear_to_color(al_map_rgb(0, 0, 0)); // 화면 클리어 (검정색)
+            
+            //명훈 ui
+            prologue_display(bitmap);
+
+            switch (state) {
+    /* 함수 마무리 선언(타이머, 폰트, 디스플레이, 이벤트 큐)*/
+    /*al_destroy_timer(timer);
+    al_destroy_font(font);
+    disp_deinit();
+    al_destroy_bitmap(bitmap);
+    al_destroy_event_queue(queue);*/
+
+    sprites_deinit();
+    hud_deinit();
+    audio_deinit();
+    al_destroy_font(font);
+    disp_deinit();
+    al_destroy_bitmap(bitmap);
+    al_destroy_timer(timer);
+    al_destroy_event_queue(queue);
+    stage_image_pop_deinit();
+
+                // 직업 선택 화면
+            case STATE_CHOICE:
+                Button_draw(&pos8, font);   //danso
+                Button_draw(&pos9, font);   //zaruban
+
+                break;
+
+                // 프롤로그 진입
+            case STATE_RUNNING:
+                // 빈 화면
+            {
+                if (ps.blink)
+                    al_clear_to_color(al_map_rgb(0, 0, 0));
+
+                // 프롤로그 화면을 순차적으로 생성 (직업 순으로 나눔)
+                else
+                {
+                    ALLEGRO_BITMAP* bitmap2 = prologue_List[ps.curr];
+                    prologue_display(bitmap2);
+                }
+                break;
+            }
+            default:
+                break;
+            }
+            //여기까지
+
+            draw_floor(); // 바닥
+            draw_vertical_lines(); // 세로선
+            draw_horizon_lines(); // 가로선
+            draw_background(); // 배경
+            done = true;
+        // 화면 그리기
+        if (redraw && al_is_event_queue_empty(queue))
+        {
+            disp_pre_draw(); // 더블 버퍼 준비
+            al_clear_to_color(al_map_rgb(0, 0, 0)); // 화면 클리어 (검정색)
+            
+            //명훈 ui
+            prologue_display(bitmap);
+
+            switch (state) {
+    /* 함수 마무리 선언(타이머, 폰트, 디스플레이, 이벤트 큐)*/
+    /*al_destroy_timer(timer);
+    al_destroy_font(font);
+    disp_deinit();
+    al_destroy_bitmap(bitmap);
+    al_destroy_event_queue(queue);*/
+
+    sprites_deinit();
+    hud_deinit();
+    audio_deinit();
+    al_destroy_font(font);
+    disp_deinit();
+    al_destroy_bitmap(bitmap);
+    al_destroy_timer(timer);
+    al_destroy_event_queue(queue);
+    stage_image_pop_deinit();
+
+                // 직업 선택 화면
+            case STATE_CHOICE:
+                Button_draw(&pos8, font);   //danso
+                Button_draw(&pos9, font);   //zaruban
+
+                break;
+
+                // 프롤로그 진입
+            case STATE_RUNNING:
+                // 빈 화면
+            {
+                if (ps.blink)
+                    al_clear_to_color(al_map_rgb(0, 0, 0));
+
+                // 프롤로그 화면을 순차적으로 생성 (직업 순으로 나눔)
+                else
+                {
+                    ALLEGRO_BITMAP* bitmap2 = prologue_List[ps.curr];
+                    prologue_display(bitmap2);
+                }
+                break;
+            }
+            default:
+                break;
+            }
+            //여기까지
 
             draw_floor(); // 바닥
             draw_vertical_lines(); // 세로선
             draw_horizon_lines(); // 가로선
             draw_background(); // 배경
 
-            enemies_draw(); // 적
-            shots_draw();   // 총알
-            player_draw(); // 플레이어
-            hud_draw(); // HUD
+        // 화면 그리기
+        if (redraw && al_is_event_queue_empty(queue))
+        {
+            disp_pre_draw(); // 더블 버퍼 준비
+            al_clear_to_color(al_map_rgb(0, 0, 0)); // 화면 클리어 (검정색)
             
-            disp_post_draw(); // 더블 버퍼 화면에 출력
-            redraw = false;
-        }
-    }
+            //명훈 ui
+            prologue_display(bitmap);
+
+            switch (state) {
+    /* 함수 마무리 선언(타이머, 폰트, 디스플레이, 이벤트 큐)*/
+    /*al_destroy_timer(timer);
+    al_destroy_font(font);
+    disp_deinit();
+    al_destroy_bitmap(bitmap);
+    al_destroy_event_queue(queue);*/
 
     sprites_deinit();
     hud_deinit();
     audio_deinit();
+    al_destroy_font(font);
     disp_deinit();
+    al_destroy_bitmap(bitmap);
     al_destroy_timer(timer);
     al_destroy_event_queue(queue);
     stage_image_pop_deinit();
 
-    return 0;
+                // 직업 선택 화면
+            case STATE_CHOICE:
+                Button_draw(&pos8, font);   //danso
+                Button_draw(&pos9, font);   //zaruban
+
+                break;
+
+                // 프롤로그 진입
+            case STATE_RUNNING:
+                // 빈 화면
+            {
+                if (ps.blink)
+                    al_clear_to_color(al_map_rgb(0, 0, 0));
+
+                // 프롤로그 화면을 순차적으로 생성 (직업 순으로 나눔)
+                else
+                {
+                    ALLEGRO_BITMAP* bitmap2 = prologue_List[ps.curr];
+                    prologue_display(bitmap2);
+                }
+                break;
+            }
+            default:
+                break;
+            }
+            //여기까지
+
+            draw_floor(); // 바닥
+            draw_vertical_lines(); // 세로선
+            draw_horizon_lines(); // 가로선
+            draw_background(); // 배경
+
+                enemies_draw(); // 적
+                shots_draw();   // 총알
+                player_draw(); // 플레이어
+                hud_draw(); // HUD
+
+                disp_post_draw(); // 더블 버퍼 화면에 출력
+                redraw = false;
+            }
+        }
+
+    /* 함수 마무리 선언(타이머, 폰트, 디스플레이, 이벤트 큐)*/
+    /*al_destroy_timer(timer);
+    al_destroy_font(font);
+    disp_deinit();
+    al_destroy_bitmap(bitmap);
+    al_destroy_event_queue(queue);*/
+
+    sprites_deinit();
+    hud_deinit();
+    audio_deinit();
+    al_destroy_font(font);
+    disp_deinit();
+    al_destroy_bitmap(bitmap);
+    al_destroy_timer(timer);
+    al_destroy_event_queue(queue);
+    stage_image_pop_deinit();
+
+        return 0;
+    }
 }
