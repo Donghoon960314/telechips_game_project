@@ -14,8 +14,8 @@
 
 void rank_name_open(int time, char * rank_name, int * rank_min, int * rank_sec)//2분한 프레임 7200 굳이 long 쓸필요 x
 {
-    al_init_font_addon(); //ALLEGRO에서 font 사용 (기본 폰트)
-    al_init_ttf_addon();  //기본 포트가 아닌 새로운 폰트 사용가능
+    //al_init_font_addon(); //ALLEGRO에서 font 사용 (기본 폰트)
+    //al_init_ttf_addon();  //기본 포트가 아닌 새로운 폰트 사용가능
 
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue(); //이벤트(마우스,키보드,디플,타이머)받을 큐 생성
 
@@ -96,6 +96,14 @@ void rank_name_open(int time, char * rank_name, int * rank_min, int * rank_sec)/
     //여기서 부터는 키보드 이벤트 기다리는 로직 
     while (!user_input)
     {
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        al_draw_text(big_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 - 100, ALLEGRO_ALIGN_CENTER, "YOU WIN!!");
+        al_draw_text(medium_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 - 20, ALLEGRO_ALIGN_CENTER, time_text);
+        al_draw_text(small_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 + 60, ALLEGRO_ALIGN_CENTER, "Enter your name:");
+        al_draw_text(medium_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 + 110, ALLEGRO_ALIGN_CENTER, name);
+
+        al_flip_display(); //버퍼에 있는걸 화면에 출력 //더블버퍼를 사용해서 부드럽게
+
         ALLEGRO_EVENT event;
         al_wait_for_event(queue, &event);
 
@@ -115,21 +123,24 @@ void rank_name_open(int time, char * rank_name, int * rank_min, int * rank_sec)/
                 name[name_len] = '\0';
             }
         }
-     
-        al_clear_to_color(al_map_rgb(0, 0, 0));
-
-        al_draw_text(big_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 - 100, ALLEGRO_ALIGN_CENTER, "YOU WIN!!");
-        al_draw_text(medium_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 - 20, ALLEGRO_ALIGN_CENTER, time_text);
-        al_draw_text(small_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 + 60, ALLEGRO_ALIGN_CENTER, "Enter your name:");
-        al_draw_text(medium_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 + 110, ALLEGRO_ALIGN_CENTER, name);
-
-        al_flip_display(); //버퍼에 있는걸 화면에 출력 //더블버퍼를 사용해서 부드럽게
-       
-
     }
     printf("Player Name: %s, Time: %d min %d sec\n", name, minutes, seconds);
 
-    FILE* f = fopen("rank.txt", "a");
+    FILE* f = NULL;
+    if (game_difficulty == DIFF_EASY)
+    {
+         f = fopen("Rank_Easy.txt", "a");
+    }
+    else if (game_difficulty == DIFF_NORMAL)
+    {
+         f = fopen("Rank_Normal.txt", "a");
+    }
+    else if (game_difficulty == DIFF_HARD)
+    {
+         f = fopen("Rank_Hard.txt", "a");
+    }
+    //
+    // FILE* f = fopen("rank.txt", "a");
     if (f) {
         fprintf(f, "%s %d %d\n", name, minutes, seconds);
         fclose(f);

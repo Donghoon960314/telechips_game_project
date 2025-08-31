@@ -8,18 +8,22 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-int stage_num_for = 0;  //bitmap에 저장된 stage font위한 파라미터용
-int stage_num = 1; //실제 스테이지 변수
-int delay = 0; //스테이지 변경 시 딜레이를 위한 초기화
+stage_num_for = 0;  //bitmap에 저장된 stage font위한 파라미터용
+stage_num = 1; //실제 스테이지 변수
+delay = 0; //스테이지 변경 시 딜레이를 위한 초기화
 
 bool monster_all_die = false; //몬스터가 모두 죽었는지 확인하는 변수
 
-typedef struct IMAGES //스테이지별 이미지가 담긴 이미지 구조체
-{
-    ALLEGRO_BITMAP* stage[3];
-
-}IMAGES;
 IMAGES images;
+
+void stage_init() {
+    stage_num = 1;        // 스테이지를 무조건 1부터
+    stage_num_for = 0;    // 배너 인덱스도 0부터
+    spawn_enabled = true; // 스폰 활성화
+    boss_spawned = false; // 보스 안 나온 상태
+    boss_spawn_timer = -1;// 보스 타이머 리셋
+    delay = 0;            // 전환 카운터 리셋
+}
 
 void stage_image_pop_init() //main함수 반복문 돌기전에 bitamp에 저장두는 함수
 {
@@ -162,11 +166,8 @@ int stage_reset(void)
             boss_spawn_timer = -1;
             boss_spawned = false;
 
-            printf("monster all die\n");
             stage_player_var();   // 여기서 stage_num_for += 1
             stage_font(stage_num_for);  // 현재 stage 배너 출력
-
-            printf("start stage %d\n", stage_num_for);
 
             enemies_init();
             shots_init();
@@ -177,7 +178,6 @@ int stage_reset(void)
     else if (check_monster_die() == true) {
         delay = 60;
     }
-    printf("stage:num : %d\n", stage_num);
-    printf("stage_num_for : %d\n", stage_num_for);
+
     return stage_num;
 }

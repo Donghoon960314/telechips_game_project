@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
@@ -9,9 +10,14 @@
 #include <allegro5/allegro_ttf.h>
 #include <stdbool.h>
 #include <string.h>
+#include <time.h>
 #include "common.h"
 
 bool restarted = false;
+ALLEGRO_FONT* name_font = NULL;   // 전역 정의
+ALLEGRO_FONT* title_font = NULL;  // 전역 정의
+ALLEGRO_FONT* button_to_rank_title_font = NULL;
+
 
 //======================================================
 //                  MAIN GAME LOOP
@@ -26,19 +32,34 @@ int main() {
     must_init(timer, "timer");
 
     must_init(al_init_font_addon(), "font");      // 폰트 모듈 초기화
+    must_init(al_init_ttf_addon(), "ttf");
     must_init(al_init_image_addon(), "image");    // 이미지 모듈 초기화
     must_init(al_init_primitives_addon(), "primitives"); // 도형 모듈 초기화
-    must_init(al_init_ttf_addon(), "ttf");
+
+    
     
     al_init_font_addon();
     al_init_ttf_addon();
+
 
     // 이벤트 큐 생성
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
     must_init(queue, "queue");
 
     // UI용 폰트 / 비트맵 로드
+
     ALLEGRO_FONT* font = al_create_builtin_font();
+    button_to_rank_title_font = al_load_ttf_font("BebasNeue-Regular.ttf", 60, 0);
+    name_font = al_load_ttf_font("BebasNeue-Regular.ttf", 50, 0);
+    title_font = al_load_ttf_font("BebasNeue-Regular.ttf", 80, 0);
+
+    printf("DEBUG: name_font=%p, title_font=%p\n", name_font, title_font);
+
+    if (!name_font || !title_font) {
+        fprintf(stderr, "폰트 로드 실패! 실행 경로에 BebasNeue-Regular.ttf가 있는지 확인하세요.\n");
+        return -1; // 프로그램 바로 종료
+    }
+
     must_init(font, "builtin font");
     ALLEGRO_BITMAP* bitmap = al_load_bitmap("start_display.png");
     must_init(bitmap, "bitmap");
@@ -65,7 +86,6 @@ int main() {
     // 게임 객체 초기화
     keyboard_init(); // 키보드 상태 초기화
     shots_init();    // 총알 초기화
-    player_init();   // 플레이어 초기화
     enemies_init();  // 적 초기화
     items_init(); // 아이템 초기화
     stage_image_pop_init(); // 스테이지 배너 초기화
@@ -75,11 +95,12 @@ int main() {
     //======================================================
     frames = 0;          // 프레임 카운터
     score = 0;           // 점수 초기화
-    time_limit = 120;    // 제한 시간
+    time_limit = 60;    // 제한 시간
     time_left = time_limit;
 
     char player_name[32]; // 랭킹용 이름
     int min, sec;         // 랭킹용 시간
+    bool game_end_ranking = false; //게임종료후 랭킹출력
 
     bool done = false;   // 게임 종료 여부
     bool redraw = true;  // 화면 다시 그릴지 여부
@@ -88,6 +109,7 @@ int main() {
 
     // 타이머 시작
     al_start_timer(timer);
+    srand((unsigned int)time(NULL));
 
     //======================================================
     //                  메인 루프 시작
@@ -99,9 +121,9 @@ int main() {
 
         switch (event.type)
         {
-        //======================================================
-        //                    UI 관련 처리
-        //======================================================
+            //======================================================
+            //                    UI 관련 처리
+            //======================================================
         case ALLEGRO_EVENT_MOUSE_AXES:
         {
             /* 디스플레이 좌표 → 버퍼 좌표로 변환 후 hover 갱신 */
@@ -145,6 +167,10 @@ int main() {
                     show_back_only();
                     state = STATE_TUTORIAL;
                 }
+                else if (b == &pos4)
+                {
+                    state = STATE_RANKING;
+                }
 
                 // 난이도: 쉬운 모드
                 else if (b == &pos5)
@@ -152,7 +178,7 @@ int main() {
                     set_pro_job();
                     game_difficulty = DIFF_EASY;
                     state = STATE_PROLOGUE;
-                    
+
                 }
 
                 // 난이도: 중간 모드
@@ -171,21 +197,21 @@ int main() {
                     state = STATE_PROLOGUE;
                 }
 
-                // 직업 선택 1 : DANSO
+                // 직업 선택 1: Tanjiro
                 else if (b == &pos8)
                 {
                     state = STATE_MODE;
-                    job = JOB_DANSO;
+                    job_type = JOB_TYPE_1;
                     pos5.active = true;
                     pos6.active = true;
                     pos7.active = true;
                 }
 
-                // 직업 선택 2 : ZARUBAN
+                // 직업 선택 2: Rengoku
                 else if (b == &pos9)
                 {
                     state = STATE_MODE;
-                    job = JOB_ZARUBAN;
+                    job_type = JOB_TYPE_2;
                     pos5.active = true;
                     pos6.active = true;
                     pos7.active = true;
@@ -199,6 +225,8 @@ int main() {
             {
                 // 랭킹 화면일 때는 어떤 키를 눌러도 메뉴로 복귀
                 state = STATE_MENU;
+                game_end_ranking = false;   // 게임 끝나서 들어온 거니까 하이라이트 O
+                stage_num = 1; //게임시작 -> 종료 -> 랭킹입력 -> esc -> 다시 게임시작 할때 필요함
                 show_main_menu();   // 메뉴 버튼 다시 활성화
                 redraw = true;
             }
@@ -211,7 +239,7 @@ int main() {
             }
             break;
 
-        // 알레그로 타이머 이벤트 
+            // 알레그로 타이머 이벤트 
         case ALLEGRO_EVENT_TIMER:
             if (state == STATE_RUNNING) {
                 // 게임 로직 업데이트 (스테이지 안일 때만)
@@ -219,6 +247,7 @@ int main() {
                 player_update();
                 enemies_update();
                 items_update();
+                hud_update();
                 update_shake();
 
                 // 매 프레임마다 시간 감소
@@ -232,8 +261,22 @@ int main() {
                 // 스테이지 클리어 체크
                 if (stage_reset() > 3) {
                     rank_name_open(al_get_timer_count(timer), player_name, &min, &sec);
-                    print_ranking_table(player_name, min, sec);
+                    game_end_ranking = true;   // 게임 끝나서 들어온 거니까 하이라이트 O
+                    //print_ranking_table(player_name, min, sec);
+                    
+                    al_flush_event_queue(queue);
+
+                    //상태 변화후 ranking
                     state = STATE_RANKING;
+
+                    disp_pre_draw();
+                    al_clear_to_color(al_map_rgb(0, 0, 0));
+                    print_ranking_table("", 0, 0);
+                    disp_post_draw();
+
+                    redraw = false;
+
+                    continue;
                 }
 
                 // 첫 120프레임 동안만 소환 허용
@@ -251,15 +294,7 @@ int main() {
                     score = 0;
                     time_left = time_limit;
 
-                    spawn_enabled = true;
-                    boss_spawned = false;
-                    boss_spawn_timer = 0;
-
-                    boss_spawn_timer = -1;   // 대기 타이머도 리셋
-                    delay = 0;               // 스테이지 전환 대기 카운터 리셋
-
-                    stage_num = 1;           // 논리 스테이지 1로
-                    stage_num_for = 0;       // 배너/이미지 인덱스도 0(STAGE1)로
+                    stage_init();
 
                     al_stop_timer(timer);
                     al_set_timer_count(timer, 0);
@@ -279,8 +314,8 @@ int main() {
             frames++;
             redraw = true;
             break;
-        
-        // 창 닫기 이벤트
+
+            // 창 닫기 이벤트
         case ALLEGRO_EVENT_DISPLAY_CLOSE:
             done = true;
             break;
@@ -299,7 +334,7 @@ int main() {
         {
             disp_pre_draw(); // 더블 버퍼 준비
             al_clear_to_color(al_map_rgb(0, 0, 0)); // 화면 클리어 (검정색)
-           
+
             // UI 상태에 따른 화면 표시
             switch (state)
             {
@@ -340,25 +375,35 @@ int main() {
                 {
                     state = STATE_RUNNING;  // 프롤로그 끝 → 게임 시작
                     stage_font(0);          // Stage1 배너 띄움
+
+                    stage_init();
+                    player_init();   // 플레이어 초기화
                 }
                 break;
-  
-            // 프롤로그가 끝났을 때 -> 본격적인 게임 화면
+
+                // 프롤로그가 끝났을 때 -> 본격적인 게임 화면
             case STATE_RUNNING:
                 draw_floor();
                 draw_vertical_lines();
                 draw_horizon_lines();
                 draw_background();
                 draw_subway_background();
+                items_draw();
                 enemies_draw();
                 shots_draw();
                 player_draw();
-                 items_draw();
                 hud_draw();
                 break;
 
             case STATE_RANKING:
-                print_ranking_table(player_name, min, sec);
+                if (game_end_ranking)
+                {
+                    print_ranking_table(player_name, min, sec, END_TO_RANK);
+                }
+                else
+                {
+                    print_ranking_table("", 0, 0, BUTTON_TO_RANK);
+                }
                 break;
             
             case STATE_TUTORIAL:
@@ -372,6 +417,13 @@ int main() {
         }
     }
 
+    /* 함수 마무리 선언(타이머, 폰트, 디스플레이, 이벤트 큐)*/
+    /*al_destroy_timer(timer);
+    al_destroy_font(font);
+    disp_deinit();
+    al_destroy_bitmap(bitmap);
+    al_destroy_event_queue(queue);*/
+
     sprites_deinit();
     hud_deinit();
     audio_deinit();
@@ -381,6 +433,8 @@ int main() {
     al_destroy_timer(timer);
     al_destroy_event_queue(queue);
     stage_image_pop_deinit();
-
+    
     return 0;
+        
 }
+    

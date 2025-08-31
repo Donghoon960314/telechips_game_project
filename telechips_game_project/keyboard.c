@@ -17,18 +17,18 @@ void keyboard_update(ALLEGRO_EVENT* event)
 {
     switch (event->type)
     {
-        // 1/60초마다 호출
+    // 1/60초마다 호출
     case ALLEGRO_EVENT_TIMER:
         for (int i = 0; i < ALLEGRO_KEY_MAX; i++)
             key[i] &= ~KEY_SEEN;
         break;
 
-        // 키를 누른 경우
+    // 키를 누른 경우
     case ALLEGRO_EVENT_KEY_DOWN:
         key[event->keyboard.keycode] = KEY_SEEN | KEY_DOWN;
         break;
 
-        // 키를 뗀 경우
+    // 키를 뗀 경우
     case ALLEGRO_EVENT_KEY_UP:
         key[event->keyboard.keycode] &= ~KEY_DOWN;
         break;

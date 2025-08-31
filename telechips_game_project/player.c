@@ -10,8 +10,6 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-JOB_TYPE job_type = JOB_TYPE_1;
-
 void player_init()
 {
     player.x = (BUFFER_W / 7) - (PLAYER_W / 7);
@@ -27,12 +25,12 @@ void player_init()
         player.max_hp = player.hp;
         player.speed = PLAYER_SPEED >> 1; // 이동 속도
 
-        player.power_normal = 3; // 일반 공격 공격력
+        player.power_normal = 2; // 일반 공격 공격력
         player.power_skill_1 = 6; // 스킬 1 공격력
         //player.power_skill_2 = 6; // 스킬 2 공격력
 
         player.normal_shot_cooldown = 30; // 일반 공격 쿨타임
-        player.skill_1_cooldown = 120; // 스킬 1 쿨타임
+        player.skill_1_cooldown = 150; // 스킬 1 쿨타임
         //player.skill_2_cooldown = 120; // 스킬 2 쿨타임
          
         player.normal_shot_timer = 0;
@@ -46,12 +44,12 @@ void player_init()
         player.max_hp = player.hp;
         player.speed = PLAYER_SPEED;
 
-        player.power_normal = 1;
-        player.power_skill_1 = 3;
+        player.power_normal = 3;
+        player.power_skill_1 = 5;
         //player.power_skill_2 = 3;
 
         player.normal_shot_cooldown = 15; 
-        player.skill_1_cooldown = 60; 
+        player.skill_1_cooldown = 90; 
         //player.skill_2_cooldown = 120;
 
         player.normal_shot_timer = 0;
@@ -78,11 +76,11 @@ void player_update()
         player.x += player.speed;
         player.last_dir = DIR_RIGHT;
     }
-    if (key[ALLEGRO_KEY_UP]) 
+    if (key[ALLEGRO_KEY_UP])
     {
         player.y -= player.speed;
     }
-    if (key[ALLEGRO_KEY_DOWN]) 
+    if (key[ALLEGRO_KEY_DOWN])
     {
         player.y += player.speed;
     }
@@ -105,11 +103,12 @@ void player_update()
     float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
 
     // 실제 히트 박스 크기
-    int scaled_w = PLAYER_W * scale;
+    int scaled_w = 0.7 * PLAYER_W * scale;
     int scaled_h = PLAYER_H * scale;
 
     // 아래 부분만 충돌하도록 히트박스 축소 (2.5D 느낌으로)
-    int hitbox_h = scaled_h / 3;
+    int hitbox_x = player.x + PLAYER_W * scale * 0.15;
+    int hitbox_h = scaled_h / 2.0f;
     int hitbox_y = player.y + scaled_h - hitbox_h;
 
     // 무적 상태 처리
@@ -120,7 +119,7 @@ void player_update()
     else // 무적 상태 X
     {
         // 플레이어 <-> 몹 충돌
-        int enemy_index = enemies_collide(true, player.x, hitbox_y, scaled_w, hitbox_h);
+        int enemy_index = enemies_collide(true, hitbox_x, hitbox_y, scaled_w, hitbox_h);
         if (enemy_index != -1)
         {
             if (enemies[enemy_index].type == BOSS_TYPE_1) // 보스 충돌 → 20 깎음
@@ -140,7 +139,7 @@ void player_update()
         }
 
         // 플레이어 <-> 몹 총알 충돌
-        int damage = shots_collide(true, player.x, hitbox_y, scaled_w, hitbox_h);
+        int damage = shots_collide(true, hitbox_x, hitbox_y, scaled_w, hitbox_h);
         if (damage > 0)
         {
             player.hp -= damage; // HP 감소
@@ -164,13 +163,13 @@ void player_update()
         {
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal, ATTACK_NORMAL);
             player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
-            player.attack_anim_timer = 18; // 공격 모션 유지 시간
+            player.attack_anim_timer = 36; // 공격 모션 유지 시간
         }
         else if (player.job == JOB_TYPE_2)
         {
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal, ATTACK_NORMAL);
             player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
-            player.attack_anim_timer = 9; // 공격 모션 유지 시간
+            player.attack_anim_timer = 36; // 공격 모션 유지 시간
 
         }
     }
@@ -186,13 +185,13 @@ void player_update()
         {
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_skill_1, ATTACK_SKILL_1);
             player.skill_1_timer = player.skill_1_cooldown;
-            player.attack_anim_timer = 18;
+            player.attack_anim_timer2 = 24;
         }
         else if (player.job == JOB_TYPE_2)
         {
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_skill_1, ATTACK_SKILL_1);
             player.skill_1_timer = player.skill_1_cooldown;
-            player.attack_anim_timer = 9;
+            player.attack_anim_timer2 = 24;
         }
     }
      // 공격 모션 유지 시간
@@ -200,12 +199,33 @@ void player_update()
     {
         player.attack_anim_timer--;
     }
+    if (player.attack_anim_timer2 > 0)
+    {
+        player.attack_anim_timer2--;
+    }
 }
 
 void player_draw()
 {
     if (player.hp <= 0)
         return;
+
+    // 무적 깜빡임 효과 처리
+    if (player.invincible_timer > 0)
+    {
+        if (((player.invincible_timer / 2) % 3) == 1)
+            return; // 이 프레임에는 그리지 않음
+    }
+
+    // 2.5D 구현
+    DEPTH_MIN_SCALE = 1.5f; 
+    DEPTH_MAX_SCALE = 3.0f;  
+
+    // y = 110일 때 min_scale, y = PLAYER_MAX_Y일 때 max_scale
+    float t = (float)(player.y - PLAYER_MIN_Y) / (PLAYER_MAX_Y - PLAYER_MIN_Y);
+    if (t < 0) t = 0;
+    if (t > 1) t = 1;
+    float depth_scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
 
     /*
     // 플레이어 HP 표시
@@ -221,13 +241,23 @@ void player_draw()
     );
     */
     //여기 나중에 실행되는거 보고 위치 옮겨서 맞춰야 할 듯
-    int bar_width = 100;   // 전체 체력바 너비
-    int bar_height = 10;   // 체력바 높이
-    int bar_x = player.x + 40;  // 체력바 위치 X
-    int bar_y = player.y - 20; // 캐릭터 위쪽
+
+    // 깊이감 스케일 적용
+    int w = PLAYER_W;
+    int h = PLAYER_H;
+
+    float final_scale_x = PLAYER_W * depth_scale;
+    float final_scale_y = PLAYER_H * depth_scale;
+
+    // HP바 그리기
+    int base_bar_width = 60;                        // 기본 HP바 너비 (픽셀)
+    int bar_width = base_bar_width * depth_scale;   // 깊이에 따른 너비
+    int bar_height = 4 * depth_scale;               // 높이 줄임
+    int bar_x = player.x + 20;                      // 위치는 캐릭터에 맞춰서 조정
+    int bar_y = player.y - (12 * depth_scale);      // 캐릭터 위쪽
 
     // 현재 체력 비율
-    float hp_ratio = (float)player.hp / 50.0f; // 최대 HP=50 기준
+    float hp_ratio = (float)player.hp / (float)player.max_hp;
     if (hp_ratio < 0) hp_ratio = 0;
 
     // 체력바 배경 (회색)
@@ -254,13 +284,20 @@ void player_draw()
 
     // 2.5D 구현
     DEPTH_MIN_SCALE = 1.5f; 
-    DEPTH_MAX_SCALE = 3.0f;  
+    DEPTH_MAX_SCALE = 3.0f;
 
-    // y = 110일 때 min_scale, y = PLAYER_MAX_Y일 때 max_scale
-    float t = (float)(player.y - PLAYER_MIN_Y) / (PLAYER_MAX_Y - PLAYER_MIN_Y);
-    if (t < 0) t = 0;
-    if (t > 1) t = 1;
-    float depth_scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
+    int scaled_w = 0.7 * PLAYER_W * depth_scale;
+    int scaled_h = PLAYER_H * depth_scale;
+    int hitbox_x = player.x + PLAYER_W * depth_scale * 0.15;
+    int hitbox_h = scaled_h / 2;
+    int hitbox_y = player.y + scaled_h - hitbox_h;
+
+    // === 히트박스 표시 (빨간 네모) ===
+    al_draw_rectangle(
+        hitbox_x, hitbox_y,
+        hitbox_x + scaled_w, hitbox_y + hitbox_h,
+        al_map_rgb(255, 0, 0), 2
+    );
     
     // 공격 모션 적용
     ALLEGRO_BITMAP* bmp = NULL; // 초기화
@@ -268,7 +305,11 @@ void player_draw()
     {
         if (player.attack_anim_timer > 0)
         {
-            bmp = sprites.player1_attack;
+            bmp = sprites.player1_attack1;
+        }
+        else if (player.attack_anim_timer2 > 0)
+        {
+            bmp = sprites.player1_attack2;
         }
         else
         {
@@ -280,20 +321,17 @@ void player_draw()
     {
         if (player.attack_anim_timer > 0)
         {
-            bmp = sprites.player2_attack;
+            bmp = sprites.player2_attack1;
+        }
+        else if (player.attack_anim_timer2 > 0)
+        {
+            bmp = sprites.player2_attack2;
         }
         else
         {
             bmp = sprites.player2;
         }
     }
-
-    int w = PLAYER_W;
-    int h = PLAYER_H;
-
-    // 깊이감 스케일 적용
-    float final_scale_x = w * depth_scale;
-    float final_scale_y = h * depth_scale;
 
     // 좌/우 방향 반전
     if (player.last_dir == DIR_LEFT) {
