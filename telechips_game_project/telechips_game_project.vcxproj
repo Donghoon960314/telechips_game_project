@@ -17,12 +17,11 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{8184abb2-70a3-4a01-8d49-13f2d58eb165}</ProjectGuid>
+    <ProjectGuid>{8184ABB2-70A3-4A01-8D49-13F2D58EB165}</ProjectGuid>
     <RootNamespace>telechipsgameproject</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -53,27 +52,32 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Label="Shared" >
+  <ImportGroup Label="Shared">
   </ImportGroup>
-    <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    </ImportGroup>
-    <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    </ImportGroup>
-    <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    </ImportGroup>
-    <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    </ImportGroup>
-
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Allegro_AddonImage>true</Allegro_AddonImage>
+    <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
+    <Allegro_AddonAudio>true</Allegro_AddonAudio>
+    <Allegro_AddonAcodec>true</Allegro_AddonAcodec>
+    <Allegro_AddonFont>true</Allegro_AddonFont>
+    <Allegro_AddonTTF>true</Allegro_AddonTTF>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -83,7 +87,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -97,7 +101,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -109,7 +113,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -123,12 +127,109 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-
-  <ItemGroup></ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="audio.c" />
+    <ClCompile Include="background.c" />
+    <ClCompile Include="collide.c" />
+    <ClCompile Include="display.c" />
+    <ClCompile Include="enemy.c" />
+    <ClCompile Include="First_UI.c" />
+    <ClCompile Include="general.c" />
+    <ClCompile Include="hud.c" />
+    <ClCompile Include="items.c" />
+    <ClCompile Include="keyboard.c" />
+    <ClCompile Include="main.c" />
+    <ClCompile Include="player.c" />
+    <ClCompile Include="Rank._list.c" />
+    <ClCompile Include="Ranking_input.c" />
+    <ClCompile Include="shots.c" />
+    <ClCompile Include="sprites.c" />
+    <ClCompile Include="stage.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="shot.flac" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="background.jpg" />
+    <Image Include="boss01.png" />
+    <Image Include="boss_shot1.png" />
+    <Image Include="enemy_attack.png" />
+    <Image Include="item_attack_speedup.png" />
+    <Image Include="item_hp_heal.png" />
+    <Image Include="monster01.png" />
+    <Image Include="monster02.png" />
+    <Image Include="player.png" />
+    <Image Include="player1.png" />
+    <Image Include="player2.png" />
+    <Image Include="player2_attack.png" />
+    <Image Include="player2_shot1.png" />
+    <Image Include="player2_shot2.png" />
+    <Image Include="player_attack.png" />
+    <Image Include="prologue_dialog_01.png" />
+    <Image Include="prologue_dialog_02.png" />
+    <Image Include="prologue_dialog_03.png" />
+    <Image Include="prologue_dialog_04.png" />
+    <Image Include="prologue_dialog_05.png" />
+    <Image Include="prologue_dialog_06.png" />
+    <Image Include="prologue_dialog_07.png" />
+    <Image Include="prologue_dialog_08.png" />
+    <Image Include="prologue_dialog_09.png" />
+    <Image Include="prologue_dialog_10.png" />
+    <Image Include="prologue_dialog_11.png" />
+    <Image Include="prologue_dialog_12.png" />
+    <Image Include="prologue_dialog_13.png" />
+    <Image Include="prologue_dialog_14.png" />
+    <Image Include="spritesheet.png" />
+    <Image Include="stage1.PNG" />
+    <Image Include="stage1_new.png" />
+    <Image Include="stage1_new_new.PNG" />
+    <Image Include="stage2.PNG" />
+    <Image Include="stage2_new.png" />
+    <Image Include="stage2_new_new.PNG" />
+    <Image Include="stage3.PNG" />
+    <Image Include="stage3_new_new.PNG" />
+    <Image Include="shot1.png" />
+    <Image Include="shot2.png" />
+    <Image Include="start_display.png" />
+    <Image Include="subway_background.png" />
+    <Image Include="subway_floor.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Easy rank.txt" />
+    <Text Include="Hard rank.txt" />
+    <Text Include="Medium rank.txt" />
+    <Text Include="Rank_Easy.txt" />
+    <Text Include="Rank_Hard.txt" />
+    <Text Include="Rank_Normal.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="common.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="BebasNeue-Regular.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="bgm.mp3" />
+    <Media Include="boss1_shot.mp3" />
+    <Media Include="BOSS1_who_are_you.mp3" />
+    <Media Include="BOSS1_an.mp3" />
+    <Media Include="ENEMY1.mp3" />
+    <Media Include="Enemy_re.mp3" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\AllegroDeps.1.15.0\build\native\AllegroDeps.targets" Condition="Exists('..\packages\AllegroDeps.1.15.0\build\native\AllegroDeps.targets')" />
+    <Import Project="..\packages\Allegro.5.2.10\build\native\Allegro.targets" Condition="Exists('..\packages\Allegro.5.2.10\build\native\Allegro.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>이 프로젝트는 이 컴퓨터에 없는 NuGet 패키지를 참조합니다. 해당 패키지를 다운로드하려면 NuGet 패키지 복원을 사용하십시오. 자세한 내용은 http://go.microsoft.com/fwlink/?LinkID=322105를 참조하십시오. 누락된 파일은 {0}입니다.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\AllegroDeps.1.15.0\build\native\AllegroDeps.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AllegroDeps.1.15.0\build\native\AllegroDeps.targets'))" />
+    <Error Condition="!Exists('..\packages\Allegro.5.2.10\build\native\Allegro.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Allegro.5.2.10\build\native\Allegro.targets'))" />
+  </Target>
 </Project>

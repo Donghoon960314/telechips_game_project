@@ -13,5 +13,185 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="헤더 파일\score_list">
+      <UniqueIdentifier>{041c057c-df33-4b07-b999-a149fd482e45}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Rank._list.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="main.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="audio.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="collide.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="display.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="general.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="hud.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="keyboard.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="player.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="shots.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="sprites.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="background.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Ranking_input.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="stage.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="First_UI.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="shot.flac">
+      <Filter>리소스 파일</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="stage1_new_new.PNG">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="stage2_new_new.PNG">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="stage3_new_new.PNG">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="shot1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="shot2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="subway_background.jpg">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="subway_floor.jpg">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="player.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+
+
+    <Image Include="monster01.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="monster02.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+
+    <Image Include="player1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="player_attack.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="spritesheet.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="stage1_new.png">
+
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="stage2_new.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+
+    <Image Include="stage3.PNG">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="start_display.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_01.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_02.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_03.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_04.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_05.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_06.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_07.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_08.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_09.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_10.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_11.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_12.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_13.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="prologue_dialog_14.png">
+
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Easy rank.txt">
+      <Filter>헤더 파일\score_list</Filter>
+    </Text>
+    <Text Include="Medium rank.txt">
+      <Filter>헤더 파일\score_list</Filter>
+    </Text>
+    <Text Include="Hard rank.txt">
+      <Filter>헤더 파일\score_list</Filter>
+    </Text>
+    <Text Include="rank.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="common.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="BebasNeue-Regular.ttf" />
   </ItemGroup>
 </Project>
