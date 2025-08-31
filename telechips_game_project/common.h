@@ -61,6 +61,9 @@ void keyboard_update(ALLEGRO_EVENT* event);
 //======================================================
 #define PLAYER_W 80
 #define PLAYER_H 80
+/*
+#define PLAYER_W 50
+#define PLAYER_H 100
 
 #define PLAYER_SHOT_W 90
 #define PLAYER_SHOT_H 60
@@ -79,6 +82,39 @@ extern const int ENEMY_H[];
 
 #define ENEMY_SHOT_W 4
 #define ENEMY_SHOT_H 4
+*/
+extern const int PLAYER_SHOT_W[2];
+extern const int PLAYER_SHOT_H[2];
+extern int PLAYER_SHOT_WIDTH;
+extern int PLAYER_SHOT_HEIGHT;
+
+#define PLAYER_SHOT_1_W PLAYER_SHOT_W[0];
+#define PLAYER_SHOT_1_H PLAYER_SHOT_H[0];
+#define PLAYER_SHOT_2_W PLAYER_SHOT_W[1];
+#define PLAYER_SHOT_2_H PLAYER_SHOT_H[1];
+
+
+extern const int ENEMY_W[];
+extern const int ENEMY_H[];
+
+#define ENEMY_1_W ENEMY_W[0]
+#define ENEMY_1_H ENEMY_H[0]
+#define ENEMY_2_W ENEMY_W[1]
+#define ENEMY_2_H ENEMY_H[1]
+#define BOSS_1_W ENEMY_W[2]
+#define BOSS_1_H ENEMY_H[2]
+#define BOSS_2_W ENEMY_W[3]
+#define BOSS_2_H ENEMY_H[3]
+
+extern const int ENEMY_SHOT_W[];
+extern const int ENEMY_SHOT_H[];
+extern int ENEMY_SHOT_WIDTH;
+extern int ENEMY_SHOT_HEIGHT;
+
+#define ENEMY_SHOT_1_W ENEMY_SHOT_W[0]
+#define ENEMY_SHOT_1_H ENEMY_SHOT_H[0]
+#define ENEMY_SHOT_2_W ENEMY_SHOT_W[1]
+#define ENEMY_SHOT_2_H ENEMY_SHOT_H[1]
 
 typedef struct SPRITES
 {
@@ -92,14 +128,17 @@ typedef struct SPRITES
     ALLEGRO_BITMAP* player_shot[2][2]; // [0: 직업1, 1: 직업2][0: 일반, 1: 스킬1]
 
     ALLEGRO_BITMAP* enemy[4];
-    ALLEGRO_BITMAP* enemy_shot[2];
+    ALLEGRO_BITMAP* enemy_shot[3];
 } SPRITES;
 SPRITES sprites;
 
 ALLEGRO_BITMAP* sprite_grab(int x, int y, int w, int h);
 ALLEGRO_BITMAP* subway_background;   // 지하철 배경 이미지
 ALLEGRO_BITMAP* subway_floor;   // 지하철 바닥 이미지
-ALLEGRO_BITMAP* background;
+ALLEGRO_BITMAP* background; // 배경 이미지
+
+ALLEGRO_BITMAP* hp_heal;
+ALLEGRO_BITMAP* attack_speed_up;
 
 void sprites_init();
 void sprites_deinit();
@@ -381,10 +420,21 @@ typedef struct ITEM {
     int x, y; // 아이템 위치
     ITEM_TYPE type; // 아이템 종류
     bool used; // 현재 화면에 존재하는지
+    int lifetime; // 아이템 남은 시간
 } ITEM;
 
 #define ITEMS_N 3
 ITEM items[ITEMS_N];
+
+typedef struct {
+    bool active;
+    int x, y;
+    int timer;      // 몇 프레임 동안 표시할지
+    char text[16];  // 표시할 텍스트
+} HealText;
+
+#define HEAL_TEXTS_N 10
+HealText heal_texts[HEAL_TEXTS_N];
 
 int item_spawn_timer;
 
@@ -399,6 +449,7 @@ ALLEGRO_FONT* font; // HUD용 폰트
 long score_display; // 화면에 표시할 점수
 
 void hud_init();
+void hud_update();
 void hud_draw();
 void hud_deinit();
 

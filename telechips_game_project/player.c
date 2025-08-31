@@ -10,8 +10,6 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-JOB_TYPE job_type = JOB_TYPE_1;
-
 void player_init()
 {
     player.x = (BUFFER_W / 7) - (PLAYER_W / 7);
@@ -105,11 +103,12 @@ void player_update()
     float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
 
     // 실제 히트 박스 크기
-    int scaled_w = PLAYER_W * scale;
+    int scaled_w = 0.7 * PLAYER_W * scale;
     int scaled_h = PLAYER_H * scale;
 
     // 아래 부분만 충돌하도록 히트박스 축소 (2.5D 느낌으로)
-    int hitbox_h = scaled_h / 3;
+    int hitbox_x = player.x + PLAYER_W * scale * 0.15;
+    int hitbox_h = scaled_h / 2.0f;
     int hitbox_y = player.y + scaled_h - hitbox_h;
 
     // 무적 상태 처리
@@ -120,7 +119,7 @@ void player_update()
     else // 무적 상태 X
     {
         // 플레이어 <-> 몹 충돌
-        int enemy_index = enemies_collide(true, player.x, hitbox_y, scaled_w, hitbox_h);
+        int enemy_index = enemies_collide(true, hitbox_x, hitbox_y, scaled_w, hitbox_h);
         if (enemy_index != -1)
         {
             if (enemies[enemy_index].type == BOSS_TYPE_1) // 보스 충돌 → 20 깎음
@@ -140,7 +139,7 @@ void player_update()
         }
 
         // 플레이어 <-> 몹 총알 충돌
-        int damage = shots_collide(true, player.x, hitbox_y, scaled_w, hitbox_h);
+        int damage = shots_collide(true, hitbox_x, hitbox_y, scaled_w, hitbox_h);
         if (damage > 0)
         {
             player.hp -= damage; // HP 감소
@@ -207,6 +206,23 @@ void player_draw()
     if (player.hp <= 0)
         return;
 
+    // 무적 깜빡임 효과 처리
+    if (player.invincible_timer > 0)
+    {
+        if (((player.invincible_timer / 2) % 3) == 1)
+            return; // 이 프레임에는 그리지 않음
+    }
+
+    // 2.5D 구현
+    DEPTH_MIN_SCALE = 1.5f; 
+    DEPTH_MAX_SCALE = 3.0f;  
+
+    // y = 110일 때 min_scale, y = PLAYER_MAX_Y일 때 max_scale
+    float t = (float)(player.y - PLAYER_MIN_Y) / (PLAYER_MAX_Y - PLAYER_MIN_Y);
+    if (t < 0) t = 0;
+    if (t > 1) t = 1;
+    float depth_scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
+
     /*
     // 플레이어 HP 표시
     char hp_text[16];
@@ -221,13 +237,23 @@ void player_draw()
     );
     */
     //여기 나중에 실행되는거 보고 위치 옮겨서 맞춰야 할 듯
-    int bar_width = 100;   // 전체 체력바 너비
-    int bar_height = 10;   // 체력바 높이
-    int bar_x = player.x + 40;  // 체력바 위치 X
-    int bar_y = player.y - 20; // 캐릭터 위쪽
+
+    // 깊이감 스케일 적용
+    int w = PLAYER_W;
+    int h = PLAYER_H;
+
+    float final_scale_x = PLAYER_W * depth_scale;
+    float final_scale_y = PLAYER_H * depth_scale;
+
+    // HP바 그리기
+    int base_bar_width = 60;                        // 기본 HP바 너비 (픽셀)
+    int bar_width = base_bar_width * depth_scale;   // 깊이에 따른 너비
+    int bar_height = 4 * depth_scale;               // 높이 줄임
+    int bar_x = player.x + 20;                      // 위치는 캐릭터에 맞춰서 조정
+    int bar_y = player.y - (12 * depth_scale);      // 캐릭터 위쪽
 
     // 현재 체력 비율
-    float hp_ratio = (float)player.hp / 50.0f; // 최대 HP=50 기준
+    float hp_ratio = (float)player.hp / (float)player.max_hp;
     if (hp_ratio < 0) hp_ratio = 0;
 
     // 체력바 배경 (회색)
@@ -254,13 +280,20 @@ void player_draw()
 
     // 2.5D 구현
     DEPTH_MIN_SCALE = 1.5f; 
-    DEPTH_MAX_SCALE = 3.0f;  
+    DEPTH_MAX_SCALE = 3.0f;
 
-    // y = 110일 때 min_scale, y = PLAYER_MAX_Y일 때 max_scale
-    float t = (float)(player.y - PLAYER_MIN_Y) / (PLAYER_MAX_Y - PLAYER_MIN_Y);
-    if (t < 0) t = 0;
-    if (t > 1) t = 1;
-    float depth_scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
+    int scaled_w = 0.7 * PLAYER_W * depth_scale;
+    int scaled_h = PLAYER_H * depth_scale;
+    int hitbox_x = player.x + PLAYER_W * depth_scale * 0.15;
+    int hitbox_h = scaled_h / 2;
+    int hitbox_y = player.y + scaled_h - hitbox_h;
+
+    // === 히트박스 표시 (빨간 네모) ===
+    al_draw_rectangle(
+        hitbox_x, hitbox_y,
+        hitbox_x + scaled_w, hitbox_y + hitbox_h,
+        al_map_rgb(255, 0, 0), 2
+    );
     
     // 공격 모션 적용
     ALLEGRO_BITMAP* bmp = NULL; // 초기화
@@ -287,13 +320,6 @@ void player_draw()
             bmp = sprites.player2;
         }
     }
-
-    int w = PLAYER_W;
-    int h = PLAYER_H;
-
-    // 깊이감 스케일 적용
-    float final_scale_x = w * depth_scale;
-    float final_scale_y = h * depth_scale;
 
     // 좌/우 방향 반전
     if (player.last_dir == DIR_LEFT) {

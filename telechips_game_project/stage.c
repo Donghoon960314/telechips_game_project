@@ -162,11 +162,8 @@ int stage_reset(void)
             boss_spawn_timer = -1;
             boss_spawned = false;
 
-            printf("monster all die\n");
             stage_player_var();   // 여기서 stage_num_for += 1
             stage_font(stage_num_for);  // 현재 stage 배너 출력
-
-            printf("start stage %d\n", stage_num_for);
 
             enemies_init();
             shots_init();
@@ -177,7 +174,6 @@ int stage_reset(void)
     else if (check_monster_die() == true) {
         delay = 60;
     }
-    printf("stage:num : %d\n", stage_num);
-    printf("stage_num_for : %d\n", stage_num_for);
+
     return stage_num;
 }

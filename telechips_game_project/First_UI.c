@@ -211,25 +211,18 @@ void show_main_menu(void)
 }
 
 ALLEGRO_BITMAP* prologue_List[PRO] = { 0 };
-
-
-
-
-
-
-
 PROLOGUE_STATE ps = { 0,0,0,false };
 
 // 직업에 따라 달라지는 프롤로그 설정 함수
 void set_pro_job(void)
 {
-    switch (job)
+    switch (job_type)
     {
-    case JOB_DANSO:
+    case JOB_TYPE_1: // Tanjiro
         ps.start = 0;
         ps.end = 6;
         break;
-    case JOB_ZARUBAN:
+    case JOB_TYPE_2: // Rengoku
         ps.start = 7;
         ps.end = 13;
     }

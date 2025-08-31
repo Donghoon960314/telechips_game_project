@@ -8,6 +8,20 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
+const int PLAYER_SHOT_W[] = { 40, 70 };
+const int PLAYER_SHOT_H[] = { 50, 50 };
+
+int PLAYER_SHOT_WIDTH;
+int PLAYER_SHOT_HEIGHT;
+
+const int ENEMY_SHOT_W[] = { 15, 50 };
+const int ENEMY_SHOT_H[] = { 20, 15 };
+
+int ENEMY_SHOT_WIDTH;
+int ENEMY_SHOT_HEIGHT;
+int sw, sh;
+
+
 void shots_init() {
     for (int i = 0; i < SHOTS_N; i++)
         shots[i].used = false;
@@ -15,8 +29,8 @@ void shots_init() {
 
 bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int power, ATTACK_TYPE attack_type)
 {
-    // ∞≠«— ∞¯∞›(«√∑π¿ÃæÓ)
-    switch (attack_type) { //ENENMY≈∏¿‘∫∞∑Œ ø¿µø¿ ¥Ÿ∏£∞‘ º≥¡§
+    // Í∞ïÌïú Í≥µÍ≤©(ÌîåÎ†àÏù¥Ïñ¥)
+    switch (attack_type) { //ENENMYÌÉÄÏûÖÎ≥ÑÎ°ú Ïò§ÎîîÏò§ Îã§Î•¥Í≤å ÏÑ§Ï†ï
     case ATTACK_NORMAL:
         al_play_sample(sample_normal_shot, 0.3, 0, player ? 1.0 : 1.5, ALLEGRO_PLAYMODE_ONCE, NULL);
         break;
@@ -35,7 +49,26 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
     }
     /*
     if (player && power >= 4)
-    {
+    {   
+        PLAYER_SHOT_WIDTH = PLAYER_SHOT_2_W;
+        PLAYER_SHOT_HEIGHT = PLAYER_SHOT_2_H;
+        
+
+        al_play_sample(
+            sample_strong_shot,
+            0.8,
+            0,
+            0.6,
+            ALLEGRO_PLAYMODE_ONCE,
+            NULL
+        );
+    }
+    else if (power >= 8)
+    {   
+        //Ï†Å Î≥¥Ïä§ Í≥µÍ≤©
+        ENEMY_SHOT_WIDTH = ENEMY_SHOT_2_W;
+        ENEMY_SHOT_HEIGHT = ENEMY_SHOT_2_H;
+
         al_play_sample(
             sample_strong_shot,
             0.8,
@@ -47,7 +80,10 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
     }
     else
     {
-        // ¿œπ› ∞¯∞›(«√∑π¿ÃæÓ/¿˚)
+        // ÏùºÎ∞ò Í≥µÍ≤©(ÌîåÎ†àÏù¥Ïñ¥/Ï†Å)
+        PLAYER_SHOT_WIDTH = PLAYER_SHOT_1_W;
+        PLAYER_SHOT_HEIGHT = PLAYER_SHOT_1_H;
+        
         al_play_sample(
             sample_normal_shot,
             0.3,
@@ -61,39 +97,48 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
 
     for (int i = 0; i < SHOTS_N; i++)
     {
-        // ∫Û ΩΩ∑‘ √£±‚
+        // Îπà Ïä¨Î°Ø Ï∞æÍ∏∞
         if (shots[i].used) continue;
 
-        // ¥©∞° Ω √—æÀ¿Œ¡ˆ ¿˙¿Â
+        // ÎàÑÍ∞Ä Ïèú Ï¥ùÏïåÏù∏ÏßÄ Ï†ÄÏû•
         shots[i].player = player;
-        shots[i].attack_type = attack_type; // ∞¯∞› ≈∏¿‘ ¿˙¿Â
+        shots[i].attack_type = attack_type; // Í≥µÍ≤© ÌÉÄÏûÖ Ï†ÄÏû•
         shots[i].power = power;
 
-        // «√∑π¿ÃæÓ √—æÀ¿Ã∏È ¿ßƒ° º≥¡§
+        // ÌîåÎ†àÏù¥Ïñ¥ Ï¥ùÏïåÏù¥Î©¥ ÏúÑÏπò ÏÑ§Ï†ï
         if (player)
         {
-            shots[i].x = x + (PLAYER_W / 2) - (PLAYER_SHOT_W / 2);
-            shots[i].y = y + (PLAYER_H / 2) + (PLAYER_SHOT_H / 2);
+            shots[i].x = x + (PLAYER_W / 2) - (PLAYER_SHOT_WIDTH / 2);
+            shots[i].y = y + (PLAYER_H / 2) + (PLAYER_SHOT_HEIGHT / 2);
 
-            // «√∑π¿ÃæÓ πÊ«‚ ¿˙¿Â
+            // ÌîåÎ†àÏù¥Ïñ¥ Î∞©Ìñ• Ï†ÄÏû•
             switch (dir)
             {
-            case DIR_UP:    shots[i].dir = SHOT_UP; break;
             case DIR_DOWN:  shots[i].dir = SHOT_DOWN; break;
-            case DIR_LEFT:  shots[i].dir = SHOT_LEFT; break;
             case DIR_RIGHT: shots[i].dir = SHOT_RIGHT; break;
             }
         }
-        // ¿˚ √—æÀ¿Ã∏È
+        // Ï†Å Ï¥ùÏïåÏù¥Î©¥
         else
         {
-            shots[i].x = x - (ENEMY_SHOT_W / 2);
-            shots[i].y = y - (ENEMY_SHOT_H / 2);
-
-            // ¡˜º± ¿Ãµø
+            if (shots[i].power > 5) {
+                int boss_center_x = x + BOSS_1_W / 2;
+                int boss_center_y = y + BOSS_1_H / 2;
+                ENEMY_SHOT_WIDTH = ENEMY_SHOT_2_W;
+                ENEMY_SHOT_HEIGHT = ENEMY_2_H;
+                shots[i].x = boss_center_x - (ENEMY_SHOT_WIDTH / 2);
+                shots[i].y = boss_center_y - (ENEMY_SHOT_HEIGHT / 2);
+            }
+            else {
+                ENEMY_SHOT_WIDTH = ENEMY_SHOT_1_W;
+                ENEMY_SHOT_HEIGHT = ENEMY_1_H;
+                shots[i].x = x - (ENEMY_SHOT_WIDTH / 2);
+                shots[i].y = y - (ENEMY_SHOT_HEIGHT / 2);
+            }
+            // ÏßÅÏÑ† Ïù¥Îèô
             if (straight)
             {
-                // dir ±‚¡ÿ¿∏∑Œ ¡¬/øÏ ¡˜º± ªÁ∞›
+                // dir Í∏∞Ï§ÄÏúºÎ°ú Ï¢å/Ïö∞ ÏßÅÏÑ† ÏÇ¨Í≤©
                 int spd = 2;
                 switch (dir)
                 {
@@ -107,26 +152,9 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
                     shots[i].dy = 0;
                     shots[i].dir = (SHOT_DIR)SHOT_RIGHT;
                     break;
-                case DIR_UP:
-                    shots[i].dx = 0;
-                    shots[i].dy = -spd;
-                    shots[i].dir = (SHOT_DIR)SHOT_UP;
-                    break;
-                case DIR_DOWN:
-                    shots[i].dx = 0;
-                    shots[i].dy = spd;
-                    shots[i].dir = (SHOT_DIR)SHOT_DOWN;
-                    break;
                 }
             }
-            // ∑£¥˝ ¿Ãµø
-            /*else
-            {
-                shots[i].dx = between(-2, 2);
-                shots[i].dy = between(-2, 2);
-            }*/
-
-            // º”µµ∞° æ¯¿∏∏È πŸ∑Œ ¡æ∑·
+            // ÏÜçÎèÑÍ∞Ä ÏóÜÏúºÎ©¥ Î∞îÎ°ú Ï¢ÖÎ£å
             if (!shots[i].dx && !shots[i].dy)
                 return true;
 
@@ -143,67 +171,49 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
 
 void shots_update() {
     for (int i = 0; i < SHOTS_N; i++) {
-        // ªÁøÎ æ» «œ¥¬ ΩΩ∑‘ ∞«≥ ∂Ÿ±‚
+        // ÏÇ¨Ïö© Ïïà ÌïòÎäî Ïä¨Î°Ø Í±¥ÎÑàÎõ∞Í∏∞
         if (!shots[i].used) continue;
 
-        // «√∑π¿ÃæÓ √—æÀ √≥∏Æ
-        if (shots[i].player) {
-            // πÊ«‚ø° µ˚∂Û ¿Ãµø
-            switch (shots[i].dir) {
-            case SHOT_UP:    shots[i].y -= 5; break;
-            case SHOT_DOWN:  shots[i].y += 5; break;
-            case SHOT_LEFT:  shots[i].x -= 5; break;
-            case SHOT_RIGHT: shots[i].x += 5; break;
-            }
-
-            // »≠∏È π€¿Ã∏È ¡¶∞≈
-            if (shots[i].x < -PLAYER_SHOT_W || shots[i].x > BUFFER_W ||
-                shots[i].y < -PLAYER_SHOT_H || shots[i].y > BUFFER_H) {
+        // ÌîåÎ†àÏù¥Ïñ¥ Ï¥ùÏïå Ï≤òÎ¶¨
+        if (shots[i].player) {            
+            if (shots[i].dir == SHOT_LEFT)  shots[i].x -= 5;
+            else                            shots[i].x += 5;
+            // ÌôîÎ©¥ Î∞ñÏù¥Î©¥ Ï†úÍ±∞
+            if (shots[i].x < -PLAYER_SHOT_WIDTH || shots[i].x > BUFFER_W ||
+                shots[i].y < -PLAYER_SHOT_HEIGHT || shots[i].y > BUFFER_H) {
                 shots[i].used = false;
             }
         }
-        // ¿˚ √—æÀ √≥∏Æ
+        // Ï†Å Ï¥ùÏïå Ï≤òÎ¶¨
         else
         {
             shots[i].x += shots[i].dx;
-            shots[i].y += shots[i].dy;
-
-            if(shots[i].dir == SHOT_UP) {
-                if (shots[i].y < 0 || shots[i].y <= 110) {
-                    shots[i].used = false;
-                    continue;
-                }
-            }
-
-            else {
-                if ((shots[i].x < -ENEMY_SHOT_W)
-                    || (shots[i].x > BUFFER_W)
-                    || (shots[i].y < -ENEMY_SHOT_H)
-                    || (shots[i].y > BUFFER_H)
-                    ) {
-                    shots[i].used = false;
-                    continue;
-                }
+            
+            
+            if ((shots[i].x < -ENEMY_SHOT_WIDTH)
+                || (shots[i].x > BUFFER_W)       
+            ) {
+                shots[i].used = false;
+                continue;
             }
         }
-
         shots[i].frame++;
     }
 }
 
 int shots_collide(bool is_player, int x, int y, int w, int h) {
     for (int i = 0; i < SHOTS_N; i++) {
-        // √—æÀ ªÁøÎ ø©∫Œ »Æ¿Œ
+        // Ï¥ùÏïå ÏÇ¨Ïö© Ïó¨Î∂Ä ÌôïÏù∏
         if (!shots[i].used) continue;
 
-        // ¿⁄±‚ ¿⁄Ω≈¿« √—æÀ¿∫ ¡¶ø‹
+        // ÏûêÍ∏∞ ÏûêÏã†Ïùò Ï¥ùÏïåÏùÄ Ï†úÏô∏
         if (shots[i].player == is_player) continue;
 
-        // √—æÀ ≈©±‚ º≥¡§
+        // Ï¥ùÏïå ÌÅ¨Í∏∞ ÏÑ§Ï†ï
         int sw, sh;
         if(shots[i].player)
         {
-            // «√∑π¿ÃæÓ √—æÀ ≈©±‚ = Ω∫«¡∂Û¿Ã∆Æ ≈©±‚ °ø ±Ì¿Ã Ω∫ƒ…¿œ
+            // ÌîåÎ†àÏù¥Ïñ¥ Ï¥ùÏïå ÌÅ¨Í∏∞ = Ïä§ÌîÑÎùºÏù¥Ìä∏ ÌÅ¨Í∏∞ √ó ÍπäÏù¥ Ïä§ÏºÄÏùº
             ALLEGRO_BITMAP* bmp = NULL;
             JOB_TYPE job = player.job;
             if (shots[i].attack_type == ATTACK_NORMAL) {
@@ -214,7 +224,7 @@ int shots_collide(bool is_player, int x, int y, int w, int h) {
             }
 
             if (bmp) {
-                // ±Ì¿Ã Ω∫ƒ…¿œ ∞ËªÍ
+                // ÍπäÏù¥ Ïä§ÏºÄÏùº Í≥ÑÏÇ∞
                 float t = (float)(shots[i].y - 110) / (PLAYER_MAX_Y - 110);
                 if (t < 0) t = 0; if (t > 1) t = 1;
                 float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
@@ -223,12 +233,12 @@ int shots_collide(bool is_player, int x, int y, int w, int h) {
                 sh = (int)(al_get_bitmap_height(bmp) * scale);
             }
             else {
-                sw = PLAYER_SHOT_W;
-                sh = PLAYER_SHOT_H;
+                sw = PLAYER_SHOT_WIDTH;
+                sh = PLAYER_SHOT_HEIGHT;
             }
         }
         else {
-            // ¿˚ √—æÀ ≈©±‚ = Ω∫«¡∂Û¿Ã∆Æ ≈©±‚ °ø ±Ì¿Ã Ω∫ƒ…¿œ
+            // Ï†Å Ï¥ùÏïå ÌÅ¨Í∏∞ = Ïä§ÌîÑÎùºÏù¥Ìä∏ ÌÅ¨Í∏∞ √ó ÍπäÏù¥ Ïä§ÏºÄÏùº
             ALLEGRO_BITMAP* bmp = NULL;
             if (shots[i].attack_type == ATTACK_BOSS1) {
                 bmp = sprites.enemy_shot[1];
@@ -246,18 +256,18 @@ int shots_collide(bool is_player, int x, int y, int w, int h) {
                 sh = (int)(al_get_bitmap_height(bmp) * scale);
             }
             else {
-                sw = ENEMY_SHOT_W;
-                sh = ENEMY_SHOT_H;
+                sw = ENEMY_SHOT_WIDTH;
+                sh = ENEMY_SHOT_HEIGHT;
             }
         }
-
-        int hitbox_h = sh / 1.5;                         
+        int hitbox_x = shots[i].x;
+        int hitbox_h = sh * 0.8f;                         
         int hitbox_y = shots[i].y + sh - hitbox_h; 
 
-        // √Êµπ √º≈©
+        // Ï∂©Îèå Ï≤¥ÌÅ¨
         if (collide(x, y, x + w, y + h,
-            shots[i].x, hitbox_y,
-            shots[i].x + sw, hitbox_y + hitbox_h))
+            hitbox_x, hitbox_y,
+            hitbox_x + sw, hitbox_y + hitbox_h))
         {
             int damage = shots[i].power;
             shots[i].used = false;
@@ -269,101 +279,99 @@ int shots_collide(bool is_player, int x, int y, int w, int h) {
 
 void shots_draw() {
     for (int i = 0; i < SHOTS_N; i++) {
-        // ªÁøÎ ¡ﬂ¿Œ √—æÀ∏∏ ±◊∏Æ±‚
+        // ÏÇ¨Ïö© Ï§ëÏù∏ Ï¥ùÏïåÎßå Í∑∏Î¶¨Í∏∞
         if (!shots[i].used) continue;
 
         int frame_display = (shots[i].frame / 2) % 2;
 
-        // «√∑π¿ÃæÓ √—æÀ
+        // ÌîåÎ†àÏù¥Ïñ¥ Ï¥ùÏïå
         if (shots[i].player) {
-            float t = (float)(shots[i].y - 110) / (PLAYER_MAX_Y - 110);
-            if (t < 0) t = 0;
-            if (t > 1) t = 1;
-            float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
-            
-            ALLEGRO_BITMAP* bmp = NULL;
-            JOB_TYPE job = player.job;  // «ˆ¿Á «√∑π¿ÃæÓ ¡˜æ˜
-            if (shots[i].attack_type == ATTACK_NORMAL) 
-            {
-                bmp = sprites.player_shot[job][0]; // ¡˜æ˜∫∞ ¿œπ›∞¯∞›
-            }
-            else if (shots[i].attack_type == ATTACK_SKILL_1)
-            {
-                bmp = sprites.player_shot[job][1]; // ¡˜æ˜∫∞ Ω∫≈≥1
-            }
+            ALLEGRO_BITMAP* bmp = (shots[i].attack_type == ATTACK_NORMAL)
+                ? sprites.player_shot[player.job][0]
+                : sprites.player_shot[player.job][1];
 
-            float scale_x = scale;
-            float scale_y = scale;
-            float angle = 0.0f;
+            int w = al_get_bitmap_width(bmp);
+            int h = al_get_bitmap_height(bmp);
 
-            switch (shots[i].dir)
-            {
-            case DIR_UP:    angle = 0.0f;               break;
-            case DIR_DOWN:  angle = ALLEGRO_PI;         break;
-            case DIR_LEFT:  scale_x = -scale; angle = 0.0f;    break;
-            //case DIR_RIGHT: angle = ALLEGRO_PI * 0.5f;  break;
-            }
+            float scale = (float)(DEPTH_MIN_SCALE + ((shots[i].y - 110) / (PLAYER_MAX_Y - 110.0f)) *
+                (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE));
 
-            float cx = al_get_bitmap_width(bmp) / 2.0f;
-            float cy = al_get_bitmap_height(bmp) / 2.0f;
+            float final_w = w * scale;
+            float final_h = h * scale;
 
-            al_draw_scaled_rotated_bitmap(
-                bmp,
-                cx, cy, // »∏¿¸ ±‚¡ÿ (¡ﬂΩ…)
-                shots[i].x + cx,
-                shots[i].y + cy,
-                scale_x, scale_y,
-                angle,
-                0
-            );
-        }
-        // ¿˚ √—æÀ
-        else
-        {
-            ALLEGRO_BITMAP* bmp = sprites.enemy_shot;
-
-            // ¿˚ ≈∏¿‘∏∂¥Ÿ √—æÀ ±∏∫–
-            if (shots[i].power >= 10) {
-                bmp = sprites.enemy_shot[1]; // ∫∏Ω∫ √—æÀ //≥™¡ﬂø° ∫∏Ω∫ √ﬂ∞°Ω√ ø©±‚ø° √ﬂ∞°
+            if (shots[i].dir == SHOT_LEFT) {
+                al_draw_scaled_bitmap(
+                    bmp,
+                    0, 0, w, h,
+                    shots[i].x + final_w, shots[i].y,
+                    -final_w, final_h,
+                    0
+                );
             }
             else {
-                bmp = sprites.enemy_shot[0]; // ¿œπ› ∏˜ √—æÀ
+                al_draw_scaled_bitmap(
+                    bmp,
+                    0, 0, w, h,
+                    shots[i].x, shots[i].y,
+                    final_w, final_h,
+                    0
+                );
             }
-
-            // ±Ù∫˝¿”øÎ ∆æ∆Æ
-            ALLEGRO_COLOR tint = frame_display
-                ? al_map_rgb_f(1, 1, 1)
-                : al_map_rgb_f(0.5f, 0.5f, 0.5f);
-
-            // »∏¿¸ ∞¢µµ
-            float angle = 0.0f;
-            switch (shots[i].dir) {
-            case DIR_UP:    angle = 0.0f;               break;
-            case DIR_DOWN:  angle = ALLEGRO_PI;        break;
-            case DIR_LEFT:  angle = -ALLEGRO_PI * 0.5f; break;
-            case DIR_RIGHT: angle = ALLEGRO_PI * 0.5f; break;
-            }
-
-            // ±Ì¿Ã Ω∫ƒ…¿œ
-            float t = (float)(shots[i].y - 110) / (PLAYER_MAX_Y - 110);
-            if (t < 0) t = 0; else if (t > 1) t = 1;
-            float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
-
-            // ¡ﬂΩ… ¡¬«•
-            float cx = al_get_bitmap_width(bmp) / 2.0f;
-            float cy = al_get_bitmap_height(bmp) / 2.0f;
-
-            // ∆æ∆Æ + Ω∫ƒ…¿œ + »∏¿¸ ±◊∏Æ±‚
-            al_draw_tinted_scaled_rotated_bitmap(
-                bmp,
-                tint,
-                cx, cy, // »∏¿¸ ±‚¡ÿ(¡ﬂΩ…)
-                shots[i].x + cx, // »≠∏È X
-                shots[i].y + cy, // »≠∏È Y
-                scale, scale, // Ω∫ƒ…¿œ
-                angle, // »∏¿¸
-                0 // «√∑°±◊
+            int sw = (int)final_w;
+            int sh = (int)final_h;
+            int hitbox_x = shots[i].x;
+            int hitbox_h = sh * 0.8f;
+            int hitbox_y = shots[i].y + sh - hitbox_h;
+            al_draw_rectangle(
+                hitbox_x, hitbox_y,
+                hitbox_x + sw, hitbox_y + hitbox_h,
+                al_map_rgb(255, 0, 0), 1
             );
+        }
+        else
+        {            
+            ALLEGRO_BITMAP* bmp = (shots[i].power >= 10)
+                ? sprites.enemy_shot[1]
+                : sprites.enemy_shot[0];
+
+            int w = al_get_bitmap_width(bmp);
+            int h = al_get_bitmap_height(bmp);
+
+            float scale = (float)(DEPTH_MIN_SCALE + ((shots[i].y - 110) / (PLAYER_MAX_Y - 110.0f)) *
+                (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE));
+
+            float final_w = w * scale;
+            float final_h = h * scale;
+
+            if (shots[i].dir == SHOT_LEFT) {
+                al_draw_scaled_bitmap(
+                    bmp,
+                    0, 0, w, h,
+                    shots[i].x + final_w, shots[i].y,
+                    -final_w, final_h,
+                    0
+                );
+            }
+            else {
+                al_draw_scaled_bitmap(
+                    bmp,
+                    0, 0, w, h,
+                    shots[i].x, shots[i].y,
+                    final_w, final_h,
+                    0
+                );
+            }
+            int sw = (int)final_w;
+            int sh = (int)final_h;
+            int hitbox_x = shots[i].x;
+            int hitbox_h = sh *0.8f;
+            int hitbox_y = shots[i].y + sh - hitbox_h;
+            al_draw_rectangle(
+                hitbox_x, hitbox_y,
+                hitbox_x + sw, hitbox_y + hitbox_h,
+                al_map_rgb(255, 0, 0), 1
+            );
+
         }
     }
 }
