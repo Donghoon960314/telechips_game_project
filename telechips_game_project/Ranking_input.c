@@ -14,8 +14,8 @@
 
 void rank_name_open(int time, char * rank_name, int * rank_min, int * rank_sec)//2분한 프레임 7200 굳이 long 쓸필요 x
 {
-    al_init_font_addon(); //ALLEGRO에서 font 사용 (기본 폰트)
-    al_init_ttf_addon();  //기본 포트가 아닌 새로운 폰트 사용가능
+    //al_init_font_addon(); //ALLEGRO에서 font 사용 (기본 폰트)
+    //al_init_ttf_addon();  //기본 포트가 아닌 새로운 폰트 사용가능
 
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue(); //이벤트(마우스,키보드,디플,타이머)받을 큐 생성
 

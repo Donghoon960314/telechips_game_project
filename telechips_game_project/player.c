@@ -29,8 +29,8 @@ void player_init()
         player.power_skill_1 = 6; // 스킬 1 공격력
         //player.power_skill_2 = 6; // 스킬 2 공격력
 
-        player.normal_shot_cooldown = 30; // 일반 공격 쿨타임
-        player.skill_1_cooldown = 120; // 스킬 1 쿨타임
+        player.normal_shot_cooldown = 5; // 일반 공격 쿨타임
+        player.skill_1_cooldown = 5; // 스킬 1 쿨타임
         //player.skill_2_cooldown = 120; // 스킬 2 쿨타임
          
         player.normal_shot_timer = 0;

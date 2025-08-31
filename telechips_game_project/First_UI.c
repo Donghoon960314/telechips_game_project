@@ -344,7 +344,6 @@ int main(void)
     // 무한 반복
     while (running)
     {
-        ALLEGRO_EVENT event;
         al_wait_for_event(queue, &event);
 
         // 이벤트에 따른 케이스 별로 나누기
@@ -402,11 +401,18 @@ int main(void)
                 // 뒤로 가기 선언
                 else if (b == &pos2)
                 {
+                    state = STAGE_MENU;
                     show_main_menu();
                 }
 
                 // 랭킹 , 게임 설명 
-                else if ((b == &pos3) || (b == &pos4))
+                else if (b == &pos3)
+                {
+
+                    show_back_only();
+                }
+
+                else if (b == &pos4)
                 {
                     show_back_only();
                 }
@@ -490,6 +496,11 @@ int main(void)
                 Button_draw(&pos3, font);
                 Button_draw(&pos4, font);
 
+                break;
+
+            case STATE_RANKING:
+                //print_ranking_table(0, 0, 0);
+                //Button_draw(&pos2, font); // Back 버튼도 표시
                 break;
 
                 /*난이도 선택 화면*/

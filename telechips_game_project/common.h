@@ -38,7 +38,8 @@ bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int 
 
 ALLEGRO_DISPLAY* disp;
 ALLEGRO_BITMAP* buffer;
-
+extern ALLEGRO_FONT* name_font;
+extern ALLEGRO_FONT* title_font;
 void disp_init();
 void disp_deinit();
 void disp_pre_draw();
