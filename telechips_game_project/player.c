@@ -10,8 +10,6 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-JOB_TYPE job_type = JOB_TYPE_1;
-
 void player_init()
 {
     player.x = (BUFFER_W / 7) - (PLAYER_W / 7);
@@ -162,12 +160,14 @@ void player_update()
     {
         if (player.job == JOB_TYPE_1)
         {
+            printf("JOB_TYPE_1\n");
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal, ATTACK_NORMAL);
             player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
             player.attack_anim_timer = 18; // 공격 모션 유지 시간
         }
         else if (player.job == JOB_TYPE_2)
         {
+            printf("JOB_TYPE_2\n");
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal, ATTACK_NORMAL);
             player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
             player.attack_anim_timer = 9; // 공격 모션 유지 시간
@@ -221,13 +221,13 @@ void player_draw()
     );
     */
     //여기 나중에 실행되는거 보고 위치 옮겨서 맞춰야 할 듯
-    int bar_width = 100;   // 전체 체력바 너비
+    int bar_width = player.max_hp * 2; // 전체 체력바 너비
     int bar_height = 10;   // 체력바 높이
     int bar_x = player.x + 40;  // 체력바 위치 X
     int bar_y = player.y - 20; // 캐릭터 위쪽
 
     // 현재 체력 비율
-    float hp_ratio = (float)player.hp / 50.0f; // 최대 HP=50 기준
+    float hp_ratio = (float)player.hp / (float)player.max_hp;
     if (hp_ratio < 0) hp_ratio = 0;
 
     // 체력바 배경 (회색)
