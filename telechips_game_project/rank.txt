@@ -2,4 +2,3 @@ as 0 30
 kim 0 9
 asdsd 0 9
 dong 0 44
-

@@ -114,7 +114,7 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
             // 플레이어 방향 저장
             switch (dir)
             {
-            case DIR_DOWN:  shots[i].dir = SHOT_DOWN; break;
+            case DIR_LEFT:  shots[i].dir = SHOT_LEFT; break; 
             case DIR_RIGHT: shots[i].dir = SHOT_RIGHT; break;
             }
         }
