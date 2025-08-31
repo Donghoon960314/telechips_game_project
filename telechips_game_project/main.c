@@ -47,7 +47,8 @@ int main() {
 
     // UI용 폰트 / 비트맵 로드
 
-    ALLEGRO_FONT* font = al_create_builtin_font();
+    //ALLEGRO_FONT* font = al_create_builtin_font();
+    ALLEGRO_FONT* font = al_load_ttf_font("OpenSans_Bold.ttf",40,0);
     button_to_rank_title_font = al_load_ttf_font("BebasNeue-Regular.ttf", 60, 0);
     name_font = al_load_ttf_font("BebasNeue-Regular.ttf", 50, 0);
     title_font = al_load_ttf_font("BebasNeue-Regular.ttf", 80, 0);
