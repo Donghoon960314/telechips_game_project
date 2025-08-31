@@ -169,7 +169,7 @@ void Button_draw(const Button* pos, ALLEGRO_FONT* font)
 
     al_draw_rectangle(pos->x, pos->y, pos->x + pos->w, pos->y + pos->h, btn_border, 4.0f);
 
-    font = al_load_ttf_font("OpenSans_Bold.ttf", 40, 0);
+    //font = al_load_ttf_font("OpenSans_Bold.ttf", 40, 0);
     
     int tw = al_get_text_width(font, pos->label1);
     int th = al_get_font_line_height(font);
