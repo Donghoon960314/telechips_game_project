@@ -129,7 +129,21 @@ void rank_name_open(int time, char * rank_name, int * rank_min, int * rank_sec)/
     }
     printf("Player Name: %s, Time: %d min %d sec\n", name, minutes, seconds);
 
-    FILE* f = fopen("rank.txt", "a");
+    FILE* f = NULL;
+    if (game_difficulty == DIFF_EASY)
+    {
+         f = fopen("Rank_Easy.txt", "a");
+    }
+    else if (game_difficulty == DIFF_NORMAL)
+    {
+         f = fopen("Rank_Normal.txt", "a");
+    }
+    else if (game_difficulty == DIFF_HARD)
+    {
+         f = fopen("Rank_Hard.txt", "a");
+    }
+    //
+    // FILE* f = fopen("rank.txt", "a");
     if (f) {
         fprintf(f, "%s %d %d\n", name, minutes, seconds);
         fclose(f);
