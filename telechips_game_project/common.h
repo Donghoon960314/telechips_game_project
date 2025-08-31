@@ -244,7 +244,6 @@ void next_slide();
 
 bool pt_in_rect(float px, float py, const Button* b);
 
-
 //======================================================
 //                       AUDIO
 //======================================================
@@ -259,6 +258,30 @@ ALLEGRO_AUDIO_STREAM* bgm_stream;
 
 void audio_init();
 void audio_deinit();
+
+//======================================================
+//                       STAGE
+//======================================================
+int stage_num_for;  //bitmap에 저장된 stage font위한 파라미터용
+int stage_num; //실제 스테이지 변수
+int delay; //스테이지 변경 시 딜레이를 위한 초기화
+
+extern bool monster_all_die; //몬스터가 모두 죽었는지 확인하는 변수
+
+typedef struct IMAGES //스테이지별 이미지가 담긴 이미지 구조체
+{
+    ALLEGRO_BITMAP* stage[3];
+
+}IMAGES;
+
+void stage_init();
+void stage_image_pop_init();
+void stage_image_pop_deinit();
+bool boss_check_live(void);
+bool check_monster_die(void);
+void stage_font(int stage_num_for);
+void stage_player_var(void);
+int stage_reset(void);
 
 //======================================================
 //                      COLLIDE

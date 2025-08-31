@@ -15,14 +15,14 @@ void audio_init()
     al_init_acodec_addon();
     al_reserve_samples(128);
 
-    sample_normal_shot = al_load_sample("shot.flac");
-    must_init(sample_normal_shot, "shot sample");
+    sample_normal_shot = al_load_sample("attack1.mp3");
+    must_init(sample_normal_shot, "attack1 sample");
 
-    sample_strong_shot = al_load_sample("shot.flac");
-    must_init(sample_strong_shot, "shot sample");
+    sample_strong_shot = al_load_sample("attack2.mp3");
+    must_init(sample_strong_shot, "attack2 sample");
 
-    sample_ENEMY1 = al_load_sample("Enemy_re.mp3");
-    must_init(sample_strong_shot, "shot sample");
+    sample_ENEMY1 = al_load_sample("enemy1.mp3");
+    must_init(sample_strong_shot, "enemy1 sample");
 
     sample_BOSS1 = al_load_sample("BOSS1_who_are_you.mp3");
     must_init(sample_BOSS1, "boss1_shot");

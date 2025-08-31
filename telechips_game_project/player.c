@@ -76,11 +76,11 @@ void player_update()
         player.x += player.speed;
         player.last_dir = DIR_RIGHT;
     }
-    if (key[ALLEGRO_KEY_UP]) 
+    if (key[ALLEGRO_KEY_UP])
     {
         player.y -= player.speed;
     }
-    if (key[ALLEGRO_KEY_DOWN]) 
+    if (key[ALLEGRO_KEY_DOWN])
     {
         player.y += player.speed;
     }
