@@ -36,8 +36,8 @@ void sprites_init()
     sprites.enemy[2] = al_load_bitmap("stage1.png");
     sprites.enemy[3] = al_load_bitmap("boss01.png"); //º¸½º¸÷ ÇÑ¸¶¸®´õ 
 
-    sprites.enemy_shot[0] = sprite_grab(13, 10, ENEMY_SHOT_W, ENEMY_SHOT_H); // ÀÏ¹Ý ¸÷
-    sprites.enemy_shot[1] = sprite_grab(13, 10, ENEMY_SHOT_W, ENEMY_SHOT_H); // º¸½º ¸÷
+    sprites.enemy_shot[0] = al_load_bitmap("enemy_attack.png"); // ÀÏ¹Ý ¸÷
+    sprites.enemy_shot[1] = al_load_bitmap("boss_shot1.png"); // º¸½º ¸÷
 
     // ¹è°æ ÀÌ¹ÌÁö
     subway_background = al_load_bitmap("subway_background.png"); 

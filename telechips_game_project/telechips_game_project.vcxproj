@@ -156,8 +156,13 @@
   <ItemGroup>
     <Image Include="background.jpg" />
     <Image Include="boss01.png" />
+
+    <Image Include="boss_shot1.png" />
+    <Image Include="enemy_attack.png" />
+
     <Image Include="item_attack_speedup.png" />
     <Image Include="item_hp_heal.png" />
+
     <Image Include="monster01.png" />
     <Image Include="monster02.png" />
     <Image Include="player.png" />
