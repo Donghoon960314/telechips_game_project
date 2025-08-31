@@ -1,19 +1,4 @@
 kim 0 9
 asdsd 0 9
 dong 0 44
-hong 1 14ppap 0 25
-wewe 0 36
-sdfw 0 17
-zz 0 18
-as 0 21
-dfsdf 0 20
-a 0 46
-as 0 17
-ww 0 24
-dfs 0 28
-mma 0 30
-qq 0 55
-qow 0 35
-sds 0 36
-r 1 10
-d 1 19
+

@@ -136,8 +136,10 @@
     <ClCompile Include="collide.c" />
     <ClCompile Include="display.c" />
     <ClCompile Include="enemy.c" />
+    <ClCompile Include="First_UI.c" />
     <ClCompile Include="general.c" />
     <ClCompile Include="hud.c" />
+    <ClCompile Include="items.c" />
     <ClCompile Include="keyboard.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="player.c" />
@@ -152,9 +154,15 @@
     <None Include="shot.flac" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="background.jpg" />
     <Image Include="boss01.png" />
+
     <Image Include="boss_shot1.png" />
     <Image Include="enemy_attack.png" />
+
+    <Image Include="item_attack_speedup.png" />
+    <Image Include="item_hp_heal.png" />
+
     <Image Include="monster01.png" />
     <Image Include="monster02.png" />
     <Image Include="player.png" />
@@ -164,6 +172,20 @@
     <Image Include="player2_shot1.png" />
     <Image Include="player2_shot2.png" />
     <Image Include="player_attack.png" />
+    <Image Include="prologue_dialog_01.png" />
+    <Image Include="prologue_dialog_02.png" />
+    <Image Include="prologue_dialog_03.png" />
+    <Image Include="prologue_dialog_04.png" />
+    <Image Include="prologue_dialog_05.png" />
+    <Image Include="prologue_dialog_06.png" />
+    <Image Include="prologue_dialog_07.png" />
+    <Image Include="prologue_dialog_08.png" />
+    <Image Include="prologue_dialog_09.png" />
+    <Image Include="prologue_dialog_10.png" />
+    <Image Include="prologue_dialog_11.png" />
+    <Image Include="prologue_dialog_12.png" />
+    <Image Include="prologue_dialog_13.png" />
+    <Image Include="prologue_dialog_14.png" />
     <Image Include="spritesheet.png" />
     <Image Include="stage1.PNG" />
     <Image Include="stage1_new.png" />
@@ -175,7 +197,8 @@
     <Image Include="stage3_new_new.PNG" />
     <Image Include="shot1.png" />
     <Image Include="shot2.png" />
-    <Image Include="subway_background.jpg" />
+    <Image Include="start_display.png" />
+    <Image Include="subway_background.png" />
     <Image Include="subway_floor.jpg" />
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +212,14 @@
   </ItemGroup>
   <ItemGroup>
     <Font Include="BebasNeue-Regular.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="back.mp3" />
+    <Media Include="boss1_shot.mp3" />
+    <Media Include="BOSS1_who_are_you.mp3" />
+    <Media Include="BOSS1_an.mp3" />
+    <Media Include="ENEMY1.mp3" />
+    <Media Include="Enemy_re.mp3" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

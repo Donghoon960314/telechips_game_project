@@ -10,20 +10,8 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-JOB_TYPE job_type = JOB_TYPE_1;
-
 void player_init()
 {
-
-    //player.x = (BUFFER_W / 2) - (PLAYER_W / 2);
-    //player.y = (BUFFER_H / 2) - (PLAYER_H / 2);
-    //player.normal_shot_timer = 0;
-    //player.strong_shot_timer = 0;
-
-    //player.hp = 60;
-
-    //player.hp = 70;
-
     player.x = (BUFFER_W / 7) - (PLAYER_W / 7);
     player.y = (BUFFER_H / 1.7) - (PLAYER_H / 1.7);
     player.invincible_timer = 120; // 무적 시간
@@ -34,13 +22,14 @@ void player_init()
     if (player.job == JOB_TYPE_1) // JOB_TYPE_1 → 공격력 강함, 공격속도/이동속도 느림
     {
         player.hp = 80; // 체력
+        player.max_hp = player.hp;
         player.speed = PLAYER_SPEED >> 1; // 이동 속도
 
         player.power_normal = 3; // 일반 공격 공격력
         player.power_skill_1 = 6; // 스킬 1 공격력
         //player.power_skill_2 = 6; // 스킬 2 공격력
 
-        player.normal_shot_cooldown = 60; // 일반 공격 쿨타임
+        player.normal_shot_cooldown = 30; // 일반 공격 쿨타임
         player.skill_1_cooldown = 120; // 스킬 1 쿨타임
         //player.skill_2_cooldown = 120; // 스킬 2 쿨타임
          
@@ -52,6 +41,7 @@ void player_init()
     else if (player.job == JOB_TYPE_2) // JOB_TYPE_2 → 공격력 약함, 공격속도/이동속도 빠름
     {
         player.hp = 50;
+        player.max_hp = player.hp;
         player.speed = PLAYER_SPEED;
 
         player.power_normal = 1;
@@ -171,12 +161,14 @@ void player_update()
     {
         if (player.job == JOB_TYPE_1)
         {
+            printf("JOB_TYPE_1\n");
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal, ATTACK_NORMAL);
             player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
             player.attack_anim_timer = 18; // 공격 모션 유지 시간
         }
         else if (player.job == JOB_TYPE_2)
         {
+            printf("JOB_TYPE_2\n");
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal, ATTACK_NORMAL);
             player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
             player.attack_anim_timer = 9; // 공격 모션 유지 시간
@@ -216,6 +208,7 @@ void player_draw()
     if (player.hp <= 0)
         return;
 
+    /*
     // 플레이어 HP 표시
     char hp_text[16];
     sprintf(hp_text, "%d", player.hp);
@@ -227,6 +220,31 @@ void player_draw()
         ALLEGRO_ALIGN_CENTER,
         hp_text
     );
+    */
+    //여기 나중에 실행되는거 보고 위치 옮겨서 맞춰야 할 듯
+    int bar_width = player.max_hp * 2; // 전체 체력바 너비
+    int bar_height = 10;   // 체력바 높이
+    int bar_x = player.x + 40;  // 체력바 위치 X
+    int bar_y = player.y - 20; // 캐릭터 위쪽
+
+    // 현재 체력 비율
+    float hp_ratio = (float)player.hp / (float)player.max_hp;
+    if (hp_ratio < 0) hp_ratio = 0;
+
+    // 체력바 배경 (회색)
+    al_draw_filled_rectangle(bar_x, bar_y,
+        bar_x + bar_width, bar_y + bar_height,
+        al_map_rgb(80, 80, 80));
+
+    // 현재 체력 (초록색)
+    al_draw_filled_rectangle(bar_x, bar_y,
+        bar_x + (bar_width * hp_ratio), bar_y + bar_height,
+        al_map_rgb(0, 255, 0));
+
+    // 테두리 (흰색)
+    al_draw_rectangle(bar_x, bar_y,
+        bar_x + bar_width, bar_y + bar_height,
+        al_map_rgb(255, 255, 255), 2);
 
     // 무적 깜빡임 효과 처리
     if (player.invincible_timer > 0)

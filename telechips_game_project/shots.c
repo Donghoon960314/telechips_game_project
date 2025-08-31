@@ -29,7 +29,25 @@ void shots_init() {
 
 bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int power, ATTACK_TYPE attack_type)
 {
-    // °­ÇÑ °ø°İ(ÇÃ·¹ÀÌ¾î)
+    // ê°•í•œ ê³µê²©(í”Œë ˆì´ì–´)
+    switch (attack_type) { //ENENMYíƒ€ì…ë³„ë¡œ ì˜¤ë””ì˜¤ ë‹¤ë¥´ê²Œ ì„¤ì •
+    case ATTACK_NORMAL:
+        al_play_sample(sample_normal_shot, 0.3, 0, player ? 1.0 : 1.5, ALLEGRO_PLAYMODE_ONCE, NULL);
+        break;
+    case ATTACK_SKILL_1:
+        al_play_sample(sample_strong_shot, 0.8, 0, 0.6, ALLEGRO_PLAYMODE_ONCE, NULL);
+        break;
+    case ATTACK_ENEMY:
+        al_play_sample(sample_ENEMY1, 0.6, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        break;
+    case ATTACK_BOSS1:
+        al_play_sample(sample_BOSS1, 0.5, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        break;
+    case ATTACK_BOSS2:
+        al_play_sample(sample_BOSS2, 0.5, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        break;
+    }
+    /*
     if (player && power >= 4)
     {   
         PLAYER_SHOT_WIDTH = PLAYER_SHOT_2_W;
@@ -47,7 +65,7 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
     }
     else if (power >= 8)
     {   
-        //Àû º¸½º °ø°İ
+        //ì  ë³´ìŠ¤ ê³µê²©
         ENEMY_SHOT_WIDTH = ENEMY_SHOT_2_W;
         ENEMY_SHOT_HEIGHT = ENEMY_SHOT_2_H;
 
@@ -62,7 +80,7 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
     }
     else
     {
-        // ÀÏ¹İ °ø°İ(ÇÃ·¹ÀÌ¾î/Àû)
+        // ì¼ë°˜ ê³µê²©(í”Œë ˆì´ì–´/ì )
         PLAYER_SHOT_WIDTH = PLAYER_SHOT_1_W;
         PLAYER_SHOT_HEIGHT = PLAYER_SHOT_1_H;
         
@@ -75,31 +93,32 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
             NULL
         );
     }
+    */
 
     for (int i = 0; i < SHOTS_N; i++)
     {
-        // ºó ½½·Ô Ã£±â
+        // ë¹ˆ ìŠ¬ë¡¯ ì°¾ê¸°
         if (shots[i].used) continue;
 
-        // ´©°¡ ½ğ ÃÑ¾ËÀÎÁö ÀúÀå
+        // ëˆ„ê°€ ìœ ì´ì•Œì¸ì§€ ì €ì¥
         shots[i].player = player;
-        shots[i].attack_type = attack_type; // °ø°İ Å¸ÀÔ ÀúÀå
+        shots[i].attack_type = attack_type; // ê³µê²© íƒ€ì… ì €ì¥
         shots[i].power = power;
 
-        // ÇÃ·¹ÀÌ¾î ÃÑ¾ËÀÌ¸é À§Ä¡ ¼³Á¤
+        // í”Œë ˆì´ì–´ ì´ì•Œì´ë©´ ìœ„ì¹˜ ì„¤ì •
         if (player)
         {
             shots[i].x = x + (PLAYER_W / 2) - (PLAYER_SHOT_WIDTH / 2);
             shots[i].y = y + (PLAYER_H / 2) + (PLAYER_SHOT_HEIGHT / 2);
 
-            // ÇÃ·¹ÀÌ¾î ¹æÇâ ÀúÀå
+            // í”Œë ˆì´ì–´ ë°©í–¥ ì €ì¥
             switch (dir)
             {
             case DIR_DOWN:  shots[i].dir = SHOT_DOWN; break;
             case DIR_RIGHT: shots[i].dir = SHOT_RIGHT; break;
             }
         }
-        // Àû ÃÑ¾ËÀÌ¸é
+        // ì  ì´ì•Œì´ë©´
         else
         {
             if (shots[i].power > 5) {
@@ -116,10 +135,10 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
                 shots[i].x = x - (ENEMY_SHOT_WIDTH / 2);
                 shots[i].y = y - (ENEMY_SHOT_HEIGHT / 2);
             }
-            // Á÷¼± ÀÌµ¿
+            // ì§ì„  ì´ë™
             if (straight)
             {
-                // dir ±âÁØÀ¸·Î ÁÂ/¿ì Á÷¼± »ç°İ
+                // dir ê¸°ì¤€ìœ¼ë¡œ ì¢Œ/ìš° ì§ì„  ì‚¬ê²©
                 int spd = 2;
                 switch (dir)
                 {
@@ -135,7 +154,7 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
                     break;
                 }
             }
-            // ¼Óµµ°¡ ¾øÀ¸¸é ¹Ù·Î Á¾·á
+            // ì†ë„ê°€ ì—†ìœ¼ë©´ ë°”ë¡œ ì¢…ë£Œ
             if (!shots[i].dx && !shots[i].dy)
                 return true;
 
@@ -152,20 +171,20 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
 
 void shots_update() {
     for (int i = 0; i < SHOTS_N; i++) {
-        // »ç¿ë ¾È ÇÏ´Â ½½·Ô °Ç³Ê¶Ù±â
+        // ì‚¬ìš© ì•ˆ í•˜ëŠ” ìŠ¬ë¡¯ ê±´ë„ˆë›°ê¸°
         if (!shots[i].used) continue;
 
-        // ÇÃ·¹ÀÌ¾î ÃÑ¾Ë Ã³¸®
+        // í”Œë ˆì´ì–´ ì´ì•Œ ì²˜ë¦¬
         if (shots[i].player) {            
             if (shots[i].dir == SHOT_LEFT)  shots[i].x -= 5;
             else                            shots[i].x += 5;
-            // È­¸é ¹ÛÀÌ¸é Á¦°Å
+            // í™”ë©´ ë°–ì´ë©´ ì œê±°
             if (shots[i].x < -PLAYER_SHOT_WIDTH || shots[i].x > BUFFER_W ||
                 shots[i].y < -PLAYER_SHOT_HEIGHT || shots[i].y > BUFFER_H) {
                 shots[i].used = false;
             }
         }
-        // Àû ÃÑ¾Ë Ã³¸®
+        // ì  ì´ì•Œ ì²˜ë¦¬
         else
         {
             shots[i].x += shots[i].dx;
@@ -184,17 +203,17 @@ void shots_update() {
 
 int shots_collide(bool is_player, int x, int y, int w, int h) {
     for (int i = 0; i < SHOTS_N; i++) {
-        // ÃÑ¾Ë »ç¿ë ¿©ºÎ È®ÀÎ
+        // ì´ì•Œ ì‚¬ìš© ì—¬ë¶€ í™•ì¸
         if (!shots[i].used) continue;
 
-        // ÀÚ±â ÀÚ½ÅÀÇ ÃÑ¾ËÀº Á¦¿Ü
+        // ìê¸° ìì‹ ì˜ ì´ì•Œì€ ì œì™¸
         if (shots[i].player == is_player) continue;
 
-        // ÃÑ¾Ë Å©±â ¼³Á¤
+        // ì´ì•Œ í¬ê¸° ì„¤ì •
         int sw, sh;
         if(shots[i].player)
         {
-            // ÇÃ·¹ÀÌ¾î ÃÑ¾Ë Å©±â = ½ºÇÁ¶óÀÌÆ® Å©±â ¡¿ ±íÀÌ ½ºÄÉÀÏ
+            // í”Œë ˆì´ì–´ ì´ì•Œ í¬ê¸° = ìŠ¤í”„ë¼ì´íŠ¸ í¬ê¸° Ã— ê¹Šì´ ìŠ¤ì¼€ì¼
             ALLEGRO_BITMAP* bmp = NULL;
             JOB_TYPE job = player.job;
             if (shots[i].attack_type == ATTACK_NORMAL) {
@@ -205,7 +224,7 @@ int shots_collide(bool is_player, int x, int y, int w, int h) {
             }
 
             if (bmp) {
-                // ±íÀÌ ½ºÄÉÀÏ °è»ê
+                // ê¹Šì´ ìŠ¤ì¼€ì¼ ê³„ì‚°
                 float t = (float)(shots[i].y - 110) / (PLAYER_MAX_Y - 110);
                 if (t < 0) t = 0; if (t > 1) t = 1;
                 float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
@@ -219,9 +238,9 @@ int shots_collide(bool is_player, int x, int y, int w, int h) {
             }
         }
         else {
-            // Àû ÃÑ¾Ë Å©±â = ½ºÇÁ¶óÀÌÆ® Å©±â ¡¿ ±íÀÌ ½ºÄÉÀÏ
+            // ì  ì´ì•Œ í¬ê¸° = ìŠ¤í”„ë¼ì´íŠ¸ í¬ê¸° Ã— ê¹Šì´ ìŠ¤ì¼€ì¼
             ALLEGRO_BITMAP* bmp = NULL;
-            if (shots[i].attack_type == ATTACK_BOSS) {
+            if (shots[i].attack_type == ATTACK_BOSS1) {
                 bmp = sprites.enemy_shot[1];
             }
             else {
@@ -245,7 +264,7 @@ int shots_collide(bool is_player, int x, int y, int w, int h) {
         int hitbox_h = sh * 0.8f;                         
         int hitbox_y = shots[i].y + sh - hitbox_h; 
 
-        // Ãæµ¹ Ã¼Å©
+        // ì¶©ëŒ ì²´í¬
         if (collide(x, y, x + w, y + h,
             hitbox_x, hitbox_y,
             hitbox_x + sw, hitbox_y + hitbox_h))
@@ -260,12 +279,12 @@ int shots_collide(bool is_player, int x, int y, int w, int h) {
 
 void shots_draw() {
     for (int i = 0; i < SHOTS_N; i++) {
-        // »ç¿ë ÁßÀÎ ÃÑ¾Ë¸¸ ±×¸®±â
+        // ì‚¬ìš© ì¤‘ì¸ ì´ì•Œë§Œ ê·¸ë¦¬ê¸°
         if (!shots[i].used) continue;
 
         int frame_display = (shots[i].frame / 2) % 2;
 
-        // ÇÃ·¹ÀÌ¾î ÃÑ¾Ë
+        // í”Œë ˆì´ì–´ ì´ì•Œ
         if (shots[i].player) {
             ALLEGRO_BITMAP* bmp = (shots[i].attack_type == ATTACK_NORMAL)
                 ? sprites.player_shot[player.job][0]

@@ -59,12 +59,11 @@ bool check_monster_die(void) // 몬스터 5마리가 전부 죽었는지 체크�
         if (enemies[i].used == false) check_num += 1;
     if (check_num == 5)
     {
+        shots_init();
         if (stage_num == 1) {
-            shots_init();
             return true;
         } //1단계일때는 stage_reset()에 무조건 true넘겨줘서 보스몹 출현없이 
         else {
-            shots_init();
             return (boss_spawned && !boss_check_live());
         }
 
@@ -163,21 +162,18 @@ int stage_reset(void)
             boss_spawn_timer = -1;
             boss_spawned = false;
 
-            printf("monster all die\n");
             stage_player_var();   // 여기서 stage_num_for += 1
             stage_font(stage_num_for);  // 현재 stage 배너 출력
 
-            printf("start stage %d\n", stage_num_for);
-
             enemies_init();
             shots_init();
+            items_init();
             stage_num += 1;
         }
     }
     else if (check_monster_die() == true) {
         delay = 60;
     }
-    printf("stage:num : %d\n", stage_num);
-    printf("stage_num_for : %d\n", stage_num_for);
+
     return stage_num;
 }
