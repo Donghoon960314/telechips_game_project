@@ -54,11 +54,11 @@ void player_init()
         player.speed = PLAYER_SPEED;
 
         player.power_normal = 3;
-        player.power_skill_1 = 5;
-        player.power_skill_2 = 3;
+        player.power_skill_1 = 6;
+        player.power_skill_2 = 5;
 
-        player.normal_shot_cooldown = 15; 
-        player.skill_1_cooldown = 90; 
+        player.normal_shot_cooldown = 30; 
+        player.skill_1_cooldown = 120; 
         player.skill_2_cooldown = 120;
 
         player.normal_shot_timer = 0;
@@ -172,13 +172,13 @@ void player_update()
         {
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal, ATTACK_NORMAL);
             player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
-            player.attack_anim_timer = 36; // 공격 모션 유지 시간
+            player.attack_anim_timer = 30; // 공격 모션 유지 시간
         }
         else if (player.job == JOB_TYPE_2)
         {
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal, ATTACK_NORMAL);
             player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
-            player.attack_anim_timer = 36; // 공격 모션 유지 시간
+            player.attack_anim_timer = 30; // 공격 모션 유지 시간
 
         }
     }
@@ -194,13 +194,13 @@ void player_update()
         {
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_skill_1, ATTACK_SKILL_1);
             player.skill_1_timer = player.skill_1_cooldown;
-            player.attack_anim_timer2 = 24;
+            player.attack_anim_timer2 = 60;
         }
         else if (player.job == JOB_TYPE_2)
         {
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_skill_1, ATTACK_SKILL_2);
             player.skill_1_timer = player.skill_1_cooldown;
-            player.attack_anim_timer2 = 24;
+            player.attack_anim_timer2 = 60;
         }
     }
      // 공격 모션 유지 시간
@@ -279,7 +279,7 @@ void player_draw()
     // 2.5D 구현
     DEPTH_MIN_SCALE = 1.5f; 
     DEPTH_MAX_SCALE = 3.0f;
-
+    /*히트박스
     int scaled_w = 0.7 * PLAYER_W * depth_scale;
     int scaled_h = PLAYER_H * depth_scale;
     int hitbox_x = player.x + PLAYER_W * depth_scale * 0.15;
@@ -292,7 +292,7 @@ void player_draw()
         hitbox_x + scaled_w, hitbox_y + hitbox_h,
         al_map_rgb(255, 0, 0), 2
     );
-    
+    */
     // 공격 모션 적용
     ALLEGRO_BITMAP* bmp = NULL; // 초기화
     if (player.job == JOB_TYPE_1)

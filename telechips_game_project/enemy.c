@@ -458,11 +458,13 @@ void enemies_draw()
                     0
                 );
             }
+            /*히트박스
             al_draw_rectangle(
                 enemies[i].x, enemies[i].y,
                 enemies[i].x + draw_w, enemies[i].y + draw_h,
                 al_map_rgb(255, 0, 0), 1
             );
+            */
         }
     }
 }
