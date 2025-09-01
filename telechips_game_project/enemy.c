@@ -319,7 +319,7 @@ void enemies_update()
                     //enemies[i].y = 500; // 화면 위쪽 중앙
 
                     enemies[i].y = BUFFER_H * 0.6; // 화면 위쪽 중앙
-                    if (stage_num == 2) //**stage_num 헤더에 전역변수로 빼고 이거에 따라서 boss몹 다르게
+                    if (stage_num == 2) // **stage_num 헤더에 전역변수로 빼고 stage따라서 boss몹 다르게 소환함 1단계는 넘김
                     {
                         enemies[i].type = BOSS_TYPE_1;
                         enemies[i].used = true;
@@ -331,8 +331,7 @@ void enemies_update()
                     }
                     //　능력치 초기화
                     enemy_set_stats(&enemies[i]);
-
-                    boss_spawned = true;
+                    boss_spawned = true; //보스몹이 소환되면 boss_spawned를 true로
                     break;
                 }
             }

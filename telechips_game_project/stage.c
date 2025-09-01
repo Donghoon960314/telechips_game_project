@@ -42,11 +42,12 @@ void stage_image_pop_deinit() //나중에 저장된 비트맵을 없애줌
     al_destroy_bitmap(images.stage[2]);
 }
 
-//보스가 죽었는지 체크하는 함수
+//일반몬스터가 죽은 뒤 소환된 보스가 죽었는지 체크하는 함수// -> 보스몹이 죽으면 다음 스테이지로 넘어가기
 bool boss_check_live(void)
 {
     for (int i = 0; i < ENEMIES_N; i++) {
-        if (enemies[i].used && enemies[i].type == BOSS_TYPE_1) { //추후에 보스 타입 추가 되면 여기 수정해야함
+        if ((enemies[i].used && enemies[i].type == BOSS_TYPE_1) | (enemies[i].used && enemies[i].type == BOSS_TYPE_2))
+        { 
             return true;
         }
     }
@@ -56,6 +57,7 @@ bool boss_check_live(void)
 bool check_monster_die(void) // 몬스터 5마리가 전부 죽었는지 체크하는 함수
 //2단계 3단계 stage에만 보스몬스터를 출현시키기 위한 로직
 //stage 1에서는 true를 return하고 stage2,3단계에 몬스터와 보스가 모두 죽었는지 체크한다.
+//이미 enenmy_update()에 있지만 몬스터들이 다 죽고 보스몹이 생성되는 로직이 있지만 한번더 크로스 체크하는 용도임
 {
     int check_num = 0;
 
@@ -68,7 +70,7 @@ bool check_monster_die(void) // 몬스터 5마리가 전부 죽었는지 체크�
             return true;
         } //1단계일때는 stage_reset()에 무조건 true넘겨줘서 보스몹 출현없이 
         else {
-            return (boss_spawned && !boss_check_live());
+            return (boss_spawned && !boss_check_live()); //소환된 보스가 죽었는가
         }
 
     }
@@ -103,11 +105,11 @@ void stage_font(int stage_num_for) //각 stage가 시작되기전에 stage 폰�
 
 void stage_player_var(void) //스테이지가 바뀔때마다 변화하는 변수들 모음
 {
-    player.x = 10;
+    player.x = 10;  //스테이지가 넘어가면 플레이어 위치 초기화
     player.y = 10;
-    frames = 0;
-    stage_num_for += 1;
-    spawn_enabled = true;
+    frames = 0;     //프레임
+    stage_num_for += 1;  //폰트 찍기 위한
+    spawn_enabled = true; //다음 스테이지에 보스가 소환되기 위한 설정
 }
 
 /*
@@ -157,8 +159,9 @@ int stage_reset(void)
     return stage_num_for;
 }
 */
-int stage_reset(void)
-{
+
+int stage_reset(void) //stage가 running일때 매 프레임마다 계속 실행됨
+{                     //다음 프레임부터 delay에서 계속 딜레이를 감소시키
     if (delay > 0) {
         delay--;
         if (delay == 0) {
@@ -166,18 +169,19 @@ int stage_reset(void)
             boss_spawn_timer = -1;
             boss_spawned = false;
 
-            stage_player_var();   // 여기서 stage_num_for += 1
-            stage_font(stage_num_for);  // 현재 stage 배너 출력
+            stage_player_var();   //여기서 스테이지 변화 후 발생하는 문제 해결
+            stage_font(stage_num_for); //현재 스테이지에 맞는 배너 출력
 
             enemies_init();
             shots_init();
             items_init();
             stage_num += 1;
         }
-    }
-    else if (check_monster_die() == true) { //특정 프레임에서 몬스터가 다 죽으면 바로 delay = 60으로 설정하고 매 프레
-        delay = 60;
-    }
+    }                                                       
 
+    else if (check_monster_die() == true) { //특정 프레임에서 몬스터가 다 죽으면 바로 delay = 60으로 설정함 
+        delay = 60; //다음 프레임부터 delay에서 계속 딜레이를 감소시키면서 60프레임(1초가)지나면 == (delay가 0일 될때) 
+                     //바로 boss 소환로직 stage 관련 변수들을 리셋함.
+    }
     return stage_num;
 }

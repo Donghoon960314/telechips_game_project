@@ -13,8 +13,8 @@
 #include "common.h"
 
 bool restarted = false;
-ALLEGRO_FONT* name_font = NULL;   // 전역 정의
-ALLEGRO_FONT* title_font = NULL;  // 전역 정의
+ALLEGRO_FONT* name_font = NULL;   // ?�역 ?�의
+ALLEGRO_FONT* title_font = NULL;  // ?�역 ?�의
 ALLEGRO_FONT* button_to_rank_title_font = NULL;
 
 
@@ -22,18 +22,18 @@ ALLEGRO_FONT* button_to_rank_title_font = NULL;
 //                  MAIN GAME LOOP
 //======================================================
 int main() {
-    must_init(al_init(), "allegro"); // Allegro 라이브러리 초기화
-    must_init(al_install_keyboard(), "keyboard"); // 키보드 입력 초기화
-    must_init(al_install_mouse(), "mouse");       // 마우스 입력 초기화
+    must_init(al_init(), "allegro"); // Allegro ?�이브러�?초기??
+    must_init(al_install_keyboard(), "keyboard"); // ?�보???�력 초기??
+    must_init(al_install_mouse(), "mouse");       // 마우???�력 초기??
 
-    // 60fps 타이머 생성
+    // 60fps ?�?�머 ?�성
     ALLEGRO_TIMER* timer = al_create_timer(1.0 / 60.0);
     must_init(timer, "timer");
 
-    must_init(al_init_font_addon(), "font");      // 폰트 모듈 초기화
+    must_init(al_init_font_addon(), "font");      // ?�트 모듈 초기??
     must_init(al_init_ttf_addon(), "ttf");
-    must_init(al_init_image_addon(), "image");    // 이미지 모듈 초기화
-    must_init(al_init_primitives_addon(), "primitives"); // 도형 모듈 초기화
+    must_init(al_init_image_addon(), "image");    // ?��?지 모듈 초기??
+    must_init(al_init_primitives_addon(), "primitives"); // ?�형 모듈 초기??
 
     
     
@@ -41,11 +41,11 @@ int main() {
     al_init_ttf_addon();
 
 
-    // 이벤트 큐 생성
+    // ?�벤?????�성
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
     must_init(queue, "queue");
 
-    // UI용 폰트 / 비트맵 로드
+    // UI???�트 / 비트�?로드
 
     //ALLEGRO_FONT* font = al_create_builtin_font();
     ALLEGRO_FONT* font = al_load_ttf_font("OpenSans_Bold.ttf",40,0);
@@ -56,8 +56,8 @@ int main() {
     printf("DEBUG: name_font=%p, title_font=%p\n", name_font, title_font);
 
     if (!name_font || !title_font) {
-        fprintf(stderr, "폰트 로드 실패! 실행 경로에 BebasNeue-Regular.ttf가 있는지 확인하세요.\n");
-        return -1; // 프로그램 바로 종료
+        fprintf(stderr, "?�트 로드 ?�패! ?�행 경로??BebasNeue-Regular.ttf가 ?�는지 ?�인?�세??\n");
+        return -1; // ?�로그램 바로 종료
     }
 
     must_init(font, "builtin font");
@@ -67,66 +67,66 @@ int main() {
     ALLEGRO_BITMAP* bitmap3 = al_load_bitmap("TUTORIAL.png");
     must_init(bitmap3, "bitmap");
 
-    // 디스플레이 & 오디오 초기화
-    disp_init(); // 화면 초기화
-    audio_init(); // 오디오 초기화
-    sprites_init(); // 스프라이트(캐릭터, 아이템 등) 초기화
-    hud_init(); // HUD 초기화
+    // ?�스?�레??& ?�디??초기??
+    disp_init(); // ?�면 초기??
+    audio_init(); // ?�디??초기??
+    sprites_init(); // ?�프?�이??캐릭?? ?�이???? 초기??
+    hud_init(); // HUD 초기??
 
 
-    // 프롤로그 슬라이드 생성
+    // ?�롤로그 ?�라?�드 ?�성
     load_slides();
 
-    // 이벤트 큐에 이벤트 소스 등록
-    al_register_event_source(queue, al_get_mouse_event_source());    // 마우스
-    al_register_event_source(queue, al_get_keyboard_event_source()); // 키보드
-    al_register_event_source(queue, al_get_display_event_source(disp)); // 디스플레이
-    al_register_event_source(queue, al_get_timer_event_source(timer));  // 타이머
+    // ?�벤???�에 ?�벤???�스 ?�록
+    al_register_event_source(queue, al_get_mouse_event_source());    // 마우??
+    al_register_event_source(queue, al_get_keyboard_event_source()); // ?�보??
+    al_register_event_source(queue, al_get_display_event_source(disp)); // ?�스?�레??
+    al_register_event_source(queue, al_get_timer_event_source(timer));  // ?�?�머
 
-    // 게임 객체 초기화
-    keyboard_init(); // 키보드 상태 초기화
-    shots_init();    // 총알 초기화
-    enemies_init();  // 적 초기화
-    items_init(); // 아이템 초기화
-    stage_image_pop_init(); // 스테이지 배너 초기화
+    // 게임 객체 초기??
+    keyboard_init(); // ?�보???�태 초기??
+    shots_init();    // 총알 초기??
+    enemies_init();  // ??초기??
+    items_init(); // ?�이??초기??
+    stage_image_pop_init(); // ?�테?��? 배너 초기??
 
     //======================================================
-    //                게임 상태 변수 초기화
+    //                게임 ?�태 변??초기??
     //======================================================
-    frames = 0;          // 프레임 카운터
-    score = 0;           // 점수 초기화
-    time_limit = 60;    // 제한 시간
+    frames = 0;          // ?�레??카운??
+    score = 0;           // ?�수 초기??
+    time_limit = 60;    // ?�한 ?�간
     time_left = time_limit;
 
-    char player_name[32]; // 랭킹용 이름
-    int min, sec;         // 랭킹용 시간
-    bool game_end_ranking = false; //게임종료후 랭킹출력
+    char player_name[32]; // ���������� �÷��̾� �̸�
+    int min, sec;         // ��,��(���ӱ��)
+    bool game_end_ranking = false; //��ŷâ���� �����ϴ°��� ���� ������ ����/ ��ʸ� Ŭ���ؼ� ���� Ȯ���� �� �ְԲ�.
 
-    bool done = false;   // 게임 종료 여부
-    bool redraw = true;  // 화면 다시 그릴지 여부
-    GameState state = STATE_MENU; // 처음에는 UI 메뉴 상태
+    bool done = false;   // 게임 종료 ?��?
+    bool redraw = true;  // ?�면 ?�시 그릴지 ?��?
+    GameState state = STATE_MENU; // 처음?�는 UI 메뉴 ?�태
     ALLEGRO_EVENT event;
 
-    // 타이머 시작
+    // ?�?�머 ?�작
     al_start_timer(timer);
     srand((unsigned int)time(NULL));
 
     //======================================================
-    //                  메인 루프 시작
+    //                  메인 루프 ?�작
     //======================================================
     while (1)
     {
-        // 이벤트 대기
+        // ?�벤???��?
         al_wait_for_event(queue, &event);
 
         switch (event.type)
         {
             //======================================================
-            //                    UI 관련 처리
+            //                    UI 관??처리
             //======================================================
         case ALLEGRO_EVENT_MOUSE_AXES:
         {
-            /* 디스플레이 좌표 → 버퍼 좌표로 변환 후 hover 갱신 */
+            /* ?�스?�레??좌표 ??버퍼 좌표�?변????hover 갱신 */
             float bx = to_buffer_x(event.mouse.x);
             float by = to_buffer_y(event.mouse.y);
             update_hover_all(bx, by);
@@ -134,18 +134,18 @@ int main() {
         }
         break;
 
-        // 마우스 클릭 관련 이벤트 발생 시 
+        // 마우???�릭 관???�벤??발생 ??
         case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
         {
             if (event.mouse.button == 1) {
                 float bx = to_buffer_x(event.mouse.x);
                 float by = to_buffer_y(event.mouse.y);
 
-                // 마우스 위치가 버튼 위치
+                // 마우???�치가 버튼 ?�치
                 Button* b = hit_button(bx, by);
                 if (!b)  break;
 
-                // 게임 시작
+                // 게임 ?�작
                 if (b == &pos1)
                 {
                     show_back_only();
@@ -154,14 +154,14 @@ int main() {
                     pos9.active = true;
                 }
 
-                // 뒤로 가기
+                // ?�로 가�?
                 else if (b == &pos2)
                 {
                     show_main_menu();
                     state = STATE_MENU;
                 }
 
-                // 랭킹,게임 설명
+                // ??��,게임 ?�명
                 else if (b == &pos3)
                 {
                     show_back_only();
@@ -172,7 +172,7 @@ int main() {
                     state = STATE_RANKING;
                 }
 
-                // 난이도: 쉬운 모드
+                // ?�이?? ?�운 모드
                 else if (b == &pos5)
                 {
                     set_pro_job();
@@ -181,7 +181,7 @@ int main() {
 
                 }
 
-                // 난이도: 중간 모드
+                // ?�이?? 중간 모드
                 else if (b == &pos6)
                 {
                     set_pro_job();
@@ -189,7 +189,7 @@ int main() {
                     state = STATE_PROLOGUE;
                 }
 
-                // 난이도: 어려운 모드
+                // ?�이?? ?�려??모드
                 else if (b == &pos7)
                 {
                     set_pro_job();
@@ -197,7 +197,7 @@ int main() {
                     state = STATE_PROLOGUE;
                 }
 
-                // 직업 선택 1: Tanjiro
+                // 직업 ?�택 1: Tanjiro
                 else if (b == &pos8)
                 {
                     state = STATE_MODE;
@@ -207,7 +207,7 @@ int main() {
                     pos7.active = true;
                 }
 
-                // 직업 선택 2: Rengoku
+                // 직업 ?�택 2: Rengoku
                 else if (b == &pos9)
                 {
                     state = STATE_MODE;
@@ -223,15 +223,15 @@ int main() {
         case ALLEGRO_EVENT_KEY_DOWN:
             if (state == STATE_RANKING)
             {
-                // 랭킹 화면일 때는 어떤 키를 눌러도 메뉴로 복귀
+                // ??�� ?�면???�는 ?�떤 ?��? ?�러??메뉴�?복�?
                 state = STATE_MENU;
-                game_end_ranking = false;   // 게임 끝나서 들어온 거니까 하이라이트 O
-                stage_num = 1; //게임시작 -> 종료 -> 랭킹입력 -> esc -> 다시 게임시작 할때 필요함
-                show_main_menu();   // 메뉴 버튼 다시 활성화
+                game_end_ranking = false;   // 게임 ?�나???�어??거니�??�이?�이??O
+                stage_num = 1; //게임?�작 -> 종료 -> ??��?�력 -> esc -> ?�시 게임?�작 ?�때 ?�요??
+                show_main_menu();   // 메뉴 버튼 ?�시 ?�성??
                 redraw = true;
             }
             else if (state == STATE_PROLOGUE && event.keyboard.keycode == ALLEGRO_KEY_S) {
-                next_slide(); // 프롤로그 넘기기
+                next_slide(); // ?�롤로그 ?�기�?
                 redraw = true;
             }
             else if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
@@ -239,10 +239,10 @@ int main() {
             }
             break;
 
-            // 알레그로 타이머 이벤트 
+            // ?�레그로 ?�?�머 ?�벤??
         case ALLEGRO_EVENT_TIMER:
             if (state == STATE_RUNNING) {
-                // 게임 로직 업데이트 (스테이지 안일 때만)
+                // 게임 로직 ?�데?�트 (?�테?��? ?�일 ?�만)
                 shots_update();
                 player_update();
                 enemies_update();
@@ -250,24 +250,22 @@ int main() {
                 hud_update();
                 update_shake();
 
-                // 매 프레임마다 시간 감소
+                // �??�레?�마???�간 감소
                 if (frames % 60 == 0 && time_left > 0)
                     time_left--;
 
-                // 시간 지나면 게임 오버
+                // ?�간 지?�면 게임 ?�버
                 if (time_left <= 0)
                     player.hp = 0;
 
-                // 스테이지 클리어 체크
-                if (stage_reset() > 3) {
-                    rank_name_open(al_get_timer_count(timer), player_name, &min, &sec);
-                    game_end_ranking = true;   // 게임 끝나서 들어온 거니까 하이라이트 O
-                    //print_ranking_table(player_name, min, sec);
+                // �� �����Ӹ��� stage_reset()�� ��� ȣ���ϸ鼭 �������� ���� Ȯ��
+                if (stage_reset() > 3) { //stage_reset�� return �� == stage_num
+                    rank_name_open(al_get_timer_count(timer), player_name, &min, &sec); //�������� ������ ��ŷ â���� �̸� �Է�
+                    game_end_ranking = true;   //game_end_ranking������ true�� �ٲٲ�  RANKING_STATE�� �Ѿ������ RANKȭ���� ���.
                     
-                    al_flush_event_queue(queue);
+                    al_flush_event_queue(queue); //��� �̺�Ʈ�� ���� ���� �������� �غ�
 
-                    //상태 변화후 ranking
-                    state = STATE_RANKING;
+                    state = STATE_RANKING; //RANKIHG STATE ����
 
                     disp_pre_draw();
                     al_clear_to_color(al_map_rgb(0, 0, 0));
@@ -279,16 +277,16 @@ int main() {
                     continue;
                 }
 
-                // 첫 120프레임 동안만 소환 허용
+                // �?120?�레???�안�??�환 ?�용
                 if (frames > 120) {
                     spawn_enabled = false;
                 }
 
-                // ESC 키 -> 게임 종료
+                // ESC ??-> 게임 종료
                 if (key[ALLEGRO_KEY_ESCAPE])
                     done = true;
 
-                // R 키 -> 게임 리스타트 (플레이어 죽었을 때만)
+                // R ??-> 게임 리스?�??(?�레?�어 죽었???�만)
                 if (player.hp <= 0 && key[ALLEGRO_KEY_R]) {
                     frames = 0;
                     score = 0;
@@ -307,7 +305,7 @@ int main() {
 
                     stage_font(stage_num_for);
 
-                    // 다시 스테이지 1로 시작
+                    // ?�시 ?�테?��? 1�??�작
                 }
             }
 
@@ -315,27 +313,27 @@ int main() {
             redraw = true;
             break;
 
-            // 창 닫기 이벤트
+            // �??�기 ?�벤??
         case ALLEGRO_EVENT_DISPLAY_CLOSE:
             done = true;
             break;
         }
 
-        // 종료 조건 확인
+        // 종료 조건 ?�인
         if (done)
             break;
 
 
-        // 키보드 입력 업데이트
+        // ?�보???�력 ?�데?�트
         keyboard_update(&event);
 
-        // 화면 그리기
+        // ?�면 그리�?
         if (redraw && al_is_event_queue_empty(queue))
         {
-            disp_pre_draw(); // 더블 버퍼 준비
-            al_clear_to_color(al_map_rgb(0, 0, 0)); // 화면 클리어 (검정색)
+            disp_pre_draw(); // ?�블 버퍼 준�?
+            al_clear_to_color(al_map_rgb(0, 0, 0)); // ?�면 ?�리??(검?�색)
 
-            // UI 상태에 따른 화면 표시
+            // UI ?�태???�른 ?�면 ?�시
             switch (state)
             {
             case STATE_MENU:
@@ -346,7 +344,7 @@ int main() {
                 Button_draw(&pos4, font);
                 break;
 
-                /*난이도 선택 화면*/
+                /*?�이???�택 ?�면*/
             case STATE_MODE:
                 prologue_display(bitmap);
                 Button_draw(&pos5, font);
@@ -354,41 +352,41 @@ int main() {
                 Button_draw(&pos7, font);
                 break;
 
-                // 직업 선택 화면
+                // 직업 ?�택 ?�면
             case STATE_CHOICE:
                 prologue_display(bitmap);
                 Button_draw(&pos8, font); //danso
                 Button_draw(&pos9, font); //zaruban
                 break;
 
-                // 프롤로그 진입
+                // ?�롤로그 진입
             case STATE_PROLOGUE:
                 if (!ps.blink)
                 {
                     if (ps.curr <= ps.end)
                     {
                         ALLEGRO_BITMAP* bitmap2 = prologue_List[ps.curr];
-                        prologue_display(bitmap2); // 프롤로그 슬라이드 표시
+                        prologue_display(bitmap2); // ?�롤로그 ?�라?�드 ?�시
                     }
                 }
                 else
                 {
-                    state = STATE_RUNNING;  // 프롤로그 끝 → 게임 시작
-                    frames = 0; //8.31 수정
-                    time_left = time_limit;     //8.31 수정
-                    keyboard_init(); //지맘대로 움직이는거 초기화 8.31
-                    stage_font(0);          // Stage1 배너 띄움
+                    state = STATE_RUNNING;  // ?�롤로그 ????게임 ?�작
+                    frames = 0; //8.31 ?�정
+                    time_left = time_limit;     //8.31 ?�정
+                    keyboard_init(); //지맘�?�??�직이?�거 초기??8.31
+                    stage_font(0);          // Stage1 배너 ?��?
                     
-                    al_stop_timer(timer); //게임 종료후 재시작 시간 오류 수정//
+                    al_stop_timer(timer); //게임 종료???�시???�간 ?�류 ?�정//
                     al_set_timer_count(timer, 0);
                     al_start_timer(timer);
 
                     stage_init();
-                    player_init();   // 플레이어 초기화
+                    player_init();   // ?�레?�어 초기??
                 }
                 break;
 
-                // 프롤로그가 끝났을 때 -> 본격적인 게임 화면
+                // ?�롤로그가 ?�났????-> 본격?�인 게임 ?�면
             case STATE_RUNNING:
                 draw_floor();
                 draw_vertical_lines();
@@ -402,14 +400,14 @@ int main() {
                 hud_draw();
                 break;
 
-            case STATE_RANKING:
+            case STATE_RANKING: //��ŷ ȭ�� ���Խ� ��ŷ����ϴ� �Լ� ȣ��(���� �Լ�, ���ڸ� �ٸ���)
                 if (game_end_ranking)
                 {
-                    print_ranking_table(player_name, min, sec, END_TO_RANK);
+                    print_ranking_table(player_name, min, sec, END_TO_RANK); //������ ������ ��ŷȭ�� ���Խ� 
                 }
                 else
                 {
-                    print_ranking_table("", 0, 0, BUTTON_TO_RANK);
+                    print_ranking_table("", 0, 0, BUTTON_TO_RANK); //��ư������ ��ŷȭ�� ���� 
                 }
                 break;
             
@@ -419,12 +417,12 @@ int main() {
                 Button_draw(&pos2, font);
                 break;
             }
-            disp_post_draw(); // 더블 버퍼 화면에 출력
+            disp_post_draw(); // ?�블 버퍼 ?�면??출력
             redraw = false;
         }
     }
 
-    /* 함수 마무리 선언(타이머, 폰트, 디스플레이, 이벤트 큐)*/
+    /* ?�수 마무�??�언(?�?�머, ?�트, ?�스?�레?? ?�벤????*/
     /*al_destroy_timer(timer);
     al_destroy_font(font);
     disp_deinit();

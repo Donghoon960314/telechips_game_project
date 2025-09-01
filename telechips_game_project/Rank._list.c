@@ -13,11 +13,11 @@
 //분 단위로는 오름차순->분이 같을때 초단위로 오름차순
 int cmp_rank(const void* a, const void* b) 
 {
-    const _RANK* x = (const _RANK*)a; //Rank구조체 가르키는 포인터 x와 y
+    const _RANK* x = (const _RANK*)a;
     const _RANK* y = (const _RANK*)b;
 
-    if (x->minutes != y->minutes) return (x->minutes - y->minutes);
-    return (x->seconds - y->seconds);
+    if (x->minutes != y->minutes) return (x->minutes - y->minutes); //비교 순서 분->초
+    return (x->seconds - y->seconds); //오름차순으로 정렬
 }
 
 
@@ -251,36 +251,32 @@ void print_ranking_table(const char* player_name, int player_min, int player_sec
 
 void print_ranking_table(const char* player_name, int player_min, int player_sec, RankMode mode)
 {
-    _RANK entries[128];
+    _RANK entries[128]; //랭킹 입력 구조체 선언
     int count = 0;
-    //ALLEGRO_FONT* name_font = al_load_ttf_font("BebasNeue-Regular.ttf", 50, 0);
-    //ALLEGRO_FONT* title_font = al_load_ttf_font("BebasNeue-Regular.ttf", 80, 0);
 
-    // rank.txt 읽기
-    if (mode == END_TO_RANK)
+
+   
+    if (mode == END_TO_RANK) //모드를 게임끝나고 랭킹 진입으로 넘겨받았으면 
+                             //실행한 게임 난이도에 따라서 다른 txt파일을 읽어옴
     {
         FILE* f = NULL;
 
         if (game_difficulty == DIFF_EASY)
         {
-            f = fopen("Rank_Easy.txt", "r");
+            f = fopen("Rank_Easy.txt", "r"); //EASY모드 
         }
         else if (game_difficulty == DIFF_NORMAL)
         {
-            f = fopen("Rank_Normal.txt", "r");
+            f = fopen("Rank_Normal.txt", "r"); //NORMAL모드
         }
         else if (game_difficulty == DIFF_HARD)
         {
-            f = fopen("Rank_Hard.txt", "r");
+            f = fopen("Rank_Hard.txt", "r"); //HARD 모드
         }
-        else
-        {
-            f = fopen("Rank_Hard.txt", "r");
-        }
-        //FILE* f = fopen("rank.txt", "r");
 
         if (f)
         {
+            //파일이 더 이상 읽을 것이 없을때까지 반복(이름 , 분 , 초에 대한 정보를 모두 받아올때만 true)
             while (fscanf(f, "%31s %d %d", entries[count].name, &entries[count].minutes, &entries[count].seconds) == 3)
             {
                 count++;
@@ -288,36 +284,33 @@ void print_ranking_table(const char* player_name, int player_min, int player_sec
             }
             fclose(f);
         }
-        qsort(entries, count, sizeof(_RANK), cmp_rank);
+        qsort(entries, count, sizeof(_RANK), cmp_rank); //qsort정렬 
 
-        // 제목
-        if (game_difficulty == DIFF_EASY)
+        // 랭킹창 제목 그리기
+        //각 난이도에 따라서 다르게 출력
+        // //al_get_font_line_height 함수를 사용해 폰트에 맞게 줄간격 조정.
+        if (game_difficulty == DIFF_EASY) //EASY모드
         {
             al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "EASY_MODE - TOP 10");
-            al_draw_text(name_font, al_map_rgb(200, 200, 0), BUFFER_W - 10, BUFFER_H - al_get_font_line_height(name_font) - 10, ALLEGRO_ALIGN_RIGHT, "Press ESC Back");
-
+            al_draw_text(name_font, al_map_rgb(200, 200, 0), BUFFER_W - 10, 
+                BUFFER_H - al_get_font_line_height(name_font) - 10, 
+                ALLEGRO_ALIGN_RIGHT, "Press ESC to return to menu");
+            //al_get_font_line_height 함수를 사용해 폰트에 맞게 줄간격 조정.
         }
-        else if (game_difficulty == DIFF_NORMAL)
+        else if (game_difficulty == DIFF_NORMAL) //NORMAL모드
         {
             al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "NORMAL_MODE - TOP 10");
-            al_draw_text(name_font, al_map_rgb(0, 0, 200), BUFFER_W - 10, BUFFER_H - al_get_font_line_height(name_font) - 10, ALLEGRO_ALIGN_RIGHT, "Press ESC to return to menu");
-
+            al_draw_text(name_font, al_map_rgb(0, 0, 200), 
+                BUFFER_W - 10, BUFFER_H - al_get_font_line_height(name_font) - 10, 
+                ALLEGRO_ALIGN_RIGHT, "Press ESC to return to menu");
         }
-        else if (game_difficulty == DIFF_HARD)
+        else if (game_difficulty == DIFF_HARD) //HARD모드
         {
             al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "HARD_MODE - TOP 10");
-            al_draw_text(name_font, al_map_rgb(0, 0, 200), BUFFER_W - 10, BUFFER_H - al_get_font_line_height(name_font) - 10, ALLEGRO_ALIGN_RIGHT, "Press ESC to return to menu");
-
-
+            al_draw_text(name_font, al_map_rgb(0, 0, 200), 
+                BUFFER_W - 10, BUFFER_H - al_get_font_line_height(name_font) - 10, 
+                ALLEGRO_ALIGN_RIGHT, "Press ESC to return to menu");
         }
-        else
-        {
-            al_draw_text(title_font, al_map_rgb(255, 255, 255), DISP_W / 2, 20, ALLEGRO_ALIGN_CENTER, "HARD_MODE - TOP 10");
-            al_draw_text(name_font, al_map_rgb(0, 0, 200), BUFFER_W - 10, BUFFER_H - al_get_font_line_height(name_font) - 10, ALLEGRO_ALIGN_RIGHT, "Press ESC to return to menu");
-
-        }
-
-
         // 상위 10개 출력
         for (int i = 0; i < count && i < 10; i++)
         {
@@ -334,6 +327,7 @@ void print_ranking_table(const char* player_name, int player_min, int player_sec
 
         }
     }
+    //메인 메뉴로 랭킹창 진입 시 다르게 난이도 별 txt를 모두 읽어옴 
     else if (mode == BUTTON_TO_RANK)
     {
         const char* files[3] = { "Rank_Easy.txt","Rank_Normal.txt","Rank_Hard.txt" };
@@ -341,9 +335,9 @@ void print_ranking_table(const char* player_name, int player_min, int player_sec
 
         for (int d = 0; d < 3; d++) {
             count = 0;
-            FILE* f = fopen(files[d], "r");
+            FILE* f = fopen(files[d], "r"); //각 파일을 돌면서 내용을 읽어옴
             if (f) {
-                while (fscanf(f, "%31s %d %d",
+                while (fscanf(f, "%31s %d %d", 
                     entries[count].name,
                     &entries[count].minutes,
                     &entries[count].seconds) == 3)
@@ -353,16 +347,18 @@ void print_ranking_table(const char* player_name, int player_min, int player_sec
                 }
                 fclose(f);
             }
-            qsort(entries, count, sizeof(_RANK), cmp_rank);
+            qsort(entries, count, sizeof(_RANK), cmp_rank); //각 파일에서 읽어온 내용을 오름차순으로 정렬함
 
-            int base_x = (DISP_W / 6) + (d * DISP_W / 3);
+            int base_x = (DISP_W / 6) + (d * DISP_W / 3); //출력위치 기준
             int base_y = 50;
 
             al_draw_text(button_to_rank_title_font, al_map_rgb(255, 255, 255), base_x, base_y, ALLEGRO_ALIGN_CENTER, titles[d]);
-            al_draw_text(name_font, al_map_rgb(0, 0, 200), BUFFER_W - 10, BUFFER_H - al_get_font_line_height(name_font) - 10, ALLEGRO_ALIGN_RIGHT, "Press ESC to return to menu");
+            al_draw_text(name_font, al_map_rgb(0, 0, 200), 
+                BUFFER_W - 10, BUFFER_H - al_get_font_line_height(name_font) - 10, 
+                ALLEGRO_ALIGN_RIGHT, "Press ESC to return to menu");
 
 
-            // 상위 10 출력
+            // 상위 10 출력 숫자는 두개로(빈 공간은 신경쓰지않음), 이름은 왼쪽정렬, 분과 초는 두개의 수로 나타내고 빈공간은 0으로 채움
             for (int i = 0; i < count && i < 10; i++) {
                 char buf[128];
                 sprintf(buf, "%2d. %-10s  %02d:%02d", i + 1, entries[i].name, entries[i].minutes, entries[i].seconds);

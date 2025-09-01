@@ -24,7 +24,7 @@ void rank_name_open(int time, char * rank_name, int * rank_min, int * rank_sec)/
 
  
     char name[10] = ""; //이름 입력 받을 배열 생성 (최대 10 글자)
-    int name_len = 0;
+    int name_len = 0; 
     bool user_input = false;
 
     long total_seconds = time / 60; // 프레임을 분과 초로 변환 
@@ -51,16 +51,16 @@ void rank_name_open(int time, char * rank_name, int * rank_min, int * rank_sec)/
         int temp = minutes;
         while (temp > 0) 
         {
-            minutes_str[min_len++] = (temp % 10) + '0';
-            temp /= 10;
+            minutes_str[min_len++] = (temp % 10) + '0'; // minutes_str 배열에 반대로 우선적으로 저장 0문자 더해서 문자열롤 변환해서 저장
+            temp /= 10;                                 // temp로 나눠서                                            
         }
-        for (int i = min_len - 1; i >= 0; i--) 
-        {
+        for (int i = min_len - 1; i >= 0; i--)  //text의 반대순서로 다시 넣어줌 
+        { 
             time_text[time_text_len++] = minutes_str[i];
         }
     }
 
-    time_text[time_text_len++] = ' ';
+    time_text[time_text_len++] = ' '; 
     time_text[time_text_len++] = 'm';
     time_text[time_text_len++] = 'i';
     time_text[time_text_len++] = 'n';
@@ -89,6 +89,7 @@ void rank_name_open(int time, char * rank_name, int * rank_min, int * rank_sec)/
     time_text[time_text_len++] = 'c';
     time_text[time_text_len] = '\0';
 
+    //사용할 폰트 로드, 크기만 다른 같은 폰트
     ALLEGRO_FONT* big_font = al_load_ttf_font("BebasNeue-Regular.ttf", 80, 0);  // 큰 폰트
     ALLEGRO_FONT* medium_font = al_load_ttf_font("BebasNeue-Regular.ttf", 50, 0);  // 중간 폰트
     ALLEGRO_FONT* small_font = al_load_ttf_font("BebasNeue-Regular.ttf", 30, 0);  // 작은 폰트
@@ -126,7 +127,9 @@ void rank_name_open(int time, char * rank_name, int * rank_min, int * rank_sec)/
     }
     printf("Player Name: %s, Time: %d min %d sec\n", name, minutes, seconds);
 
-    FILE* f = NULL;
+    FILE* f = NULL; 
+    //이전에 정의한 게임 난이도에 따라서 
+    //열어서 쓰는 파일을 달리함.
     if (game_difficulty == DIFF_EASY)
     {
          f = fopen("Rank_Easy.txt", "a");
@@ -145,6 +148,7 @@ void rank_name_open(int time, char * rank_name, int * rank_min, int * rank_sec)/
         fprintf(f, "%s %d %d\n", name, minutes, seconds);
         fclose(f);
     }
+    //전역변수 player_name과 sec, min에 분과 초 저장
     al_destroy_event_queue(queue);
     strcpy(rank_name, name);
     *rank_min = minutes;
