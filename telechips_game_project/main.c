@@ -105,7 +105,7 @@ int main() {
     //======================================================
     frames = 0;          // 프레임 카운터
     score = 0;           // 점수 초기화
-    time_limit = 60;    // 제한 시간
+    time_limit = 90;    // 제한 시간
     time_left = time_limit;
 
     char player_name[32]; // 랭킹용 이름

@@ -287,6 +287,7 @@ void shots_draw() {
                     0
                 );
             }
+            /*히트박스
             int sw = (int)final_w;
             int sh = (int)final_h;
             int hitbox_x = shots[i].x;
@@ -296,7 +297,7 @@ void shots_draw() {
                 hitbox_x, hitbox_y,
                 hitbox_x + sw, hitbox_y + hitbox_h,
                 al_map_rgb(255, 0, 0), 1
-            );
+            );*/
         }
         else
         {            
@@ -334,6 +335,7 @@ void shots_draw() {
                     0
                 );
             }
+            /*히트박스
             int sw = (int)final_w;
             int sh = (int)final_h;
             int hitbox_x = shots[i].x;
@@ -344,6 +346,7 @@ void shots_draw() {
                 hitbox_x + sw, hitbox_y + hitbox_h,
                 al_map_rgb(255, 0, 0), 1
             );
+            */
 
         }
     }
