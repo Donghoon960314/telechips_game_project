@@ -1,3 +1,13 @@
+//======================================================
+//                    collide.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      collide.c
+ @brief     √Êµπ ∆«¡§
+ @author    ±Ë«ı, Ω≈µø»∆, ¡§∏Ì»∆, ¿Ã¿Á∞≠
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>

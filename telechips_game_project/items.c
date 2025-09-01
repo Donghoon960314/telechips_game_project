@@ -1,3 +1,13 @@
+//======================================================
+//                    items.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      items.c
+ @brief     √º∑¬, ƒ≈∏¿” µÓ æ∆¿Ã≈€ ±∏«ˆ
+ @author    ±Ë«ı, Ω≈µø»∆, ¡§∏Ì»∆, ¿Ã¿Á∞≠
+*/
+
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
@@ -56,10 +66,10 @@ void items_update()
         if (t > 1) t = 1;
         float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
 
-        int scaled_w = PLAYER_W * scale;
+        int scaled_w = 0.7* PLAYER_W * scale;
         int scaled_h = PLAYER_H * scale;
 
-        int hitbox_h = scaled_h / 3;
+        int hitbox_h = scaled_h / 2.0f;
         int hitbox_y = player.y + scaled_h - hitbox_h;
 
         int player_hitbox_x1 = player.x;

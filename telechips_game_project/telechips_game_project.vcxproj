@@ -184,7 +184,6 @@
     <Image Include="prologue_dialog_12.png" />
     <Image Include="prologue_dialog_13.png" />
     <Image Include="prologue_dialog_14.png" />
-    <Image Include="spritesheet.png" />
     <Image Include="stage1.PNG" />
     <Image Include="stage1_new.png" />
     <Image Include="stage1_new_new.PNG" />

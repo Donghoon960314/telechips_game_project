@@ -1,3 +1,13 @@
+//======================================================
+//                    audio.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      audio.c
+ @brief     게임에 사용되는 오디오 파일 호출 초기화 및 삭제
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
@@ -8,7 +18,7 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-
+// 오디오 초기화
 void audio_init()
 {
     al_install_audio();
