@@ -21,6 +21,9 @@ void audio_init()
     sample_strong_shot = al_load_sample("attack2.mp3");
     must_init(sample_strong_shot, "attack2 sample");
 
+    sample_strong_shot2 = al_load_sample("attack3.mp3");
+    must_init(sample_strong_shot2, "attack3 sample");
+
     sample_ENEMY1 = al_load_sample("enemy1.mp3");
     must_init(sample_strong_shot, "enemy1 sample");
 
