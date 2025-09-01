@@ -4,7 +4,7 @@
 // 2025 telechips allegro game_project
 /**
  @file      collide.c
- @brief     충돌 판정
+ @brief     충돌 판정 정의
  @author    김혁, 신동훈, 정명훈, 이재강
 */
 

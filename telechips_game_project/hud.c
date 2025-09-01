@@ -4,7 +4,7 @@
 // 2025 telechips allegro game_project
 /**
  @file      hud.c
- @brief     게임의 hud에 구성
+ @brief     게임의 hud 구성
  @author    김혁, 신동훈, 정명훈, 이재강
 */
 
