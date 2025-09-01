@@ -236,6 +236,7 @@ bool pt_in_rect(float px, float py, const Button* b);
 //======================================================
 ALLEGRO_SAMPLE* sample_normal_shot; // 일반 공격
 ALLEGRO_SAMPLE* sample_strong_shot; // 강한 공격
+ALLEGRO_SAMPLE* sample_strong_shot2;// 강한 공격2
 ALLEGRO_SAMPLE* sample_ENEMY1; //몬스터1 공격
 ALLEGRO_SAMPLE* sample_BOSS1; 
 ALLEGRO_SAMPLE* sample_BOSS2; //단소살인마 공격
@@ -392,6 +393,7 @@ typedef enum SHOT_DIR {
 typedef enum {
     ATTACK_NORMAL, // 플레이어 일반 공격
     ATTACK_SKILL_1, // 플레이어 스킬1
+    ATTACK_SKILL_2, // 플레이어 스킬2
 
     ATTACK_ENEMY, // 일반몹 공격
     ATTACK_BOSS1, // 보스몹 공격1

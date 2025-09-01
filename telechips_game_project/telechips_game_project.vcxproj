@@ -157,7 +157,6 @@
     <Image Include="background.jpg" />
     <Image Include="boss01.png" />
     <Image Include="boss_shot2.png" />
-
     <Image Include="enemy_attack.png" />
     <Image Include="item_attack_speedup.png" />
     <Image Include="item_hp_heal.png" />
@@ -217,7 +216,9 @@
     <Font Include="x64\Debug\OpenSans_Bold.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <Media Include="attack1.mp3" />
     <Media Include="attack2.mp3" />
+    <Media Include="attack3.mp3" />
     <Media Include="bgm.mp3" />
     <Media Include="boss1_shot.mp3" />
     <Media Include="BOSS1_who_are_you.mp3" />

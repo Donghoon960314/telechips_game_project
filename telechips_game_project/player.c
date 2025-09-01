@@ -189,7 +189,7 @@ void player_update()
         }
         else if (player.job == JOB_TYPE_2)
         {
-            shots_add(true, true, player.x, player.y, player.last_dir, player.power_skill_1, ATTACK_SKILL_1);
+            shots_add(true, true, player.x, player.y, player.last_dir, player.power_skill_1, ATTACK_SKILL_2);
             player.skill_1_timer = player.skill_1_cooldown;
             player.attack_anim_timer2 = 24;
         }

@@ -32,10 +32,13 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
     // 강한 공격(플레이어)
     switch (attack_type) { //ENENMY타입별로 오디오 다르게 설정
     case ATTACK_NORMAL:
-        al_play_sample(sample_normal_shot, 0.3, 0, player ? 1.0 : 1.5, ALLEGRO_PLAYMODE_ONCE, NULL);
+        al_play_sample(sample_normal_shot, 0.3, 0, /*player ? 1.0 : 1.5*/1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         break;
     case ATTACK_SKILL_1:
-        al_play_sample(sample_strong_shot, 0.8, 0, 0.6, ALLEGRO_PLAYMODE_ONCE, NULL);
+        al_play_sample(sample_strong_shot, 1.5, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        break;
+    case ATTACK_SKILL_2:
+        al_play_sample(sample_strong_shot2, 1.5, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         break;
     case ATTACK_ENEMY:
         al_play_sample(sample_ENEMY1, 0.6, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
@@ -222,7 +225,9 @@ int shots_collide(bool is_player, int x, int y, int w, int h) {
             else if (shots[i].attack_type == ATTACK_SKILL_1) {
                 bmp = sprites.player_shot[job][1];
             }
-
+            else if (shots[i].attack_type == ATTACK_SKILL_2) {
+                bmp = sprites.player_shot[job][1];
+            }
             if (bmp) {
                 // 깊이 스케일 계산
                 float t = (float)(shots[i].y - 110) / (PLAYER_MAX_Y - 110);
