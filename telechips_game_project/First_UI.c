@@ -1,3 +1,13 @@
+//======================================================
+//                    FIRST_UI.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      FIRST_UI.c
+ @brief     게임 시작부 UI 구성
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
@@ -10,95 +20,11 @@
 #include <stdbool.h>
 #include <string.h>
 #include "common.h"
-/*
-- 게임 시작 화면 버튼 3개
-- 난이도에 따른 버튼 3개 구현 +
-- 배경 화면 넣기
--
-*/
 
 
-//#if 01
-
-/* --- general --- */
-
-//long frames;
-//long score;
-
-// 알레그로 초기화 함수 작업 -> 해당 작업 변수가 없을 시 경고문
-/*static void must_init(bool test, const char* description)
-{
-    if (test) return;
-    printf("couldn't initialize %s\n", description);
-    exit(1);
-}
-
-static int between(int lo, int hi)
-{
-    return lo + (rand() % (hi - lo));
-}
-
-static float between_f(float lo, float hi)
-{
-    return lo + ((float)rand() / (float)RAND_MAX) * (hi - lo);
-}
-
-static bool collide(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2)
-{
-    if (ax1 > bx2) return false;
-    if (ax2 < bx1) return false;
-    if (ay1 > by2) return false;
-    if (ay2 < by1) return false;
-    return true;
-}
-
-/* --- display --- */
-/*
-#define BUFFER_W 1600
-#define BUFFER_H 900
-
-#define DISP_SCALE 1
-#define DISP_W (BUFFER_W * DISP_SCALE)
-#define DISP_H (BUFFER_H * DISP_SCALE)
-
-ALLEGRO_DISPLAY* disp;
-ALLEGRO_BITMAP* buffer;
-
-// 디스플레이 화면 초기화 함수
-void disp_init(void)
-{
-    al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
-    al_set_new_display_option(ALLEGRO_SAMPLES, 8, ALLEGRO_SUGGEST);
-
-    disp = al_create_display(DISP_W, DISP_H);
-    must_init(disp, "display");
-
-    buffer = al_create_bitmap(BUFFER_W, BUFFER_H);
-    must_init(buffer, "bitmap buffer");
-}
-
-void disp_deinit(void)
-{
-    al_destroy_bitmap(buffer);
-    al_destroy_display(disp);
-}
-
-void disp_pre_draw(void)
-{
-    al_set_target_bitmap(buffer);
-}
-
-
-void disp_post_draw(void)
-{
-    al_set_target_backbuffer(disp);
-    al_draw_scaled_bitmap(buffer, 0, 0, BUFFER_W, BUFFER_H,
-        0, 0, DISP_W, DISP_H, 0);
-    al_flip_display();
-}
-*/
-/*---  --- */
-
+// 게임 시작 화면 버튼 3개
+// 난이도에 따른 버튼 3개 구
+// 배경 화면 넣기
 
 Button pos1 = { BUFFER_W / 2 - 120 , (BUFFER_H / 2) - 180 , 240, 100, "START", "", false, true };
 Button pos2 = { BUFFER_W /2 + 440 , (BUFFER_H / 2) - 440, 240, 100, "BACK" , "", false, false };
@@ -109,9 +35,6 @@ Button pos6 = { BUFFER_W / 2 - 120, (BUFFER_H / 2) , 240, 100, "Normal", "", fal
 Button pos7 = { BUFFER_W / 2 - 120, (BUFFER_H / 2) + 180, 240, 100, "Hard", "", false, true };
 Button pos8 = { BUFFER_W / 2 - 300, (BUFFER_H / 2)  , 240, 100, "Tanjiro", "", false, true };
 Button pos9 = { BUFFER_W / 2 + 100, (BUFFER_H / 2)  , 240, 100, "Rengoku", "", false, true };
-
-
-
 
 Button* BUT_List[] = { &pos1, &pos2, &pos3, &pos4 ,&pos5, &pos6, &pos7, &pos8, &pos9 };
 
@@ -151,9 +74,6 @@ float to_buffer_y(float my)
 }
 
 
-
-
-
 /* 버튼 설계 함수(직사각형 라이브러리 , 도형 색깔 채움, 폰트 하이라이트) */
 void Button_draw(const Button* pos, ALLEGRO_FONT* font)
 {
@@ -168,8 +88,6 @@ void Button_draw(const Button* pos, ALLEGRO_FONT* font)
     al_draw_filled_rectangle(pos->x, pos->y, pos->x + pos->w, pos->y + pos->h, btn_col);
 
     al_draw_rectangle(pos->x, pos->y, pos->x + pos->w, pos->y + pos->h, btn_border, 4.0f);
-
-    //font = al_load_ttf_font("OpenSans_Bold.ttf", 40, 0);
     
     int tw = al_get_text_width(font, pos->label1);
     int th = al_get_font_line_height(font);
@@ -178,15 +96,6 @@ void Button_draw(const Button* pos, ALLEGRO_FONT* font)
 
     al_draw_text(font, al_map_rgb(255, 255, 255), tx, ty, 0, pos->label1);
 }
-
-
-
-
-
-// 난이도에 따른 초기값 구현
-// 
-
-
 
 job = JOB_None;
 
@@ -201,6 +110,7 @@ void show_back_only(void)
     pos7.active = false;
     pos8.active = false;
     pos9.active = false;
+
     // Back 버튼 활성화
     pos2.active = true;
 }
@@ -210,7 +120,7 @@ void show_main_menu(void)
     pos1.active = true;
     pos3.active = true;
     pos4.active = true;
-    pos2.active = false;    // 백 버튼 비활성화
+    pos2.active = false;    //  Back 버튼 비활성화
 }
 
 ALLEGRO_BITMAP* prologue_List[PRO] = { 0 };
@@ -313,262 +223,3 @@ void next_slide()
         ps.blink = true;
     }
 }
-
-#if 0
-/* --- main --- */
-int main(void)
-{
-    // 알레그로 라이브러리 초기화 함수 선언
-    must_init(al_init(), "allegro");
-    must_init(al_install_keyboard(), "keyboard");
-    must_init(al_install_mouse(), "mouse");
-    must_init(al_init_primitives_addon(), "primitives");
-    must_init(al_init_font_addon(), "font");
-    must_init(al_init_image_addon(), "image");
-
-
-    /*알레그로 이벤트 멤버 변수인 이벤트, 타이머, 폰트, 이미지 초기화 작업  */
-    ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
-    must_init(queue, "queue");
-
-    ALLEGRO_TIMER* timer = al_create_timer(1.0 / 60.0);
-    must_init(timer, "timer");
-
-    ALLEGRO_FONT* font = al_create_builtin_font();
-    must_init(font, "builtin font");
-
-    ALLEGRO_BITMAP* bitmap = al_load_bitmap("start_display.png");
-    must_init(bitmap, "bitmap");
-
-
-
-    // 디스플레이 화면 초기화
-    disp_init();
-
-    // 프롤로그 슬라이드 생성하기
-    load_slides();
-
-    /* 이벤트 소스는 'disp'(스케일된 창)에서 받아야 함 */
-    al_register_event_source(queue, al_get_display_event_source(disp));
-    al_register_event_source(queue, al_get_keyboard_event_source());
-    al_register_event_source(queue, al_get_mouse_event_source());
-    al_register_event_source(queue, al_get_timer_event_source(timer));
-
-
-    bool running = true;
-    bool redraw = true;
-    GameState state = STATE_MENU;
-
-    // 알레그로 라이브러리 타이머 시작 
-    al_start_timer(timer);
-
-    // 무한 반복
-    while (running)
-    {
-        al_wait_for_event(queue, &event);
-
-        // 이벤트에 따른 케이스 별로 나누기
-        switch (event.type) {
-            // 디스플레이 화면 종료에 관련된 이벤트
-        case ALLEGRO_EVENT_DISPLAY_CLOSE:
-            running = false;
-            break;
-
-            // 키패드 관련 이벤트 발생 시
-        case ALLEGRO_EVENT_KEY_DOWN:
-            // ALLEGRO_KEY_ESCAPE의 ESC키를 누르면 화면 종료
-            if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
-                running = false;
-
-            // S키 버튼을 누를 시 
-            else if (event.keyboard.keycode == ALLEGRO_KEY_S && state == STATE_RUNNING)
-            {
-                next_slide();
-                redraw = true;
-            }
-            break;
-
-            // 마우스 커서 좌표 관련 이벤트
-        case ALLEGRO_EVENT_MOUSE_AXES:
-        {
-            /* 디스플레이 좌표 → 버퍼 좌표로 변환 후 hover 갱신 */
-            float bx = to_buffer_x(event.mouse.x);
-            float by = to_buffer_y(event.mouse.y);
-            update_hover_all(bx, by);
-            redraw = true;
-
-        }
-        break;
-
-        // 마우스 클릭 관련 이벤트 발생 시      
-        case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
-            if (event.mouse.button == 1) {
-                float bx = to_buffer_x(event.mouse.x);
-                float by = to_buffer_y(event.mouse.y);
-                // 마우스 위치가 버튼 위치
-
-                Button* b = hit_button(bx, by);
-                if (!b)  break;
-
-                // 게임 시작 버튼
-                if (b == &pos1)
-                {
-                    show_back_only();
-                    state = STATE_CHOICE;
-                    pos8.active = true;
-                    pos9.active = true;
-                }
-
-                // 뒤로 가기 선언
-                else if (b == &pos2)
-                {
-                    state = STAGE_MENU;
-                    show_main_menu();
-                }
-
-                // 랭킹 , 게임 설명 
-                else if (b == &pos3)
-                {
-
-                    show_back_only();
-                }
-
-                else if (b == &pos4)
-                {
-                    show_back_only();
-                }
-
-                // 난이도 : 쉬운 모드
-                else if (b == &pos5)
-                {
-                    set_pro_job();
-
-                    game_difficulty = DIFF_HARD;
-                    printf("Very Easy~~~~~~~~~~~~ : %d\n", DIFF_EASY);    // 테스트
-                    state = STATE_RUNNING;
-
-                }
-                // 난이도 : 중간 모드
-
-                else if (b == &pos6)
-                {
-                    set_pro_job();
-
-                    game_difficulty = DIFF_NORMAL;
-                    printf("Normal~~~~~~~~~~~~ : %d\n", DIFF_NORMAL);    //
-                    state = STATE_RUNNING;
-
-                }
-                // 난이도 : 어려운 모드
-                else if (b == &pos7)
-                {
-                    set_pro_job();
-                    game_difficulty = DIFF_HARD;
-                    printf("Hard~~~~~~~~~~~~ : %d\n", DIFF_HARD);      // 테스트    
-                    state = STATE_RUNNING;
-
-
-                }
-                // 직업 선택 1 : DANSO
-                else if (b == &pos8)
-                {
-                    state = STATE_MODE;     // 모드 선택
-                    job = JOB_DANSO;        // 
-                    pos5.active = true;
-                    pos6.active = true;
-                    pos7.active = true;
-
-
-                }
-
-                // 직업 선택 2 : ZARUBAN
-                else if (b == &pos9)
-                {
-                    state = STATE_MODE;
-                    job = JOB_ZARUBAN;
-                    pos5.active = true;
-                    pos6.active = true;
-                    pos7.active = true;
-                }
-
-                redraw = true;
-            }
-            break;
-
-            // 알레그로 타이머 이벤트 
-        case ALLEGRO_EVENT_TIMER:
-            frames++;
-            redraw = true;
-            break;
-        }
-
-        /* 메인 이벤트 큐에 공백 이벤트가 발생 되는 경우 */
-        if (redraw && al_is_event_queue_empty(queue)) {
-            /* 버퍼에 그리고 → 스케일해서 창에 복사 */
-            disp_pre_draw();
-            al_clear_to_color(al_map_rgb(30, 30, 30));   /* 배경 */
-            prologue_display(bitmap);
-
-            switch (state) {
-
-            case STATE_MENU:
-                Button_draw(&pos1, font);
-                Button_draw(&pos2, font);
-                Button_draw(&pos3, font);
-                Button_draw(&pos4, font);
-
-                break;
-
-            case STATE_RANKING:
-                //print_ranking_table(0, 0, 0);
-                //Button_draw(&pos2, font); // Back 버튼도 표시
-                break;
-
-                /*난이도 선택 화면*/
-            case STATE_MODE:
-                Button_draw(&pos5, font);
-                Button_draw(&pos6, font);
-                Button_draw(&pos7, font);
-
-                break;
-
-                // 직업 선택 화면
-            case STATE_CHOICE:
-                Button_draw(&pos8, font);   //danso
-                Button_draw(&pos9, font);   //zaruban
-
-                break;
-
-                // 프롤로그 진입
-            case STATE_RUNNING:
-                // 빈 화면
-            {
-                if (ps.blink)
-                    al_clear_to_color(al_map_rgb(0, 0, 0));
-
-                // 프롤로그 화면을 순차적으로 생성 (직업 순으로 나눔)
-                else
-                {
-                    ALLEGRO_BITMAP* bitmap2 = prologue_List[ps.curr];
-                    prologue_display(bitmap2);
-                }
-                break;
-            }
-            default:
-                break;
-            }
-            disp_post_draw();
-            redraw = false;
-        }
-    }
-
-    /* 함수 마무리 선언(타이머, 폰트, 디스플레이, 이벤트 큐)*/
-    al_destroy_timer(timer);
-    al_destroy_font(font);
-    disp_deinit();
-    al_destroy_bitmap(bitmap);
-    al_destroy_event_queue(queue);
-
-    return 0;
-}
-#endif

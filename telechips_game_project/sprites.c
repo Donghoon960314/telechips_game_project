@@ -1,3 +1,13 @@
+//======================================================
+//                    sprites.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      sprites.c
+ @brief     게임에 쓰이는 그림 파일들 호출 , 초기화 및 삭제
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
@@ -8,18 +18,8 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-ALLEGRO_BITMAP* sprite_grab(int x, int y, int w, int h)
-{
-    ALLEGRO_BITMAP* sprite = al_create_sub_bitmap(sprites._sheet, x, y, w, h);
-    must_init(sprite, "sprite grab");
-    return sprite;
-}
-
 void sprites_init()
 {
-    sprites._sheet = al_load_bitmap("spritesheet.png");
-    must_init(sprites._sheet, "spritesheet");
-
     sprites.player1 = al_load_bitmap("player.png");
     sprites.player1_attack1 = al_load_bitmap("player_attack1.png");
     sprites.player1_attack2 = al_load_bitmap("player_attack2.png");

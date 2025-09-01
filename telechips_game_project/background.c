@@ -1,4 +1,14 @@
-﻿#include <stdio.h>
+﻿//======================================================
+//                    background.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      background.c
+ @brief     게임 배경 구성
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>

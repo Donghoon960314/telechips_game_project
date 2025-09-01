@@ -1,3 +1,13 @@
+//======================================================
+//                    general.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      general.c
+ @brief     게임에 필요한 자잘한 함수 정리
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>

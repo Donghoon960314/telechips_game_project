@@ -1,3 +1,13 @@
+//======================================================
+//                    keyboard.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      keyboard.c
+ @brief     키보드 입력에 관한 모듈
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>

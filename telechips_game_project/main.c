@@ -1,3 +1,13 @@
+//======================================================
+//                    main.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      main.c
+ @brief     게임 메인 이벤트 로직 구성
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
@@ -288,7 +298,7 @@ int main() {
                 if (key[ALLEGRO_KEY_ESCAPE])
                     done = true;
 
-                // R 키 -> 게임 리스타트 (플레이어 죽었을 때만)
+                // R 키 -> 게임 리스타트 (플레이어 죽었을 때)
                 if (player.hp <= 0 && key[ALLEGRO_KEY_R]) {
                     frames = 0;
                     score = 0;
@@ -306,8 +316,7 @@ int main() {
                     items_init();
 
                     stage_font(stage_num_for);
-
-                    // 다시 스테이지 1로 시작
+                    // 다시 스테이지 1으로 시작
                 }
             }
 
@@ -315,7 +324,7 @@ int main() {
             redraw = true;
             break;
 
-            // 창 닫기 이벤트
+        // 창 닫기 이벤트
         case ALLEGRO_EVENT_DISPLAY_CLOSE:
             done = true;
             break;
@@ -357,8 +366,8 @@ int main() {
                 // 직업 선택 화면
             case STATE_CHOICE:
                 prologue_display(bitmap);
-                Button_draw(&pos8, font); //danso
-                Button_draw(&pos9, font); //zaruban
+                Button_draw(&pos8, font); // tanziro font
+                Button_draw(&pos9, font); // rengoku font
                 break;
 
                 // 프롤로그 진입
@@ -374,16 +383,16 @@ int main() {
                 else
                 {
                     state = STATE_RUNNING;  // 프롤로그 끝 → 게임 시작
-                    frames = 0; //8.31 수정
+                    frames = 0;
                     time_left = time_limit;     //8.31 수정
-                    keyboard_init(); //지맘대로 움직이는거 초기화 8.31
+                    keyboard_init();    //키보드 초기화
                     stage_font(0);          // Stage1 배너 띄움
                     
                     al_stop_timer(timer); //게임 종료후 재시작 시간 오류 수정//
                     al_set_timer_count(timer, 0);
                     al_start_timer(timer);
 
-                    stage_init();
+                    stage_init();   //스테이지 초기화
                     player_init();   // 플레이어 초기화
                 }
                 break;
@@ -423,13 +432,6 @@ int main() {
             redraw = false;
         }
     }
-
-    /* 함수 마무리 선언(타이머, 폰트, 디스플레이, 이벤트 큐)*/
-    /*al_destroy_timer(timer);
-    al_destroy_font(font);
-    disp_deinit();
-    al_destroy_bitmap(bitmap);
-    al_destroy_event_queue(queue);*/
 
     sprites_deinit();
     hud_deinit();

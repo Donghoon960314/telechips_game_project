@@ -1,3 +1,13 @@
+//======================================================
+//                    display.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      display.c
+ @brief     display 구현, 초기화 및 삭제
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>

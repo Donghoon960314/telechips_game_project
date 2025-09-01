@@ -1,5 +1,14 @@
-#define _CRT_SECURE_NO_WARNINGS
+//======================================================
+//                    hud.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      hud.c
+ @brief     ∞‘¿”¿« hudø° ±∏º∫
+ @author    ±Ë«ı, Ω≈µø»∆, ¡§∏Ì»∆, ¿Ã¿Á∞≠
+*/
 
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>

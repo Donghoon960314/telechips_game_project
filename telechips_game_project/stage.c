@@ -1,10 +1,19 @@
+//======================================================
+//                    stage.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      stage.c
+ @brief     스테이지 별 몬스터 초기화, 보스 구분 출현
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_audio.h>
-//#include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
@@ -54,8 +63,7 @@ bool boss_check_live(void)
 }
 
 bool check_monster_die(void) // 몬스터 5마리가 전부 죽었는지 체크하는 함수
-//2단계 3단계 stage에만 보스몬스터를 출현시키기 위한 로직
-//stage 1에서는 true를 return하고 stage2,3단계에 몬스터와 보스가 모두 죽었는지 체크한다.
+//2단계 3단계 stage에서 보스몬스터를 출현시키기 위한 로직
 {
     int check_num = 0;
 
@@ -110,53 +118,6 @@ void stage_player_var(void) //스테이지가 바뀔때마다 변화하는 변�
     spawn_enabled = true;
 }
 
-/*
-int stage_reset(void)
-{
-    
-    if (restarted) {
-        restarted = false;   // 한 번만 적용
-        delay = 0;
-        boss_spawn_timer = -1;
-        boss_spawned = false;
-
-        // stage_num / stage_num_for를 초기화한 상태이므로
-        printf("Restart detected, back to Stage %d\n", stage_num);
-
-        return stage_num_for;
-    }
-    
-
-    if (delay > 0) {       // 몬스터의 HP가 0이되면 몬스터가 아직 그려진채로 빠르게 다음 스테이지로 넘어가는부분을
-                           // 자연스럽게 넘어가기 위한 코드임.
-        delay--;
-        if (delay == 0) {
-            stage_font(stage_num_for);
-
-            // 전역변수로 delay를 설정하고 해당 딜레이 동안 main문의 while 루프를 계속 돌면서 몬스터가 없어지고
-            //다음 스테이지로 넘아가기 위한 잠깐의 대기시간을 주기위한 코드
-            //delay가 0으로 세팅되면 다음 stage로 넘어감
-            boss_spawn_timer = -1;
-            boss_spawned = false;
-
-            printf("monster all die\n");
-            //stage_font(stage_num_for);
-            stage_player_var();
-
-            printf("start stage %d\n", stage_num_for);
-
-            enemies_init();
-            stage_num += 1;
-        }
-    }
-    else if (check_monster_die() == true) { 
-        delay = 60;
-        //몬스터가 모두 죽으면 다음 stage로 넘어가기 위해 delay = 60으로 세팅
-    }
-
-    return stage_num_for;
-}
-*/
 int stage_reset(void)
 {
     if (delay > 0) {

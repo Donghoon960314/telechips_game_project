@@ -1,4 +1,13 @@
-#if 1
+//======================================================
+//                    Ranking_input.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      Ranking_input.c
+ @brief     난이도 별 랭킹을 별도의 텍스트 파일에 입력
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
@@ -150,6 +159,3 @@ void rank_name_open(int time, char * rank_name, int * rank_min, int * rank_sec)/
     *rank_min = minutes;
     *rank_sec = seconds;
 }
-
-
-#endif

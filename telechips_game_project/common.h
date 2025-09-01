@@ -1,10 +1,19 @@
+//======================================================
+//                    common.h
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      common.h
+ @brief     게임 내 모든 정의 헤더파일
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
+
 #pragma once
 //======================================================
 //                       MAIN
 //======================================================
 int time_limit;
 int time_left;
-
 
 
 //======================================================
@@ -41,7 +50,6 @@ ALLEGRO_BITMAP* buffer;
 extern ALLEGRO_FONT* name_font;
 extern ALLEGRO_FONT* title_font;
 extern ALLEGRO_FONT* button_to_rank_title_font;
-
 
 void disp_init();
 void disp_deinit();
@@ -144,22 +152,6 @@ typedef struct {
     bool active;    // 메인 화면 활성화 여부
 } Button;
 
-/* 버튼 4개 초기화
----  init  ---
-pos1 : START
-pos2 : BACK
-pos3 : GUIDE
-pos4 : RANKING
---- mode ---
-pos5 : easy
-pos6 : Normal
-pos7 : Hard
-
---- job ---
-pos8 : Danso
-pos9 : Zaruban
-*/
-
 Button pos1;
 Button pos2;
 Button pos3;
@@ -189,18 +181,15 @@ typedef enum {
     STATE_TUTORIAL = 16 // 튜토리얼
 } GameState;
 
-
 /* --- 직업에 대한 구조체 선언 --- */
 typedef enum {
     JOB_None = 0,
     JOB_DANSO = 8,
     JOB_ZARUBAN = 9
 }JOB;
-
 JOB job;
 
 void show_back_only(void);
-
 void show_main_menu(void);
 
 /* --- Prologue ---*/
@@ -224,12 +213,10 @@ void set_pro_job(void);
 void prologue_display(ALLEGRO_BITMAP* bitmap);
 void Tutorial_display(ALLEGRO_BITMAP* bitmap);
 void load_slides(void);
-
 void next_slide();
 
-
-
 bool pt_in_rect(float px, float py, const Button* b);
+
 
 //======================================================
 //                       AUDIO
@@ -242,7 +229,6 @@ ALLEGRO_SAMPLE* sample_BOSS1;
 ALLEGRO_SAMPLE* sample_BOSS2; //단소살인마 공격
 
 ALLEGRO_AUDIO_STREAM* bgm_stream;
-
 
 void audio_init();
 void audio_deinit();
@@ -301,7 +287,6 @@ typedef enum {
 } JOB_TYPE;
 JOB_TYPE job_type;
 
-
 typedef struct PLAYER
 {
     int x, y; // 위치 좌표
@@ -310,14 +295,14 @@ typedef struct PLAYER
     int speed; // 이동 속도
     int power_normal; // 일반 공격 공격력
     int power_skill_1; // 스킬1 공격력
-    //int power_skill_2; // 스킬2 공격력
+    int power_skill_2; //스킬2 공격력
 
     int normal_shot_timer; // 일반 공격 타이머
     int normal_shot_cooldown; // 일반 공격 쿨타임 기준값
     int skill_1_timer; // 스킬 1 타이머
     int skill_1_cooldown; // 스킬 1 쿨타임 기준값
-    //int skill_2_timer; // 스킬 2 쿨타임
-    //int skill_2_cooldown; // 스킬 2 쿨타임 기준값
+    int skill_2_timer; // 스킬 2 쿨타임
+    int skill_2_cooldown; // 스킬 2 쿨타임 기준값
 
     int invincible_timer; // 무적 상태 시간
     int attack_anim_timer; // 공격 모션 유지 시간
@@ -373,7 +358,6 @@ ENEMY enemies[ENEMIES_N];
 bool spawn_enabled; // 리스폰 여부
 bool boss_spawned; // 보스 등장 여부
 int boss_spawn_timer; // 보스 등장 대기 타이머
-
 
 void enemies_init();
 void enemies_update();
@@ -500,4 +484,3 @@ void print_ranking_table(const char* player_name, int player_min, int player_sec
 //                RANKING INPUT
 //======================================================
 void rank_name_open(int time, char* rank_name, int* rank_min, int* rank_sec);
-
