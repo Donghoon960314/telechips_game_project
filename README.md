@@ -25,4 +25,25 @@
     + HUD & UI 구현(메인 메뉴, 캐릭터 선택, 난이도 선택, HP바, 스킬 쿨타임 등)
     + 게임 오버 화면 및 랭킹 출력 UI
    
-## 주요 기능 및 시나리오 흐름
+## 시나리오 흐름
+![flow_chart](https://github.com/Donghoon960314/telechips_game_project/blob/master/flow_chart.png)
+
+## 모듈 파일 및 설명
++ action.c: 게임에 사용되는 오디오 파일 호출 초기화 및 삭제
++ background.c: 게임 배경 구성
++ collide.c: 충돌 판정 정의
++ display.c: display 구현, 초기화 및 삭제
++ enemy.c: 몬스터, 보스 등 적 스탯, 움직임, 출력 등 구현
++ First_UI.c: 게임 시작부 UI 구성
++ general.c: 게임에 필요한 자잘한 함수 정리
++ hud.c: 게임의 hud 구성
++ items.c: 체력, 쿨타임 등 아이템 구현
++ keyboard.c: 키보드 입력에 관한 모듈
++ main.c: 게임 메인 이벤트 로직 구성
++ player.c: 게임 player 캐릭터 별 스텟, 히트박스, 스킬 쿨타임 등 정의
++ Rank._list.c: 난이도 별 랭킹 정렬 및 출력
++ shots.c: 몬스터 및 player 총알 움직임 및 출력
++ sprites.c: 게임에 쓰이는 그림 파일들 호출 , 초기화 및 삭제
++ stage.c: 스테이지 별 몬스터 초기화, 보스 구분 출현
+  
+
