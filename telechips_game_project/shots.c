@@ -43,7 +43,7 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
     // 강한 공격(플레이어)
     switch (attack_type) { //ENENMY타입별로 오디오 다르게 설정
     case ATTACK_NORMAL:
-        al_play_sample(sample_normal_shot, 0.3, 0, /*player ? 1.0 : 1.5*/1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        al_play_sample(sample_normal_shot, 0.3, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         break;
     case ATTACK_SKILL_1:
         al_play_sample(sample_strong_shot, 3.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
