@@ -33,9 +33,9 @@ void draw_background() {
     float scale = (float)dest_h / bg_h;
     int scaled_w = (int)(bg_w * scale);
 
-    // 스크롤
+    // 배경 스크롤
     static float background_offset = 0.0f;
-    float scroll_speed = 4.0f;
+    float scroll_speed = 4.0f; // 스크롤 속도
     background_offset += scroll_speed;
     if (background_offset >= scaled_w) {
         background_offset -= scaled_w;
