@@ -1,25 +1,38 @@
+//======================================================
+//                    stage.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      stage.c
+ @brief     스테이지 별 몬스터 초기화, 보스 구분 출현
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_audio.h>
-//#include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-int stage_num_for = 0;  //bitmap에 저장된 stage font위한 파라미터용
-int stage_num = 1; //실제 스테이지 변수
-int delay = 0; //스테이지 변경 시 딜레이를 위한 초기화
+stage_num_for = 0;  //bitmap에 저장된 stage font위한 파라미터용
+stage_num = 1; //실제 스테이지 변수
+delay = 0; //스테이지 변경 시 딜레이를 위한 초기화
 
 bool monster_all_die = false; //몬스터가 모두 죽었는지 확인하는 변수
 
-typedef struct IMAGES //스테이지별 이미지가 담긴 이미지 구조체
-{
-    ALLEGRO_BITMAP* stage[3];
-
-}IMAGES;
 IMAGES images;
+
+void stage_init() {
+    stage_num = 1;        // 스테이지를 무조건 1부터
+    stage_num_for = 0;    // 배너 인덱스도 0부터
+    spawn_enabled = true; // 스폰 활성화
+    boss_spawned = false; // 보스 안 나온 상태
+    boss_spawn_timer = -1;// 보스 타이머 리셋
+    delay = 0;            // 전환 카운터 리셋
+}
 
 void stage_image_pop_init() //main함수 반복문 돌기전에 bitamp에 저장두는 함수
 {
@@ -50,8 +63,7 @@ bool boss_check_live(void)
 }
 
 bool check_monster_die(void) // 몬스터 5마리가 전부 죽었는지 체크하는 함수
-//2단계 3단계 stage에만 보스몬스터를 출현시키기 위한 로직
-//stage 1에서는 true를 return하고 stage2,3단계에 몬스터와 보스가 모두 죽었는지 체크한다.
+//2단계 3단계 stage에서 보스몬스터를 출현시키기 위한 로직
 {
     int check_num = 0;
 
@@ -59,7 +71,7 @@ bool check_monster_die(void) // 몬스터 5마리가 전부 죽었는지 체크�
         if (enemies[i].used == false) check_num += 1;
     if (check_num == 5)
     {
-        shots_init();
+        shots_init(); //5명 모두 죽으면 남아있는 총알 초기화 
         if (stage_num == 1) {
             return true;
         } //1단계일때는 stage_reset()에 무조건 true넘겨줘서 보스몹 출현없이 
@@ -106,53 +118,6 @@ void stage_player_var(void) //스테이지가 바뀔때마다 변화하는 변�
     spawn_enabled = true;
 }
 
-/*
-int stage_reset(void)
-{
-    
-    if (restarted) {
-        restarted = false;   // 한 번만 적용
-        delay = 0;
-        boss_spawn_timer = -1;
-        boss_spawned = false;
-
-        // stage_num / stage_num_for를 초기화한 상태이므로
-        printf("Restart detected, back to Stage %d\n", stage_num);
-
-        return stage_num_for;
-    }
-    
-
-    if (delay > 0) {       // 몬스터의 HP가 0이되면 몬스터가 아직 그려진채로 빠르게 다음 스테이지로 넘어가는부분을
-                           // 자연스럽게 넘어가기 위한 코드임.
-        delay--;
-        if (delay == 0) {
-            stage_font(stage_num_for);
-
-            // 전역변수로 delay를 설정하고 해당 딜레이 동안 main문의 while 루프를 계속 돌면서 몬스터가 없어지고
-            //다음 스테이지로 넘아가기 위한 잠깐의 대기시간을 주기위한 코드
-            //delay가 0으로 세팅되면 다음 stage로 넘어감
-            boss_spawn_timer = -1;
-            boss_spawned = false;
-
-            printf("monster all die\n");
-            //stage_font(stage_num_for);
-            stage_player_var();
-
-            printf("start stage %d\n", stage_num_for);
-
-            enemies_init();
-            stage_num += 1;
-        }
-    }
-    else if (check_monster_die() == true) { 
-        delay = 60;
-        //몬스터가 모두 죽으면 다음 stage로 넘어가기 위해 delay = 60으로 세팅
-    }
-
-    return stage_num_for;
-}
-*/
 int stage_reset(void)
 {
     if (delay > 0) {
@@ -171,7 +136,7 @@ int stage_reset(void)
             stage_num += 1;
         }
     }
-    else if (check_monster_die() == true) {
+    else if (check_monster_die() == true) { //특정 프레임에서 몬스터가 다 죽으면 바로 delay = 60으로 설정하고 매 프레
         delay = 60;
     }
 

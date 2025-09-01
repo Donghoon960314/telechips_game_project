@@ -1,3 +1,13 @@
+//======================================================
+//                    audio.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      audio.c
+ @brief     게임에 사용되는 오디오 파일 호출 초기화 및 삭제
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
@@ -8,21 +18,24 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-
+// 오디오 초기화
 void audio_init()
 {
     al_install_audio();
     al_init_acodec_addon();
     al_reserve_samples(128);
 
-    sample_normal_shot = al_load_sample("shot.flac");
-    must_init(sample_normal_shot, "shot sample");
+    sample_normal_shot = al_load_sample("attack1.mp3");
+    must_init(sample_normal_shot, "attack1 sample");
 
-    sample_strong_shot = al_load_sample("shot.flac");
-    must_init(sample_strong_shot, "shot sample");
+    sample_strong_shot = al_load_sample("attack2.mp3");
+    must_init(sample_strong_shot, "attack2 sample");
 
-    sample_ENEMY1 = al_load_sample("Enemy_re.mp3");
-    must_init(sample_strong_shot, "shot sample");
+    sample_strong_shot2 = al_load_sample("attack3.mp3");
+    must_init(sample_strong_shot2, "attack3 sample");
+
+    sample_ENEMY1 = al_load_sample("enemy1.mp3");
+    must_init(sample_strong_shot, "enemy1 sample");
 
     sample_BOSS1 = al_load_sample("BOSS1_who_are_you.mp3");
     must_init(sample_BOSS1, "boss1_shot");

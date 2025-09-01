@@ -1,4 +1,13 @@
-#if 1
+//======================================================
+//                    Ranking_input.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      Ranking_input.c
+ @brief     난이도 별 랭킹을 별도의 텍스트 파일에 입력
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
@@ -96,6 +105,14 @@ void rank_name_open(int time, char * rank_name, int * rank_min, int * rank_sec)/
     //여기서 부터는 키보드 이벤트 기다리는 로직 
     while (!user_input)
     {
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        al_draw_text(big_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 - 100, ALLEGRO_ALIGN_CENTER, "YOU WIN!!");
+        al_draw_text(medium_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 - 20, ALLEGRO_ALIGN_CENTER, time_text);
+        al_draw_text(small_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 + 60, ALLEGRO_ALIGN_CENTER, "Enter your name:");
+        al_draw_text(medium_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 + 110, ALLEGRO_ALIGN_CENTER, name);
+
+        al_flip_display(); //버퍼에 있는걸 화면에 출력 //더블버퍼를 사용해서 부드럽게
+
         ALLEGRO_EVENT event;
         al_wait_for_event(queue, &event);
 
@@ -115,21 +132,24 @@ void rank_name_open(int time, char * rank_name, int * rank_min, int * rank_sec)/
                 name[name_len] = '\0';
             }
         }
-     
-        al_clear_to_color(al_map_rgb(0, 0, 0));
-
-        al_draw_text(big_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 - 100, ALLEGRO_ALIGN_CENTER, "YOU WIN!!");
-        al_draw_text(medium_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 - 20, ALLEGRO_ALIGN_CENTER, time_text);
-        al_draw_text(small_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 + 60, ALLEGRO_ALIGN_CENTER, "Enter your name:");
-        al_draw_text(medium_font, al_map_rgb(255, 255, 255), DISP_W / 2, DISP_H / 2 + 110, ALLEGRO_ALIGN_CENTER, name);
-
-        al_flip_display(); //버퍼에 있는걸 화면에 출력 //더블버퍼를 사용해서 부드럽게
-       
-
     }
     printf("Player Name: %s, Time: %d min %d sec\n", name, minutes, seconds);
 
-    FILE* f = fopen("rank.txt", "a");
+    FILE* f = NULL;
+    if (game_difficulty == DIFF_EASY)
+    {
+         f = fopen("Rank_Easy.txt", "a");
+    }
+    else if (game_difficulty == DIFF_NORMAL)
+    {
+         f = fopen("Rank_Normal.txt", "a");
+    }
+    else if (game_difficulty == DIFF_HARD)
+    {
+         f = fopen("Rank_Hard.txt", "a");
+    }
+    //
+    // FILE* f = fopen("rank.txt", "a");
     if (f) {
         fprintf(f, "%s %d %d\n", name, minutes, seconds);
         fclose(f);
@@ -139,6 +159,3 @@ void rank_name_open(int time, char * rank_name, int * rank_min, int * rank_sec)/
     *rank_min = minutes;
     *rank_sec = seconds;
 }
-
-
-#endif

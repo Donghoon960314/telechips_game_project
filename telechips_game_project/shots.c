@@ -1,3 +1,13 @@
+//======================================================
+//                    shots.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      shots.c
+ @brief     몬스터 및 player 총알 움직임 및 출력
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
@@ -8,8 +18,8 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-const int PLAYER_SHOT_W[] = { 40, 70 };
-const int PLAYER_SHOT_H[] = { 50, 50 };
+const int PLAYER_SHOT_W[] = { 30, 50 };
+const int PLAYER_SHOT_H[] = { 40, 50 };
 
 int PLAYER_SHOT_WIDTH;
 int PLAYER_SHOT_HEIGHT;
@@ -21,21 +31,25 @@ int ENEMY_SHOT_WIDTH;
 int ENEMY_SHOT_HEIGHT;
 int sw, sh;
 
-
+// shot 초기화
 void shots_init() {
     for (int i = 0; i < SHOTS_N; i++)
         shots[i].used = false;
 }
 
+// shot 생성
 bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int power, ATTACK_TYPE attack_type)
 {
     // 강한 공격(플레이어)
     switch (attack_type) { //ENENMY타입별로 오디오 다르게 설정
     case ATTACK_NORMAL:
-        al_play_sample(sample_normal_shot, 0.3, 0, player ? 1.0 : 1.5, ALLEGRO_PLAYMODE_ONCE, NULL);
+        al_play_sample(sample_normal_shot, 0.3, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         break;
     case ATTACK_SKILL_1:
-        al_play_sample(sample_strong_shot, 0.8, 0, 0.6, ALLEGRO_PLAYMODE_ONCE, NULL);
+        al_play_sample(sample_strong_shot, 3.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        break;
+    case ATTACK_SKILL_2:
+        al_play_sample(sample_strong_shot2, 3.0, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         break;
     case ATTACK_ENEMY:
         al_play_sample(sample_ENEMY1, 0.6, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
@@ -47,54 +61,7 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
         al_play_sample(sample_BOSS2, 0.5, 0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         break;
     }
-    /*
-    if (player && power >= 4)
-    {   
-        PLAYER_SHOT_WIDTH = PLAYER_SHOT_2_W;
-        PLAYER_SHOT_HEIGHT = PLAYER_SHOT_2_H;
-        
-
-        al_play_sample(
-            sample_strong_shot,
-            0.8,
-            0,
-            0.6,
-            ALLEGRO_PLAYMODE_ONCE,
-            NULL
-        );
-    }
-    else if (power >= 8)
-    {   
-        //적 보스 공격
-        ENEMY_SHOT_WIDTH = ENEMY_SHOT_2_W;
-        ENEMY_SHOT_HEIGHT = ENEMY_SHOT_2_H;
-
-        al_play_sample(
-            sample_strong_shot,
-            0.8,
-            0,
-            0.6,
-            ALLEGRO_PLAYMODE_ONCE,
-            NULL
-        );
-    }
-    else
-    {
-        // 일반 공격(플레이어/적)
-        PLAYER_SHOT_WIDTH = PLAYER_SHOT_1_W;
-        PLAYER_SHOT_HEIGHT = PLAYER_SHOT_1_H;
-        
-        al_play_sample(
-            sample_normal_shot,
-            0.3,
-            0,
-            player ? 1.0 : between_f(1.5, 1.6),
-            ALLEGRO_PLAYMODE_ONCE,
-            NULL
-        );
-    }
-    */
-
+   
     for (int i = 0; i < SHOTS_N; i++)
     {
         // 빈 슬롯 찾기
@@ -114,10 +81,11 @@ bool shots_add(bool player, bool straight, int x, int y, DIRECTION dir, int powe
             // 플레이어 방향 저장
             switch (dir)
             {
-            case DIR_DOWN:  shots[i].dir = SHOT_DOWN; break;
+            case DIR_LEFT:  shots[i].dir = SHOT_LEFT; break; 
             case DIR_RIGHT: shots[i].dir = SHOT_RIGHT; break;
             }
         }
+
         // 적 총알이면
         else
         {
@@ -184,6 +152,7 @@ void shots_update() {
                 shots[i].used = false;
             }
         }
+
         // 적 총알 처리
         else
         {
@@ -222,7 +191,9 @@ int shots_collide(bool is_player, int x, int y, int w, int h) {
             else if (shots[i].attack_type == ATTACK_SKILL_1) {
                 bmp = sprites.player_shot[job][1];
             }
-
+            else if (shots[i].attack_type == ATTACK_SKILL_2) {
+                bmp = sprites.player_shot[job][1];
+            }
             if (bmp) {
                 // 깊이 스케일 계산
                 float t = (float)(shots[i].y - 110) / (PLAYER_MAX_Y - 110);
@@ -281,7 +252,6 @@ void shots_draw() {
     for (int i = 0; i < SHOTS_N; i++) {
         // 사용 중인 총알만 그리기
         if (!shots[i].used) continue;
-
         int frame_display = (shots[i].frame / 2) % 2;
 
         // 플레이어 총알
@@ -331,14 +301,17 @@ void shots_draw() {
         else
         {            
             ALLEGRO_BITMAP* bmp = (shots[i].power >= 10)
-                ? sprites.enemy_shot[1]
+                ? (shots[i].power >= 12 ? sprites.enemy_shot[2] : sprites.enemy_shot[1])
                 : sprites.enemy_shot[0];
 
             int w = al_get_bitmap_width(bmp);
             int h = al_get_bitmap_height(bmp);
 
-            float scale = (float)(DEPTH_MIN_SCALE + ((shots[i].y - 110) / (PLAYER_MAX_Y - 110.0f)) *
-                (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE));
+            float t = (float)(shots[i].y - 110) / (PLAYER_MAX_Y - 110.0f);
+            if (t < 0) t = 0;
+            if (t > 1) t = 1;
+            float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
+
 
             float final_w = w * scale;
             float final_h = h * scale;

@@ -1,10 +1,19 @@
+//======================================================
+//                    common.h
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      common.h
+ @brief     게임 내 모든 정의 헤더파일
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
+
 #pragma once
 //======================================================
 //                       MAIN
 //======================================================
 int time_limit;
 int time_left;
-
 
 
 //======================================================
@@ -40,6 +49,8 @@ ALLEGRO_DISPLAY* disp;
 ALLEGRO_BITMAP* buffer;
 extern ALLEGRO_FONT* name_font;
 extern ALLEGRO_FONT* title_font;
+extern ALLEGRO_FONT* button_to_rank_title_font;
+
 void disp_init();
 void disp_deinit();
 void disp_pre_draw();
@@ -61,30 +72,10 @@ void keyboard_update(ALLEGRO_EVENT* event);
 //======================================================
 #define PLAYER_W 80
 #define PLAYER_H 80
-/*
-#define PLAYER_W 50
-#define PLAYER_H 100
 
-#define PLAYER_SHOT_W 90
-#define PLAYER_SHOT_H 60
-
-extern const int ENEMY_W[];
-extern const int ENEMY_H[];
-
-#define ENEMY_1_W ENEMY_W[0]
-#define ENEMY_1_H ENEMY_H[0]
-#define ENEMY_2_W ENEMY_W[1]
-#define ENEMY_2_H ENEMY_H[1]
-#define BOSS_1_W ENEMY_W[2]
-#define BOSS_1_H ENEMY_H[2]
-#define BOSS_2_W ENEMY_W[3]
-#define BOSS_2_H ENEMY_H[3]
-
-#define ENEMY_SHOT_W 4
-#define ENEMY_SHOT_H 4
-*/
 extern const int PLAYER_SHOT_W[2];
 extern const int PLAYER_SHOT_H[2];
+
 extern int PLAYER_SHOT_WIDTH;
 extern int PLAYER_SHOT_HEIGHT;
 
@@ -121,9 +112,11 @@ typedef struct SPRITES
     ALLEGRO_BITMAP* _sheet;
 
     ALLEGRO_BITMAP* player1;
-    ALLEGRO_BITMAP* player1_attack;
+    ALLEGRO_BITMAP* player1_attack1;
+    ALLEGRO_BITMAP* player1_attack2;
     ALLEGRO_BITMAP* player2;
-    ALLEGRO_BITMAP* player2_attack;
+    ALLEGRO_BITMAP* player2_attack1;
+    ALLEGRO_BITMAP* player2_attack2;
 
     ALLEGRO_BITMAP* player_shot[2][2]; // [0: 직업1, 1: 직업2][0: 일반, 1: 스킬1]
 
@@ -159,22 +152,6 @@ typedef struct {
     bool active;    // 메인 화면 활성화 여부
 } Button;
 
-/* 버튼 4개 초기화
----  init  ---
-pos1 : START
-pos2 : BACK
-pos3 : GUIDE
-pos4 : RANKING
---- mode ---
-pos5 : easy
-pos6 : Normal
-pos7 : Hard
-
---- job ---
-pos8 : Danso
-pos9 : Zaruban
-*/
-
 Button pos1;
 Button pos2;
 Button pos3;
@@ -200,9 +177,9 @@ typedef enum {
     STATE_CHOICE = 12,// 직업 선택
     STATE_PROLOGUE = 13,// 프롤로그
     STATE_RUNNING = 14,   // 게임 시작 누를 때 실행
-    STATE_RANKING = 15 // 랭킹 화면
+    STATE_RANKING = 15, // 랭킹 화면
+    STATE_TUTORIAL = 16 // 튜토리얼
 } GameState;
-
 
 /* --- 직업에 대한 구조체 선언 --- */
 typedef enum {
@@ -210,11 +187,9 @@ typedef enum {
     JOB_DANSO = 8,
     JOB_ZARUBAN = 9
 }JOB;
-
 JOB job;
 
 void show_back_only(void);
-
 void show_main_menu(void);
 
 /* --- Prologue ---*/
@@ -236,11 +211,9 @@ PROLOGUE_STATE ps;
 
 void set_pro_job(void);
 void prologue_display(ALLEGRO_BITMAP* bitmap);
+void Tutorial_display(ALLEGRO_BITMAP* bitmap);
 void load_slides(void);
-
 void next_slide();
-
-
 
 bool pt_in_rect(float px, float py, const Button* b);
 
@@ -250,15 +223,39 @@ bool pt_in_rect(float px, float py, const Button* b);
 //======================================================
 ALLEGRO_SAMPLE* sample_normal_shot; // 일반 공격
 ALLEGRO_SAMPLE* sample_strong_shot; // 강한 공격
+ALLEGRO_SAMPLE* sample_strong_shot2;// 강한 공격2
 ALLEGRO_SAMPLE* sample_ENEMY1; //몬스터1 공격
 ALLEGRO_SAMPLE* sample_BOSS1; 
 ALLEGRO_SAMPLE* sample_BOSS2; //단소살인마 공격
 
 ALLEGRO_AUDIO_STREAM* bgm_stream;
 
-
 void audio_init();
 void audio_deinit();
+
+//======================================================
+//                       STAGE
+//======================================================
+int stage_num_for;  //bitmap에 저장된 stage font위한 파라미터용
+int stage_num; //실제 스테이지 변수
+int delay; //스테이지 변경 시 딜레이를 위한 초기화
+
+extern bool monster_all_die; //몬스터가 모두 죽었는지 확인하는 변수
+
+typedef struct IMAGES //스테이지별 이미지가 담긴 이미지 구조체
+{
+    ALLEGRO_BITMAP* stage[3];
+
+}IMAGES;
+
+void stage_init();
+void stage_image_pop_init();
+void stage_image_pop_deinit();
+bool boss_check_live(void);
+bool check_monster_die(void);
+void stage_font(int stage_num_for);
+void stage_player_var(void);
+int stage_reset(void);
 
 //======================================================
 //                      COLLIDE
@@ -290,7 +287,6 @@ typedef enum {
 } JOB_TYPE;
 JOB_TYPE job_type;
 
-
 typedef struct PLAYER
 {
     int x, y; // 위치 좌표
@@ -299,17 +295,18 @@ typedef struct PLAYER
     int speed; // 이동 속도
     int power_normal; // 일반 공격 공격력
     int power_skill_1; // 스킬1 공격력
-    //int power_skill_2; // 스킬2 공격력
+    int power_skill_2; //스킬2 공격력
 
     int normal_shot_timer; // 일반 공격 타이머
     int normal_shot_cooldown; // 일반 공격 쿨타임 기준값
     int skill_1_timer; // 스킬 1 타이머
     int skill_1_cooldown; // 스킬 1 쿨타임 기준값
-    //int skill_2_timer; // 스킬 2 쿨타임
-    //int skill_2_cooldown; // 스킬 2 쿨타임 기준값
+    int skill_2_timer; // 스킬 2 쿨타임
+    int skill_2_cooldown; // 스킬 2 쿨타임 기준값
 
     int invincible_timer; // 무적 상태 시간
     int attack_anim_timer; // 공격 모션 유지 시간
+    int attack_anim_timer2;
 
     bool atk_speed_buff; // 공격속도 증가 버프 적용 여부
     int atk_speed_buff_timer; // 공격속도 증가 버프 타이머
@@ -362,7 +359,6 @@ bool spawn_enabled; // 리스폰 여부
 bool boss_spawned; // 보스 등장 여부
 int boss_spawn_timer; // 보스 등장 대기 타이머
 
-
 void enemies_init();
 void enemies_update();
 void enemies_draw();
@@ -381,10 +377,11 @@ typedef enum SHOT_DIR {
 typedef enum {
     ATTACK_NORMAL, // 플레이어 일반 공격
     ATTACK_SKILL_1, // 플레이어 스킬1
+    ATTACK_SKILL_2, // 플레이어 스킬2
 
     ATTACK_ENEMY, // 일반몹 공격
-    ATTACK_BOSS1, // 보스몹 공격
-    ATTACK_BOSS2
+    ATTACK_BOSS1, // 보스몹 공격1
+    ATTACK_BOSS2  // 보스몹 공격2
 
 } ATTACK_TYPE;
 
@@ -475,11 +472,15 @@ typedef struct RANK {
     int seconds;
 } _RANK;
 
+typedef enum {
+    BUTTON_TO_RANK,   // 메뉴 버튼 눌러서 들어왔을 때
+    END_TO_RANK     // 게임 끝난 후
+} RankMode;
+
 int cmp_rank(const void* a, const void* b);
-void print_ranking_table(const char* player_name, int player_min, int player_sec);
+void print_ranking_table(const char* player_name, int player_min, int player_sec, RankMode mode);
 
 //======================================================
 //                RANKING INPUT
 //======================================================
 void rank_name_open(int time, char* rank_name, int* rank_min, int* rank_sec);
-

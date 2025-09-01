@@ -156,7 +156,7 @@
   <ItemGroup>
     <Image Include="background.jpg" />
     <Image Include="boss01.png" />
-    <Image Include="boss_shot1.png" />
+    <Image Include="boss_shot2.png" />
     <Image Include="enemy_attack.png" />
     <Image Include="item_attack_speedup.png" />
     <Image Include="item_hp_heal.png" />
@@ -168,7 +168,8 @@
     <Image Include="player2_attack.png" />
     <Image Include="player2_shot1.png" />
     <Image Include="player2_shot2.png" />
-    <Image Include="player_attack.png" />
+    <Image Include="player_attack2.png" />
+    <Image Include="player_attack1.png" />
     <Image Include="prologue_dialog_01.png" />
     <Image Include="prologue_dialog_02.png" />
     <Image Include="prologue_dialog_03.png" />
@@ -183,7 +184,6 @@
     <Image Include="prologue_dialog_12.png" />
     <Image Include="prologue_dialog_13.png" />
     <Image Include="prologue_dialog_14.png" />
-    <Image Include="spritesheet.png" />
     <Image Include="stage1.PNG" />
     <Image Include="stage1_new.png" />
     <Image Include="stage1_new_new.PNG" />
@@ -192,11 +192,12 @@
     <Image Include="stage2_new_new.PNG" />
     <Image Include="stage3.PNG" />
     <Image Include="stage3_new_new.PNG" />
-    <Image Include="shot1.png" />
-    <Image Include="shot2.png" />
+    <Image Include="player1_shot1.png" />
+    <Image Include="player1_shot2.png" />
     <Image Include="start_display.png" />
     <Image Include="subway_background.png" />
     <Image Include="subway_floor.jpg" />
+    <Image Include="TUTORIAL.png" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Easy rank.txt" />
@@ -211,13 +212,18 @@
   </ItemGroup>
   <ItemGroup>
     <Font Include="BebasNeue-Regular.ttf" />
+    <Font Include="OpenSans_Bold.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <Media Include="attack1.mp3" />
+    <Media Include="attack2.mp3" />
+    <Media Include="attack3.mp3" />
     <Media Include="bgm.mp3" />
     <Media Include="boss1_shot.mp3" />
     <Media Include="BOSS1_who_are_you.mp3" />
     <Media Include="BOSS1_an.mp3" />
     <Media Include="ENEMY1.mp3" />
+    <Media Include="enemy2.mp3" />
     <Media Include="Enemy_re.mp3" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,5 +1,14 @@
-#define _CRT_SECURE_NO_WARNINGS
+//======================================================
+//                    enemy.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      enemy.c
+ @brief     몬스터, 보스 등 적 스탯, 움직임, 출력 등 구현
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
 
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
@@ -10,13 +19,12 @@
 #include <allegro5/allegro_image.h>
 #include "common.h"
 
-
 const int ENEMY_W[] = { 60, 66, 50, 50};
-const int ENEMY_H[] = { 77, 87, 100, 100 }; //boss2 까지 추가 함 
+const int ENEMY_H[] = { 77, 87, 100, 100 };
 
-int hp_mult[] = { 1, 2, 3 };   // 하 = 1, 중 = 2, 상 = 3
+int hp_mult[] = { 1, 2, 3 };   // 난이도별 hp(하 = 1, 중 = 2, 상 = 3)
 float speed_mult[] = { 1.0f, 1.25f, 1.5f }; // 속도 배율
-float fire_mult[] = { 1.5f, 1.0f, 0.5f }; // 쿨타임 배율 (난이도 높을수록 더 자주 공격)
+float fire_mult[] = { 1.5f, 1.0f, 0.7f }; // 쿨타임 배율 (난이도 높을수록 더 자주 공격)
 
 bool spawn_enabled = true; // 리스폰 여부
 bool boss_spawned = false; // 보스 등장 여부
@@ -25,34 +33,35 @@ int boss_spawn_timer = -1; // 보스 등장 대기 타이머
 // 몬스터 능력치 설정
 void enemy_set_stats(ENEMY* e) {
     switch (e->type) {
+        // 몬스터1
     case ENEMY_TYPE_1:
         e->hp = 2 * hp_mult[game_difficulty - 1];
         e->vx = 2 * speed_mult[game_difficulty - 1];
         e->vy = 0;
         e->shot_timer = (int)(between(60, 150) * fire_mult[game_difficulty - 1]);
         break;
-
+        // 몬스터2
     case ENEMY_TYPE_2:
-        e->hp = 4 * hp_mult[game_difficulty - 1];
+        e->hp = 5 * hp_mult[game_difficulty - 1];
         e->vx = 2 * speed_mult[game_difficulty - 1];
         e->vy = 2 * speed_mult[game_difficulty - 1];
         e->shot_timer = (int)(between(60, 150) * fire_mult[game_difficulty - 1]);
         break;
-
+        // 보스 1
     case BOSS_TYPE_1:
         e->hp = 20 * hp_mult[game_difficulty - 1];
         e->vx = 1 * speed_mult[game_difficulty - 1];
         e->vy = 1 * speed_mult[game_difficulty - 1];
-        e->shot_timer = (int)(60 * fire_mult[game_difficulty - 1]);
+        e->shot_timer = (int)(120 * fire_mult[game_difficulty - 1]);
         e->state = BOSS_IDLE;
         e->state_timer = 30;
         break;
-
-    case BOSS_TYPE_2: //boss2 우선 능력치는 boss1이랑 같게
-        e->hp = 20 * hp_mult[game_difficulty - 1];
-        e->vx = 1 * speed_mult[game_difficulty - 1];
-        e->vy = 1 * speed_mult[game_difficulty - 1];
-        e->shot_timer = (int)(60 * fire_mult[game_difficulty - 1]);
+        // 보스2
+    case BOSS_TYPE_2: 
+        e->hp = 22 * hp_mult[game_difficulty - 1];
+        e->vx = 1.2 * speed_mult[game_difficulty - 1];
+        e->vy = 1.2 * speed_mult[game_difficulty - 1];
+        e->shot_timer = (int)(90 * fire_mult[game_difficulty - 1]);
         e->state = BOSS_IDLE;
         e->state_timer = 30;
         break;
@@ -72,16 +81,8 @@ void enemies_init()
 void enemies_update()
 {
     int new_quota = 5; // 이번 프레임에 새로 출현할 수 있는 몬스터 최대 수
-  
-
-//    int start_x = BUFFER_W; // 몬스터가 등장할 x좌표 시작점(화면 오른쪽 밖)
-   //int start_x = BUFFER_W + 40; // 몬스터가 등장할 x좌표 시작점(화면 오른쪽 밖
-    //int gap = 40; // 몬스터 간격
-
     int start_x = BUFFER_W + 40; // 몬스터가 등장할 x좌표 시작점(화면 오른쪽 밖)
     int gap = 80; // 몬스터 간격
-
-
 
     for (int i = 0; i < ENEMIES_N; i++)
     {
@@ -113,9 +114,7 @@ void enemies_update()
             continue;
         }
 
-        // --------------------
         // 타입별 이동 처리
-        // --------------------
         switch (enemies[i].type)
         {
         case ENEMY_TYPE_1: // 일반 몬스터 1
@@ -143,7 +142,7 @@ void enemies_update()
             }
             break;
 
-        case BOSS_TYPE_1: // 보스 몬스터
+        case BOSS_TYPE_1: // 보스 몬스터1
             if (frames % 2) // 속도 보정
             {
                 // 상태 타이머 감소 → 일정 시간마다 상태 전환
@@ -178,7 +177,7 @@ void enemies_update()
             }
             break;
 
-        case BOSS_TYPE_2: // 보스 몬스터 //이것도 BOSS1이랑 같게 추가
+        case BOSS_TYPE_2: // 보스 몬스터2
             if (frames % 2) // 속도 보정
             {
                 // 상태 타이머 감소 → 일정 시간마다 상태 전환
@@ -217,9 +216,7 @@ void enemies_update()
         // 맞았을 때 깜빡임 효과
         if (enemies[i].blink) enemies[i].blink--;
 
-        // --------------------
         // 충돌 처리
-        // --------------------
         int w = ENEMY_W[enemies[i].type];
         int h = ENEMY_H[enemies[i].type];
 
@@ -228,8 +225,8 @@ void enemies_update()
         if (t < 0) t = 0; if (t > 1) t = 1;
         float scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
 
-        int scaled_w = w * scale;
-        int scaled_h = h * scale;
+        int scaled_w = w * scale * 0.6f;
+        int scaled_h = h * scale * 0.6f;
 
         // 플레이어 총알 <-> 몬스터 충돌 체크
         int damage = shots_collide(false, enemies[i].x, enemies[i].y, scaled_w, scaled_h);
@@ -246,9 +243,7 @@ void enemies_update()
             continue;
         }
 
-        // --------------------
         // 공격 처리
-        // --------------------
         if (enemies[i].shot_timer > 0)
             enemies[i].shot_timer--;
 
@@ -257,17 +252,17 @@ void enemies_update()
             int cy = enemies[i].y + ENEMY_H[enemies[i].type] / 2;
 
             if (enemies[i].type == BOSS_TYPE_1) {
-                // 보스: 상하좌우 4방향 발사
+                // 보스: 좌우 2방향 발사
                 shots_add(false, true, cx, cy, DIR_LEFT, 10, ATTACK_BOSS1);
                 shots_add(false, true, cx, cy, DIR_RIGHT, 10, ATTACK_BOSS1);
-                enemies[i].shot_timer = (int)(60 * fire_mult[game_difficulty - 1]);
+                enemies[i].shot_timer = (int)(90 * fire_mult[game_difficulty - 1]);
             }
+            else if (enemies[i].type == BOSS_TYPE_2) {
+                // 보스: 좌우 2방향 발사
+                shots_add(false, true, cx, cy, DIR_LEFT, 12, ATTACK_BOSS2);
+                shots_add(false, true, cx, cy, DIR_RIGHT, 12, ATTACK_BOSS2);
+                enemies[i].shot_timer = (int)(90 * fire_mult[game_difficulty - 1]);
 
-            else if(enemies[i].type == BOSS_TYPE_2) {
-                // 보스: 상하좌우 4방향 발사
-                shots_add(false, true, cx, cy, DIR_LEFT, 20, ATTACK_BOSS1);
-                shots_add(false, true, cx, cy, DIR_RIGHT, 20, ATTACK_BOSS1);
-                enemies[i].shot_timer = (int)(60 * fire_mult[game_difficulty - 1]);
             }
             else {
                 // 일반 몬스터: 이동 방향 기준 발사
@@ -286,11 +281,10 @@ void enemies_update()
         }
     }
 
-    // --------------------
+
     // 보스 소환 체크
-    // --------------------
     bool any_normal_enemy_alive = false;
-    //보스 소환 로직 boss2도 고려
+    //보스 소환 로직
     for (int i = 0; i < ENEMIES_N; i++) {
         if ((enemies[i].used && enemies[i].type != BOSS_TYPE_1) || (enemies[i].used && enemies[i].type != BOSS_TYPE_2))
         {
@@ -308,11 +302,10 @@ void enemies_update()
             for (int i = 0; i < ENEMIES_N; i++) {
                 if (!enemies[i].used) {
                     enemies[i].x = BUFFER_W / 2 - ENEMY_W[BOSS_TYPE_1] / 2;
+                    enemies[i].y = BUFFER_H * 0.6;
 
-                    //enemies[i].y = 500; // 화면 위쪽 중앙
-
-                    enemies[i].y = BUFFER_H * 0.6; // 화면 위쪽 중앙
-                    if (stage_num == 2) //**stage_num 헤더에 전역변수로 빼고 이거에 따라서 boss몹 다르게
+                    //stage 별로 boss 다르게 생성
+                    if (stage_num == 2) 
                     {
                         enemies[i].type = BOSS_TYPE_1;
                         enemies[i].used = true;
@@ -339,20 +332,6 @@ void enemies_draw()
     for (int i = 0; i < ENEMIES_N; i++) {
         if (!enemies[i].used) continue;
 
-        /*
-        // 적 HP 표시
-        char hp_text[16];
-        sprintf(hp_text, "%d", enemies[i].hp);
-        al_draw_text(
-            font,
-            al_map_rgb(255, 255, 255),
-            enemies[i].x + PLAYER_W / 2,
-            enemies[i].y - 10,
-            ALLEGRO_ALIGN_CENTER,
-            hp_text
-        );
-        */
-
         int bar_width = 80;   // 체력바 너비
         int bar_height = 8;   // 체력바 높이
         int bar_x = enemies[i].x + 40;           // 적의 x 좌표
@@ -360,12 +339,12 @@ void enemies_draw()
 
         int max_hp = 0;
 
-        switch (enemies[i].type)  //체력 비율 맞출라면 필요함
+        switch (enemies[i].type)  //hp ratio
         {
         case ENEMY_TYPE_1: max_hp = 2 * hp_mult[game_difficulty - 1]; break;
         case ENEMY_TYPE_2: max_hp = 4 * hp_mult[game_difficulty - 1]; break;
         case BOSS_TYPE_1:  max_hp = 20 * hp_mult[game_difficulty - 1]; break;
-        case BOSS_TYPE_2:  max_hp = 20 * hp_mult[game_difficulty - 1]; break;
+        case BOSS_TYPE_2:  max_hp = 22 * hp_mult[game_difficulty - 1]; break;
         }
 
         float hp_ratio = (float)enemies[i].hp / (float)max_hp;
@@ -429,7 +408,7 @@ void enemies_draw()
                 );
             }
         }
-        else if (enemies[i].type == BOSS_TYPE_2) { //boss2 추가
+        else if (enemies[i].type == BOSS_TYPE_2) {
             // 보스 및 플레이어 중심 좌표 계산
             float enemy_cx = enemies[i].x + draw_w * 0.5f;
             float player_cx = player.x + PLAYER_W * 0.5f;

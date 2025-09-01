@@ -1,5 +1,14 @@
-#define _CRT_SECURE_NO_WARNINGS
+//======================================================
+//                    player.c
+//======================================================
+// 2025 telechips allegro game_project
+/**
+ @file      player.c
+ @brief     게임 player 캐릭터 별 스텟, 히트박스, 스킬 쿨타임 등 정의
+ @author    김혁, 신동훈, 정명훈, 이재강
+*/
 
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro5/allegro5.h>
@@ -25,17 +34,17 @@ void player_init()
         player.max_hp = player.hp;
         player.speed = PLAYER_SPEED >> 1; // 이동 속도
 
-        player.power_normal = 3; // 일반 공격 공격력
+        player.power_normal = 2; // 일반 공격 공격력
         player.power_skill_1 = 6; // 스킬 1 공격력
-        //player.power_skill_2 = 6; // 스킬 2 공격력
+        player.power_skill_2 = 6; // 스킬 2 공격력
 
         player.normal_shot_cooldown = 30; // 일반 공격 쿨타임
-        player.skill_1_cooldown = 120; // 스킬 1 쿨타임
-        //player.skill_2_cooldown = 120; // 스킬 2 쿨타임
+        player.skill_1_cooldown = 150; // 스킬 1 쿨타임
+        player.skill_2_cooldown = 120; // 스킬 2 쿨타임
          
         player.normal_shot_timer = 0;
         player.skill_1_timer = 0;
-        //player.skill_2_timer = 0;
+        player.skill_2_timer = 0;
         player.attack_anim_timer = 0;
     }
     else if (player.job == JOB_TYPE_2) // JOB_TYPE_2 → 공격력 약함, 공격속도/이동속도 빠름
@@ -44,17 +53,17 @@ void player_init()
         player.max_hp = player.hp;
         player.speed = PLAYER_SPEED;
 
-        player.power_normal = 1;
-        player.power_skill_1 = 3;
-        //player.power_skill_2 = 3;
+        player.power_normal = 3;
+        player.power_skill_1 = 5;
+        player.power_skill_2 = 3;
 
         player.normal_shot_cooldown = 15; 
-        player.skill_1_cooldown = 60; 
-        //player.skill_2_cooldown = 120;
+        player.skill_1_cooldown = 90; 
+        player.skill_2_cooldown = 120;
 
         player.normal_shot_timer = 0;
         player.skill_1_timer = 0;
-        //player.skill_2_timer = 0;
+        player.skill_2_timer = 0;
         player.attack_anim_timer = 0;
     }
 }
@@ -76,11 +85,11 @@ void player_update()
         player.x += player.speed;
         player.last_dir = DIR_RIGHT;
     }
-    if (key[ALLEGRO_KEY_UP]) 
+    if (key[ALLEGRO_KEY_UP])
     {
         player.y -= player.speed;
     }
-    if (key[ALLEGRO_KEY_DOWN]) 
+    if (key[ALLEGRO_KEY_DOWN])
     {
         player.y += player.speed;
     }
@@ -163,13 +172,13 @@ void player_update()
         {
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal, ATTACK_NORMAL);
             player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
-            player.attack_anim_timer = 18; // 공격 모션 유지 시간
+            player.attack_anim_timer = 36; // 공격 모션 유지 시간
         }
         else if (player.job == JOB_TYPE_2)
         {
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_normal, ATTACK_NORMAL);
             player.normal_shot_timer = player.normal_shot_cooldown; // 일반 공격 쿨타임
-            player.attack_anim_timer = 9; // 공격 모션 유지 시간
+            player.attack_anim_timer = 36; // 공격 모션 유지 시간
 
         }
     }
@@ -185,19 +194,23 @@ void player_update()
         {
             shots_add(true, true, player.x, player.y, player.last_dir, player.power_skill_1, ATTACK_SKILL_1);
             player.skill_1_timer = player.skill_1_cooldown;
-            player.attack_anim_timer = 18;
+            player.attack_anim_timer2 = 24;
         }
         else if (player.job == JOB_TYPE_2)
         {
-            shots_add(true, true, player.x, player.y, player.last_dir, player.power_skill_1, ATTACK_SKILL_1);
+            shots_add(true, true, player.x, player.y, player.last_dir, player.power_skill_1, ATTACK_SKILL_2);
             player.skill_1_timer = player.skill_1_cooldown;
-            player.attack_anim_timer = 9;
+            player.attack_anim_timer2 = 24;
         }
     }
      // 공격 모션 유지 시간
     if (player.attack_anim_timer > 0)
     {
         player.attack_anim_timer--;
+    }
+    if (player.attack_anim_timer2 > 0)
+    {
+        player.attack_anim_timer2--;
     }
 }
 
@@ -210,7 +223,7 @@ void player_draw()
     if (player.invincible_timer > 0)
     {
         if (((player.invincible_timer / 2) % 3) == 1)
-            return; // 이 프레임에는 그리지 않음
+            return;
     }
 
     // 2.5D 구현
@@ -223,22 +236,7 @@ void player_draw()
     if (t > 1) t = 1;
     float depth_scale = DEPTH_MIN_SCALE + t * (DEPTH_MAX_SCALE - DEPTH_MIN_SCALE);
 
-    /*
-    // 플레이어 HP 표시
-    char hp_text[16];
-    sprintf(hp_text, "%d", player.hp);
-    al_draw_text(
-        font,
-        al_map_rgb(255, 255, 255),
-        player.x + PLAYER_W / 2, // 플레이어 중앙
-        player.y - 10,           // 위쪽
-        ALLEGRO_ALIGN_CENTER,
-        hp_text
-    );
-    */
-    //여기 나중에 실행되는거 보고 위치 옮겨서 맞춰야 할 듯
-
-    // 깊이감 스케일 적용
+    // 깊이감 스케일 적용(원근법)
     int w = PLAYER_W;
     int h = PLAYER_H;
 
@@ -301,7 +299,11 @@ void player_draw()
     {
         if (player.attack_anim_timer > 0)
         {
-            bmp = sprites.player1_attack;
+            bmp = sprites.player1_attack1;
+        }
+        else if (player.attack_anim_timer2 > 0)
+        {
+            bmp = sprites.player1_attack2;
         }
         else
         {
@@ -313,7 +315,11 @@ void player_draw()
     {
         if (player.attack_anim_timer > 0)
         {
-            bmp = sprites.player2_attack;
+            bmp = sprites.player2_attack1;
+        }
+        else if (player.attack_anim_timer2 > 0)
+        {
+            bmp = sprites.player2_attack2;
         }
         else
         {
